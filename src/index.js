@@ -21,7 +21,7 @@ import { createHttpLink } from 'apollo-link-http'
 import { setContext } from 'apollo-link-context'
 import { InMemoryCache } from 'apollo-cache-inmemory'
 
-const CONFIG = require('../config')
+const CONFIG = require('./config')
 
 const httpLink = new HttpLink({
   uri: CONFIG.GRAPHQL_ENDPOINT
@@ -29,7 +29,7 @@ const httpLink = new HttpLink({
 
 
 const wsLink = new WebSocketLink({
-  uri: CONFIG.GRAPHQL_ENDPOINT,
+  uri: CONFIG.GRAPHQL_WS_ENDPOINT,
   options: {
     reconnect: true
   }
