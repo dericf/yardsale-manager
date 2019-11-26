@@ -62,7 +62,7 @@ const PrivateRoute = ({ component: Component, path, ...rest }) => {
     //
     // Don't do any auth checks if user is already on the login page.
     //
-    if (path == '/login') {
+    if (path === '/login' || path === '/register') {
       setAuth({ ...auth, loading: false })
       return;
     }
