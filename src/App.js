@@ -38,6 +38,7 @@ import { defaultFakeData } from './FakeData'
 
 import { auth as defaultAuth } from './Auth'
 import LoginModal from "./components/modals/LoginModal/LoginModal";
+import RegisterModal from "./components/modals/RegisterModal/RegisterModal";
 
 import { GET_USER } from './graphql/queries'
 import { useQuery } from '@apollo/react-hooks';
@@ -99,6 +100,12 @@ const App = () => {
                       exact
                       path="/login"
                       render={props => <LoginModal {...props} defaultOpen={true} forcedOpen={true} />}
+                    />
+
+                    <PrivateRoute
+                      exact
+                      path="/register"
+                      render={props => <RegisterModal {...props} defaultOpen={true} forcedOpen={true} />}
                     />
                   </Switch>
 
