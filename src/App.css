@@ -1,0 +1,152 @@
+body, html{
+  margin:0;
+  padding:0;
+}
+
+#TopNav {
+  border-bottom: solid 4px ; 
+  border-left: unset;
+  border-right: unset;
+  margin-left: 0 !important;
+  background-color:  #fff;  
+  padding-left: 16px;
+  padding-right: 16px;
+}
+
+#Footer {
+  background-color: rgb(53, 53, 53) !important;
+  padding-top: 16px !important;
+  padding-bottom: 16px !important;
+  margin:0 !important;
+  width: 100vw !important
+}
+
+#MainContent {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  padding-top: "1rem";
+  padding-left: "0"; 
+  padding-right: "0";
+  border-radius: "unset";
+}
+
+.inverted {
+  background-color: #1E1F1A !important;
+}
+
+
+.modal > i.close.icon {
+  position: fixed;
+  top: 13px;
+  right: 14px;
+  color: #000000;
+}
+
+.segment {
+  border-radius: unset !important;
+}
+
+/* Extra Util Classes */
+.medium.text {
+  font-size: 1.5rem;
+}
+
+.large.text {
+  font-size: 2rem;
+}
+
+/* Margins */
+.m0 {
+  margin: 0 !important;
+}
+
+.mt0 {
+  margin-top: 0 !important;
+}
+
+.mb0 {
+  margin-bottom: 0 !important;
+}
+
+.ml0 {
+  margin-left: 0 !important;
+}
+
+.mr0 {
+  margin-right: 0 !important;
+}
+
+/* Padding */
+.p0 {
+  padding: 0 !important;
+}
+
+.pt0 {
+  padding-top: 0 !important;
+}
+
+.pb0 {
+  padding-bottom: 0 !important;
+}
+
+.pl0 {
+  padding-left: 0 !important;
+}
+
+.pr0 {
+  padding-right: 0 !important;
+}
+
+
+.py16 {
+  padding-top: 16px !important;
+  padding-bottom: 16px !important;
+}
+
+.py0 {
+  padding-top: 0px !important;
+  padding-bottom: 0px !important;
+}
+
+.px0 {
+  padding-left: 0px !important;
+  padding-right: 0px !important;
+}
+
+.my16 {
+  margin-top: 16px !important;
+  margin-bottom: 16px !important;
+}
+
+.mx16 {
+  margin-left: 16px !important;
+  margin-right: 16px !important;
+}
+
+.mt0 {
+  margin-top: 0px !important;
+}
+
+.mb16 {
+  margin-bottom: 16px !important;
+}
+
+.my0 {
+  margin-top: 0px !important;
+  margin-bottom: 0px !important;
+}
+
+.button.primary {
+  background-color: #324376 !important;
+}
+.hover-pointer:hover {
+  cursor: pointer;
+}
+
+img:hover {
+  cursor: pointer;
+}
+
+.inverted-hover:hover {
+  color:white !important;
+}
