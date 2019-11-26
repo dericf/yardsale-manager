@@ -26,12 +26,14 @@ import { FakeDataContext } from '../../../App'
 
 import { AuthContext } from '../../../App'
 
+import RegisterModal from '../RegisterModal/RegisterModal'
+
 const LoginModal = ({ defaultOpen = false, forcedOpen = false, ...props }) => {
     // TODO: (Future) make this more responsive. Add more than just two widths
     // const nameRef = createRef()
     const { auth, setAuth } = React.useContext(AuthContext)
     const client = props.client
-    const emailRef = useRef()
+    const autoFocusRef = useRef()
     const initialValues = {
         email: "",
         password: ""
@@ -52,7 +54,7 @@ const LoginModal = ({ defaultOpen = false, forcedOpen = false, ...props }) => {
 
     useEffect(() => {
         if (open === true) {
-            emailRef.current.focus()
+            autoFocusRef.current.focus()
         }
     }, [open])
 
@@ -113,7 +115,7 @@ const LoginModal = ({ defaultOpen = false, forcedOpen = false, ...props }) => {
                     console.log('User not found', json)
                     setAuth(auth => ({ ...auth, loading: false, reAuthenticateRequired: false }))
                     // setValues(prev => ({ ...prev, email: "" }))
-                    emailRef.current.focus()
+                    autoFocusRef.current.focus()
                     setErrorMessage('No user was found matching that email. Please try again.')
                 } else if (json.MESSAGE === 'Wrong password') {
                     setErrorMessage('Password does not match. Please try again.')
@@ -154,7 +156,9 @@ const LoginModal = ({ defaultOpen = false, forcedOpen = false, ...props }) => {
                                             fluid
                                             type="text"
                                             name="email"
-                                            ref={emailRef}
+                                            icon="at"
+                                            iconPosition="left"
+                                            ref={autoFocusRef}
                                             value={values.email}
                                             onChange={handleInputChange}
                                         />
@@ -171,6 +175,8 @@ const LoginModal = ({ defaultOpen = false, forcedOpen = false, ...props }) => {
                                             fluid
                                             type="password"
                                             name="password"
+                                            icon="key"
+                                            iconPosition="left"
                                             value={values.password}
                                             onChange={handleInputChange}
                                         />
@@ -192,6 +198,11 @@ const LoginModal = ({ defaultOpen = false, forcedOpen = false, ...props }) => {
                                 </Grid.Column>
                             </Grid.Row>
                         )}
+                        <Grid.Row className="py0">
+                            <Grid.Column>
+                                <RegisterModal onClick={closeModal} />
+                            </Grid.Column>
+                        </Grid.Row>
                     </Form>
                 </Modal.Content>
 
