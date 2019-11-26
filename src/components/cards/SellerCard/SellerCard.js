@@ -20,7 +20,7 @@ const SellerCard = ({ seller, ...props }) => {
                         <Card.Content>
                             <Card.Header as="h3" className="mb0">{seller.name}</Card.Header>
                             <Card.Meta as="h6" className={`m0 ${props.inverted ? 'inverted' : ''}`}>{seller.company}</Card.Meta>
-                            <Card.Header as="h5" className="m0"><strong>Status:</strong> {(seller.status == 'active') && (<Icon name="genderless" title="Active" className="active-icon" color="green"></Icon>)}{(seller.status == 'inactive') && (<Icon name="genderless" color="red" title="Inactive" className="deactivated-icon"></Icon>)}</Card.Header>
+                            <Card.Header as="h5" className="m0"><strong>Status:</strong> {(seller.is_active === true) && (<Icon name="genderless" title="Active" className="active-icon" color="green"></Icon>)}{(seller.is_active === false) && (<Icon name="genderless" color="red" title="Inactive" className="deactivated-icon"></Icon>)}</Card.Header>
                         </Card.Content>
                     </Grid.Column>
 
