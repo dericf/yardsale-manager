@@ -23,6 +23,9 @@ import { user, sellers } from '../../../FakeData';
 import { toMoney } from '../../../utils/formating'
 
 import ConfirmModal from "../generic/ConfirmModal"
+import { GET_SELLERS } from '../../../graphql/queries'
+import { useQuery } from '@apollo/react-hooks';
+
 
 const YardsaleDetailsModal = ({ yardsale = null, autofocus = true, ...props }) => {
     let { fakeData, setFakeData } = React.useContext(FakeDataContext)
@@ -49,6 +52,13 @@ const YardsaleDetailsModal = ({ yardsale = null, autofocus = true, ...props }) =
     }
 
     const [formValues, setFormValues] = useState(initialFormValues)
+
+    const { loading: sellersLoading, error: sellersError, data: sellersData } = useQuery(GET_SELLERS, {
+        onError: () => console.log('ERROR WITH QUERY'),
+        onCompleted: (data) => {
+            console.log('SELLER DATA: ', data)
+        }
+    })
 
     const handleInputChange = (event, { value }) => {
         console.log('Handle Input CHange: ', event, value)
@@ -82,13 +92,7 @@ const YardsaleDetailsModal = ({ yardsale = null, autofocus = true, ...props }) =
         setOpen(true)
     }
 
-    const sellerDropdownOptions = fakeData.user.sellers.filter(seller => seller.status != 'inactive').map(seller => {
-        return {
-            key: seller.id,
-            text: `${seller.initials} (${seller.name})`,
-            value: seller.id,
-        }
-    })
+    //[{ id: 1, text: "", value: "" }]
 
     const addItem = () => {
         console.log('FV: ', formValues, sellers)
@@ -139,6 +143,12 @@ const YardsaleDetailsModal = ({ yardsale = null, autofocus = true, ...props }) =
         setTender(0)
     }
 
+    const unknownSeller = [{
+        key: 0,
+        text: "Unknown Seller",
+        value: 0
+    }]
+
     useEffect(() => {
         calculateChangeDue()
     }, [tender])
@@ -147,10 +157,7 @@ const YardsaleDetailsModal = ({ yardsale = null, autofocus = true, ...props }) =
         <Fragment>
 
             <Button fluid color="brown" fluid onClick={openModal} >
-                <Icon name="add.py0 {
-  padding-top: 0px !important;
-  padding-bottom: 0px !important;
-}"></Icon>{props.iconLabel}
+                <Icon name="add"></Icon>{props.iconLabel}
             </Button>
             <Modal
                 open={open}
@@ -178,27 +185,37 @@ const YardsaleDetailsModal = ({ yardsale = null, autofocus = true, ...props }) =
                                                         ref={focusRef}
                                                         icon="dollar"
                                                         iconPosition="left"
+                                                        onBlur={(e) => setFormValues({ ...formValues, price: toMoney(e.target.value) })}
                                                     />
 
                                                 </Form.Field >
 
                                                 <Form.Field width="12">
                                                     <label>Select a Seller</label>
-                                                    <Dropdown
-                                                        placeholder='Select a Seller'
-                                                        openOnFocus={true}
-                                                        name="sellerID"
-                                                        fluid
-                                                        selection
-                                                        icon="user outline"
-                                                        labeled
-                                                        floating
-                                                        button
-                                                        options={sellerDropdownOptions}
-                                                        onChange={handleInputChange}
-                                                        className="icon"
+                                                    {!sellersLoading && sellersData && sellersData.seller && (
 
-                                                    />
+                                                        < Dropdown
+                                                            placeholder='Select a Seller'
+                                                            openOnFocus={true}
+                                                            name="sellerID"
+                                                            fluid
+                                                            selection
+                                                            icon="user outline"
+                                                            labeled
+                                                            floating
+                                                            button
+                                                            options={(sellersData.seller.filter(seller => seller.is_active === true).map(seller => {
+                                                                return {
+                                                                    key: seller.uuid,
+                                                                    text: `${seller.initials} (${seller.name})`,
+                                                                    value: seller.uuid,
+                                                                }
+                                                            })).concat(unknownSeller)}
+                                                            onChange={handleInputChange}
+                                                            className="icon"
+
+                                                        />
+                                                    )}
                                                 </Form.Field >
                                             </Form.Group>
                                         </Grid.Column>
@@ -266,8 +283,8 @@ const YardsaleDetailsModal = ({ yardsale = null, autofocus = true, ...props }) =
                                             {transactionItems.map(item => {
                                                 return (
                                                     <Table.Row key={item.id}>
-                                                        <Table.Cell>{item.seller.initials}</Table.Cell>
-                                                        <Table.Cell textAlign="right">{item.price}</Table.Cell>
+                                                        <Table.Cell textAlign="center">{item.seller.initials}</Table.Cell>
+                                                        <Table.Cell textAlign="right">$ {toMoney(item.price)}</Table.Cell>
                                                         <Table.Cell textAlign="left">{item.description}</Table.Cell>
                                                         <Table.Cell textAlign="center">
                                                             <Button tabIndex={-1} compact color="blue" icon="add" onClick={() => duplicateTransactionItem(item)}></Button>
