@@ -1,4 +1,7 @@
 import gql from 'graphql-tag'
+/* 
+  SELLERS 
+*/
 
 // 
 // Insert Seller
@@ -43,3 +46,47 @@ mutation updateSeller($sellerUUID: uuid!) {
     }
   }
 }`
+
+/* 
+  YARDSALES 
+*/
+
+// 
+// Insert Yardsale
+// 
+export const CREATE_YARDSALE = gql`
+mutation CreateYardsale($email: String, $name: String, $phone: String, $address: String, $notes: String) {
+    insert_yardsale(objects: {email: $email, name: $name, address_text: $address, notes: $notes, phone: $phone}) {
+      returning {
+        uuid
+        name
+      }
+    }
+}`
+//
+// Update Yardsale
+//
+export const UPDATE_YARDSALE = gql`
+mutation updateYardsale($yardsaleUUID: uuid!, $phone: String, $notes: String, $name: String, $email: String $address: String) {
+  update_seller(where: {uuid: {_eq: $yardsaleUUID}}, _set: {updated_at: "NOW()", phone: $phone, notes: $notes, name: $name, email: $email, address_text: $address}) {
+    returning {
+      uuid
+      name
+    }
+  }
+}
+`
+
+//
+// Delete Yardsale
+//
+export const DELETE_YARDSALE = gql`
+mutation updateYardsale($yardsaleUUID: uuid!) {
+  delete_seller(where: {uuid: {_eq: $yardsaleUUID}}) {
+    returning {
+      uuid
+    }
+  }
+}`
+
+
