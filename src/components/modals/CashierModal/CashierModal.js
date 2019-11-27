@@ -27,6 +27,7 @@ import { GET_SELLERS, GET_TRANSACTION_ITEMS_FOR_YARDSALE, GET_SELLER_LINKS_FOR_Y
 import { CREATE_TRANSACTION_ITEM } from '../../../graphql/mutations'
 import { useQuery, useMutation } from '@apollo/react-hooks';
 import SellerDetailsModal from '../SellerDetailsModal/SellerDetailsModal'
+import YardsaleSellerModal from '../YardsaleSellerModal/YardsaleSellerModal'
 
 const YardsaleDetailsModal = ({ yardsale = null, autofocus = true, ...props }) => {
     let { fakeData, setFakeData } = React.useContext(FakeDataContext)
@@ -79,6 +80,7 @@ const YardsaleDetailsModal = ({ yardsale = null, autofocus = true, ...props }) =
 
     const cancel = () => {
         setFormValues(initialFormValues)
+        setTransactionItems([])
         closeModal()
     }
 
@@ -117,7 +119,6 @@ const YardsaleDetailsModal = ({ yardsale = null, autofocus = true, ...props }) =
     //[{ id: 1, text: "", value: "" }]
 
     const addItem = () => {
-        console.log('FV: ', formValues, sellers)
         setTransactionItems(
             transactionItems.concat([{
                 seller: {
@@ -167,12 +168,6 @@ const YardsaleDetailsModal = ({ yardsale = null, autofocus = true, ...props }) =
             key: 0,
             text: "Unknown Seller",
             value: 0
-        },
-        {
-            key: 1,
-            text: (<SellerDetailsModal fluid={true} invertedButton={true} />),
-            value: 1,
-            disabled: true
         }
     ]
 
@@ -197,9 +192,19 @@ const YardsaleDetailsModal = ({ yardsale = null, autofocus = true, ...props }) =
                 <Modal.Header>New Sale</Modal.Header>
                 <Modal.Content scrolling>
                     <Grid>
+
                         <Grid.Row columns={2}>
                             <Grid.Column mobile={16} computer={8}>
                                 <Form>
+                                    <Grid.Row className="pt0 pb16" columns={1} textAlign="right">
+                                        <Grid.Column width="4" textAlign="right">
+                                            <Form.Group>
+                                                <Form.Field width="16">
+                                                    <YardsaleSellerModal yardsale={yardsale} caller="cashierModal" iconLabel="Add Seller" fluidButton={false} invertedButton={false} />
+                                                </Form.Field>
+                                            </Form.Group>
+                                        </Grid.Column>
+                                    </Grid.Row>
                                     <Grid.Row>
                                         <Grid.Column>
                                             <Form.Group >
@@ -232,18 +237,23 @@ const YardsaleDetailsModal = ({ yardsale = null, autofocus = true, ...props }) =
                                                             labeled
                                                             floating
                                                             button
-                                                            options={(sellersData.seller.filter(seller => seller.is_active === true).map(seller => {
+                                                            selectOnBlur={false}
+                                                            selectOnNavigation={false}
+                                                            options={(sellersData.seller.filter(seller => seller.is_active === true).map((seller, index) => {
                                                                 return {
-                                                                    key: seller.uuid,
+                                                                    key: index,
                                                                     text: `${seller.initials} (${seller.name})`,
-                                                                    value: seller.uuid,
+                                                                    content: `${seller.initials} (${seller.name})`,
+                                                                    value: `${seller.uuid}|${seller.initials} (${seller.name})`,
                                                                 }
                                                             })).concat(unknownSeller)}
                                                             onChange={(e, { value }) => {
+                                                                console.log('DROPDOWN Value: ', value.split("|"))
+                                                                console.log('DROPDOWN TEXT: ', e.target.textContent)
                                                                 setFormValues({
                                                                     ...formValues, seller: {
-                                                                        uuid: value,
-                                                                        name: e.target.textContent
+                                                                        uuid: value.split("|")[0],
+                                                                        name: value.split("|")[1]
                                                                     }
                                                                 })
                                                             }}
