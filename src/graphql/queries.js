@@ -64,6 +64,70 @@ query GetSeller($uuid: uuid!) {
     }
 }
 `
+// 
+// GET ALL YARDSALES
+// (permission: for the current user)
+export const GET_YARDSALES = gql`
+query GetYardsales {
+    yardsale {
+      address_text
+      days_of_week
+      end_date
+      end_time
+      start_date
+      start_time
+      user_uuid
+      uuid
+      name
+      yardsale_seller_links {
+        seller {
+          name
+          email
+          is_active
+          uuid
+          phone
+          notes
+          initials
+          company
+          address_text
+        }
+      }
+    }
+}
+`
+// 
+// GET ONE YARDSALE
+// by id
+export const GET_YARDSALE = gql`
+query GetYardsale($yardsaleUUID: uuid) {
+    yardsale(where: {uuid: {_eq: $yardsaleUUID}}) {
+      address_text
+      days_of_week
+      end_date
+      end_time
+      start_date
+      start_time
+      user_uuid
+      uuid
+      name
+      yardsale_seller_links {
+        seller {
+          name
+          email
+          is_active
+          uuid
+          phone
+          notes
+          initials
+          company
+          address_text
+        }
+      }
+    }
+}
+`
+
+
 //
 // GET ALL SALE ITEMS
 // by seller.id
@@ -74,12 +138,4 @@ query GetSeller($uuid: uuid!) {
 
 // 
 // GET SALE ITEM
-// by id
-
-// 
-// GET ALL YARDSALES
-// (permission: for the current user)
-
-// 
-// GET ONE YARDSALE
 // by id
