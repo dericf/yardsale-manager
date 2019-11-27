@@ -13,7 +13,8 @@ import {
     Menu,
     Header,
     Tab,
-    Message
+    Message,
+    Item
 } from 'semantic-ui-react'
 
 // Apollo/GQL
@@ -200,7 +201,8 @@ const LoginModal = ({ defaultOpen = false, forcedOpen = false, ...props }) => {
                         )}
                         <Grid.Row className="py0">
                             <Grid.Column>
-                                <RegisterModal onClick={closeModal} />
+                                <Item as={Link} to="/register" content="Create a New Account" />
+                                {/* <RegisterModal onClick={closeModal} /> */}
                             </Grid.Column>
                         </Grid.Row>
                     </Form>
