@@ -211,7 +211,15 @@ const YardsaleTransactionsModal = ({ yardsale, iconLabel, invertedButton = false
                                         {sellerLinksData.yardsale_seller_link.length === sellersData.seller.length && (
                                             <Table.Row textAlign="center">
                                                 <Table.Cell textAlign="center" colSpan="5">
-                                                    No Sellers in the System
+                                                    All sellers have been accounted for.
+                                                </Table.Cell>
+                                            </Table.Row>
+                                        )}
+
+                                        {sellersData.seller.length === 0 && (
+                                            <Table.Row textAlign="center">
+                                                <Table.Cell textAlign="center" colSpan="5">
+                                                    No sellers in the system.
                                                 </Table.Cell>
                                             </Table.Row>
                                         )}
