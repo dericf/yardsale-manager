@@ -107,8 +107,7 @@ const RightMenu = ({ user, isAuthenticated, activeItem, setActiveItem, userQuery
                     <Menu.Item position="right" key="login" index={100} className="horizontal" >
                         <LoginModal />
                     </Menu.Item>
-                )
-                }
+                )}
 
 
                 {auth.isAuthenticated && (
