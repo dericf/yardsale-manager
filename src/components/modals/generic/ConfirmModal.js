@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react'
-import { Button, Confirm, Segment, Grid, Modal, Popup } from 'semantic-ui-react'
+import { Button, Confirm, Segment, Grid, Modal, Popup, Message, Divider } from 'semantic-ui-react'
 
 const ConfirmModal = ({ triggerType = 'button', disabled = false, buttonProps = {}, handleConfirm, handleCancel, header, content, warningMessage = null, disabledMessage = null }) => {
     const [open, setOpen] = React.useState(false)
@@ -41,6 +41,10 @@ const ConfirmModal = ({ triggerType = 'button', disabled = false, buttonProps = 
             >
                 <Modal.Header>{header}</Modal.Header>
                 <Modal.Content>
+                    {warningMessage && (
+                        <Message content={warningMessage} negative />
+                    )}
+                    <Divider horizontal />
                     {content}
                 </Modal.Content>
                 <Modal.Actions>
