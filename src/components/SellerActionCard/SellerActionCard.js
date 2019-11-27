@@ -50,7 +50,7 @@ const SellerActions = ({ seller }) => {
                 </Grid.Row>
                 <Grid.Row>
                     <Grid.Column computer={16} mobile={16}>
-                        {seller.status != 'inactive' && <ConfirmModal
+                        <ConfirmModal
                             buttonProps={{ icon: "trash", content: "Remove", fluid: true, negative: true }}
                             disabled={seller.is_user_link}
                             handleConfirm={() => {
@@ -59,10 +59,10 @@ const SellerActions = ({ seller }) => {
                             }}
                             handleCancel={() => console.log('cancel')}
                             header="Confirm Delete"
-                            content={`Proceed deactivating ${seller.name}?`}
+                            content={`Proceed deleting ${seller.name}?`}
                             warningMessage={"Warning! This action cannot be undone! Proceed with caution."}
                             disabledMessage={"This seller cannot be deleted. It is directly linked to the user."}
-                        />}
+                        />
                     </Grid.Column>
                 </Grid.Row>
             </Grid>
