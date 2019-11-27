@@ -49,6 +49,7 @@ export const GET_SELLER_LINKS_FOR_YARDSALE = gql`
 query GetSellerLinksForYardsale($yardsaleUUID: uuid!) {
     yardsale_seller_link(where: {yardsale_uuid: {_eq: $yardsaleUUID}}) {
       seller {
+        uuid
         name
         initials
         transactions(where: {yardsale_uuid: {_eq: $yardsaleUUID}}) {
