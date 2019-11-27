@@ -11,6 +11,7 @@ import {
 
 
 import YardsaleDetailsModal from '../modals/YardsaleDetailsModal/YardsaleDetailsModal'
+import YardsaleTransactionsModal from '../modals/YardsaleTransactionsModal/YardsaleTransactionsModal'
 import CashierModal from '../modals/CashierModal/CashierModal'
 import ConfirmModal from '../modals/generic/ConfirmModal'
 
@@ -57,25 +58,24 @@ const YardsaleActions = ({ yardsale }) => {
                 </Grid.Row>
                 <Grid.Row className="py0">
                     <Grid.Column computer={16} mobile={16} style={{ paddingTop: 14 }}>
-                        <Button color="green" fluid ><Icon name="dollar"></Icon> Transaction History</Button>
+                        {/* <Button color="green" fluid ><Icon name="dollar"></Icon> Transaction History</Button> */}
+                        <YardsaleTransactionsModal yardsale={yardsale} iconLabel="Transaction History" />
+
                     </Grid.Column>
                 </Grid.Row>
                 <Grid.Row className="py0">
                     <Grid.Column computer={16} mobile={16} style={{ paddingTop: 14 }}>
-                        {yardsale.status != 'inactive' && <ConfirmModal
-                            edit={true}
-                            yardsale={yardsale}
-                            iconName="trash"
-                            iconLabel="Deactivate Yardsale"
-                            trigger={() => (<Button icon="trash" content="Remove" fluid negative />)}
+                        <ConfirmModal
+                            buttonProps={{ icon: "trash", content: "Remove", fluid: true, negative: true }}
                             handleConfirm={() => {
                                 ///HERE
                                 confirmDeactivateYardsale()
                             }}
                             handleCancel={() => console.log('cancel')}
-                            header="Confirm Deactivation"
-                            content={`Proceed deactivating ${yardsale.name}?`}
-                        />}
+                            header="Confirm Delete"
+                            content={`Proceed deleting ${yardsale.name}?`}
+                            warningMessage={"Warning! This action cannot be undone! Proceed with caution."}
+                        />
                     </Grid.Column>
                 </Grid.Row>
             </Grid>
