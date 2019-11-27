@@ -78,12 +78,13 @@ const Sellers = ({ setTitle }) => {
                 {!loading && sellerData && sellerData["seller"].filter(seller => {
                     return (
                         (searchVal === '') ||
-                        (searchVal !== '' && (String(seller.name).toLowerCase().includes(searchVal)))) &&
+                        (searchVal !== '' && (String(seller.name).toLowerCase().includes(searchVal))) &&
                         (
                             (filterValue === 'all') ||
                             (filterValue === 'active' && seller.is_active === true) ||
                             (filterValue === 'inactive' && seller.is_active === false)
                         )
+                    )
                 }).map(seller => {
                     return (
                         <Fragment>
