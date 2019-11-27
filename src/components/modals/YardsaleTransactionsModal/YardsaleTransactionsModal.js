@@ -77,7 +77,7 @@ const YardsaleTransactionsModal = ({ yardsale, iconLabel, ...props }) => {
 
             <Button
                 fluid
-                color="blue"
+                color="green"
                 onClick={openModal}
                 icon="dollar"
                 content={iconLabel}
