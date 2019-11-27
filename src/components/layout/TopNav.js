@@ -155,7 +155,7 @@ const TopNav = (props) => {
 
     return (
         <Menu id="TopNav" fluid compact className={`fixed top ${activeItem}-title`} activeIndex="projects"
-            style={{ height: `${NAVBAR_HEIGHT}rem` }}>
+            style={{ height: NAVBAR_HEIGHT }}>
 
             {/* Logo */}
             <Menu.Header as="h2" className="mb0" content="Yardsale Manager" style={{ paddingTop: 6, marginRight: '16px' }} />
