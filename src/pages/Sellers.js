@@ -10,19 +10,15 @@ import {
 
 import { NAVBAR_HEIGHT } from '../constants'
 
-import { sellers as SellersData } from '../FakeData'
-
 import SellersFilterForm from '../components/SellersFilterForm'
 import SellerDetailsModal from '../components/modals/SellerDetailsModal/SellerDetailsModal'
 import SellerCard from '../components/cards/SellerCard/SellerCard'
 import SellerActions from '../components/SellerActionCard/SellerActionCard'
-import { FakeDataContext } from '../App'
 
 import { GET_SELLERS } from '../graphql/queries'
 import { useQuery } from '@apollo/react-hooks';
 
 const Sellers = ({ setTitle }) => {
-    let { fakeData, setFakeData } = React.useContext(FakeDataContext)
     const [filterValue, setFilterValue] = useState('active');
     const [searchVal, setSearchVal] = useState('')
 
