@@ -19,7 +19,7 @@ import { useMutation } from '@apollo/react-hooks'
 import { UPDATE_SELLER, CREATE_SELLER } from '../../../graphql/mutations'
 import { GET_SELLERS } from '../../../graphql/queries'
 
-const SellerDetailsModal = ({ seller = null, autofocus = true, ...props }) => {
+const SellerDetailsModal = ({ seller = null, autofocus = true, fluid = false, invertedButton = false, ...props }) => {
     const [open, setOpen] = useState(false)
 
     const [updateSellerMutation, { data: sellerMutationData, loading: sellerMutationLoading, error: sellerMutationError }] = useMutation(UPDATE_SELLER);
@@ -83,7 +83,7 @@ const SellerDetailsModal = ({ seller = null, autofocus = true, ...props }) => {
                     query: GET_SELLERS
                 }]
             })
-            notify.show('seller Created/Updated successfully ', 'success')
+            notify.show('Seller Created successfully ', 'success')
         } else {
             console.log('Editing Existing seller: ', seller.uuid);
             updateSellerMutation({
@@ -104,9 +104,10 @@ const SellerDetailsModal = ({ seller = null, autofocus = true, ...props }) => {
                 onCompleted: () => (console.log('COMPLETED UPDATE SELLER: '))
             })
             console.log(formValues)
+            notify.show('Seller Updated successfully ', 'success')
         }
         closeModal()
-        props.history.push('/sellers')
+        // props.history.push('/sellers')
     }
 
     const closeModal = () => {
@@ -125,7 +126,7 @@ const SellerDetailsModal = ({ seller = null, autofocus = true, ...props }) => {
                     <Icon name="edit" onClick={openModal}></Icon>{props.iconLabel}
                 </Button>
             ) : (
-                    <Button compact size="small" onClick={openModal}>New Seller</Button>
+                    <Button compact size="small" fluid={fluid} inverted={invertedButton} onClick={openModal}>New Seller</Button>
                 )}
             <Modal
                 open={open}
@@ -252,15 +253,25 @@ const SellerDetailsModal = ({ seller = null, autofocus = true, ...props }) => {
                 </Modal.Content>
 
                 <Modal.Actions>
-                    <Button onClick={cancel} negative>
-                        Cancel
-                    </Button>
-                    <Button
-                        onClick={save}
-                        positive
-                        loading={sellerMutationLoading}
-                        content={props.edit === true ? 'Save Changes' : 'Create Seller'}
-                    />
+                    <Grid>
+                        <Grid.Row>
+                            <Grid.Column width={8}>
+                                <Button fluid onClick={cancel} negative>
+                                    Cancel
+                                </Button>
+                            </Grid.Column>
+                            <Grid.Column width={8}>
+                                <Button
+                                    onClick={save}
+                                    positive
+                                    fluid
+                                    loading={sellerMutationLoading}
+                                    content={props.edit === true ? 'Save Changes' : 'Create Seller'}
+                                />
+                            </Grid.Column>
+                        </Grid.Row>
+                    </Grid>
+
                 </Modal.Actions>
             </Modal>
             {/* <Responsive as={Fragment} minWidth={768} >
