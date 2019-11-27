@@ -122,6 +122,10 @@ const LoginModal = ({ defaultOpen = false, forcedOpen = false, ...props }) => {
                     setErrorMessage('Password does not match. Please try again.')
                     setAuth(auth => ({ ...auth, loading: false, reAuthenticateRequired: false }))
                     console.log('Bad password', json)
+                } else if (json.MESSAGE === 'Email not confirmed') {
+                    setErrorMessage('The email associated with this account has not been confirmed yet. Please check your email and follow the link provided and then log in again.')
+                    setAuth(auth => ({ ...auth, loading: false, reAuthenticateRequired: false }))
+                    console.log('Email not confirmed', json)
                 }
             }
         }).catch((err) => {
