@@ -32,7 +32,7 @@ import Home from './pages/Home';
 
 import './utils/prototypes'
 
-import { NAVBAR_HEIGHT, FOOTER_HEIGHT } from './constants'
+import { NAVBAR_HEIGHT, FOOTER_HEIGHT, TITLE_HEIGHT } from './constants'
 
 import { defaultFakeData } from './FakeData'
 
@@ -68,15 +68,20 @@ const App = () => {
           <TopNav />
           <GetUserComp />
 
-          <Container as={Segment} fluid="true"
+          <Container as={Segment}
+            fluid="true"
             id="MainContent"
-            style={{ marginTop: `${NAVBAR_HEIGHT}rem`, marginBottom: `${FOOTER_HEIGHT}px` }}
+            style={{ marginTop: NAVBAR_HEIGHT, marginBottom: FOOTER_HEIGHT }}
           >
             <Grid>
-              <Grid.Row className="p0 m0">
+              <Grid.Row className="p0 m0" verticalAlign="middle" style={{ height: TITLE_HEIGHT }}>
                 <Title title={title} ></Title>
               </Grid.Row>
-              <Grid.Row className="p0 m0" >
+              <Grid.Row
+                className="p0 m0"
+                id="ScrollingElement"
+                style={{ height: `calc(100vh - ${NAVBAR_HEIGHT}px - ${FOOTER_HEIGHT}px - ${TITLE_HEIGHT}px - 5px)`, overflowY: "auto", overflowX: "hidden" }}
+              >
                 <Grid.Column width={16} className="p0">
                   <Switch>
                     <PrivateRoute
@@ -120,7 +125,7 @@ const App = () => {
           </Container>
         </AuthContext.Provider>
       </FakeDataContext.Provider>
-    </Router>
+    </Router >
   );
 };
 
