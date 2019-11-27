@@ -27,7 +27,7 @@ const GetUserComp = () => {
         }
     }, [loading, data, auth])
     return (
-        <Fragment>Test</Fragment>
+        <Fragment></Fragment>
     )
 }
 
