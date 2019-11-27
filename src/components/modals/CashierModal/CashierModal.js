@@ -163,14 +163,6 @@ const YardsaleDetailsModal = ({ yardsale = null, autofocus = true, ...props }) =
         setTender(0)
     }
 
-    const unknownSeller = [
-        {
-            key: 0,
-            text: "Unknown Seller",
-            value: 0
-        }
-    ]
-
     useEffect(() => {
         calculateChangeDue()
     }, [tender])
@@ -192,7 +184,6 @@ const YardsaleDetailsModal = ({ yardsale = null, autofocus = true, ...props }) =
                 <Modal.Header>New Sale</Modal.Header>
                 <Modal.Content scrolling>
                     <Grid>
-
                         <Grid.Row columns={2}>
                             <Grid.Column mobile={16} computer={8}>
                                 <Form>
@@ -246,10 +237,10 @@ const YardsaleDetailsModal = ({ yardsale = null, autofocus = true, ...props }) =
                                                                     content: `${seller.initials} (${seller.name})`,
                                                                     value: `${seller.uuid}|${seller.initials} (${seller.name})`,
                                                                 }
-                                                            })).concat(unknownSeller)}
+                                                            }))}
                                                             onChange={(e, { value }) => {
-                                                                console.log('DROPDOWN Value: ', value.split("|"))
-                                                                console.log('DROPDOWN TEXT: ', e.target.textContent)
+                                                                // console.log('DROPDOWN Value: ', value.split("|"))
+                                                                // console.log('DROPDOWN TEXT: ', e.target.textContent)
                                                                 setFormValues({
                                                                     ...formValues, seller: {
                                                                         uuid: value.split("|")[0],
