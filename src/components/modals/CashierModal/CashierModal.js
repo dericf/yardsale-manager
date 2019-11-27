@@ -20,22 +20,23 @@ import { notify } from 'react-notify-toast';
 
 import { FakeDataContext } from '../../../App'
 import { user, sellers } from '../../../FakeData';
-import { toMoney } from '../../../utils/formating'
+import { toMoney, fromMoney } from '../../../utils/formating'
 
 import ConfirmModal from "../generic/ConfirmModal"
-import { GET_SELLERS } from '../../../graphql/queries'
-import { useQuery } from '@apollo/react-hooks';
-
+import { GET_SELLERS, GET_TRANSACTION_ITEMS_FOR_YARDSALE, GET_SELLER_LINKS_FOR_YARDSALE } from '../../../graphql/queries'
+import { CREATE_TRANSACTION_ITEM } from '../../../graphql/mutations'
+import { useQuery, useMutation } from '@apollo/react-hooks';
+import SellerDetailsModal from '../SellerDetailsModal/SellerDetailsModal'
 
 const YardsaleDetailsModal = ({ yardsale = null, autofocus = true, ...props }) => {
     let { fakeData, setFakeData } = React.useContext(FakeDataContext)
     const [open, setOpen] = useState(false)
 
     const [transactionItems, setTransactionItems] = useState([])
-
     const [tender, setTender] = useState(null)
-
     const [changeDue, setChangeDue] = useState(0)
+
+    const [createTransactionItemMutation, { data: createTransactionItemMutationData, loading: createTransactionItemMutationLoading, error: createTransactionItemMutationError }] = useMutation(CREATE_TRANSACTION_ITEM);
 
     const focusRef = useRef()
     useEffect(() => {
@@ -46,7 +47,10 @@ const YardsaleDetailsModal = ({ yardsale = null, autofocus = true, ...props }) =
     }, [open])
 
     const initialFormValues = {
-        sellerID: null,
+        seller: {
+            uuid: null,
+            name: null
+        },
         price: null,
         description: ""
     }
@@ -61,7 +65,7 @@ const YardsaleDetailsModal = ({ yardsale = null, autofocus = true, ...props }) =
     })
 
     const handleInputChange = (event, { value }) => {
-        console.log('Handle Input CHange: ', event, value)
+        // console.log('Handle Input CHange: ', event, value)
         // TODO: Move this to a hook
         const target = event.target;
         const val = value ? value : (target.type === 'checkbox' ? target.checked : target.value)
@@ -75,16 +79,34 @@ const YardsaleDetailsModal = ({ yardsale = null, autofocus = true, ...props }) =
 
     const cancel = () => {
         setFormValues(initialFormValues)
-        close()
+        closeModal()
     }
 
     const save = () => {
         // get the list of yardsales
+        console.log('Full Transaction: ', transactionItems)
+        // closeModal()
+
+        transactionItems.forEach((item) => {
+            createTransactionItemMutation({
+                variables: {
+                    sellerUUID: item.seller.uuid,
+                    yardsaleUUID: yardsale.uuid,
+                    price: String(item.price),
+                    description: item.description
+                },
+                refetchQueries: [
+                    { query: GET_TRANSACTION_ITEMS_FOR_YARDSALE, variables: { yardsaleUUID: yardsale.uuid } },
+                    { query: GET_SELLER_LINKS_FOR_YARDSALE, variables: { yardsaleUUID: yardsale.uuid } }
+                ],
+                awaitRefetchQueries: true
+            })
+        })
         notify.show('Transaction has been saved.', 'success')
-        close()
+        closeModal()
     }
 
-    const close = () => {
+    const closeModal = () => {
         setOpen(false)
     }
 
@@ -96,16 +118,13 @@ const YardsaleDetailsModal = ({ yardsale = null, autofocus = true, ...props }) =
 
     const addItem = () => {
         console.log('FV: ', formValues, sellers)
-        let seller = sellers.find(seller => seller.id === 1)
         setTransactionItems(
             transactionItems.concat([{
-                id: transactionItems.length + 1,
                 seller: {
-                    id: seller.id,
-                    initials: seller.initials,
-                    name: seller.name
+                    uuid: formValues.seller.uuid,
+                    name: formValues.seller.name
                 },
-                price: Number(formValues.price),
+                price: fromMoney(formValues.price),
                 description: formValues.description
             }])
         )
@@ -143,11 +162,19 @@ const YardsaleDetailsModal = ({ yardsale = null, autofocus = true, ...props }) =
         setTender(0)
     }
 
-    const unknownSeller = [{
-        key: 0,
-        text: "Unknown Seller",
-        value: 0
-    }]
+    const unknownSeller = [
+        {
+            key: 0,
+            text: "Unknown Seller",
+            value: 0
+        },
+        {
+            key: 1,
+            text: (<SellerDetailsModal fluid={true} invertedButton={true} />),
+            value: 1,
+            disabled: true
+        }
+    ]
 
     useEffect(() => {
         calculateChangeDue()
@@ -161,7 +188,7 @@ const YardsaleDetailsModal = ({ yardsale = null, autofocus = true, ...props }) =
             </Button>
             <Modal
                 open={open}
-                closeIcon={<Icon name="close" onClick={close}></Icon>}
+                closeIcon={<Icon name="close" onClick={closeModal}></Icon>}
                 closeOnDimmerClick={false}
                 closeOnDocumentClick={false}
                 closeOnEscape={false}
@@ -195,6 +222,7 @@ const YardsaleDetailsModal = ({ yardsale = null, autofocus = true, ...props }) =
                                                     {!sellersLoading && sellersData && sellersData.seller && (
 
                                                         < Dropdown
+                                                            compact
                                                             placeholder='Select a Seller'
                                                             openOnFocus={true}
                                                             name="sellerID"
@@ -211,7 +239,14 @@ const YardsaleDetailsModal = ({ yardsale = null, autofocus = true, ...props }) =
                                                                     value: seller.uuid,
                                                                 }
                                                             })).concat(unknownSeller)}
-                                                            onChange={handleInputChange}
+                                                            onChange={(e, { value }) => {
+                                                                setFormValues({
+                                                                    ...formValues, seller: {
+                                                                        uuid: value,
+                                                                        name: e.target.textContent
+                                                                    }
+                                                                })
+                                                            }}
                                                             className="icon"
 
                                                         />
@@ -283,7 +318,7 @@ const YardsaleDetailsModal = ({ yardsale = null, autofocus = true, ...props }) =
                                             {transactionItems.map(item => {
                                                 return (
                                                     <Table.Row key={item.id}>
-                                                        <Table.Cell textAlign="center">{item.seller.initials}</Table.Cell>
+                                                        <Table.Cell textAlign="center">{item.seller.name}</Table.Cell>
                                                         <Table.Cell textAlign="right">$ {toMoney(item.price)}</Table.Cell>
                                                         <Table.Cell textAlign="left">{item.description}</Table.Cell>
                                                         <Table.Cell textAlign="center">
