@@ -13,13 +13,20 @@ import {
     Header
 } from 'semantic-ui-react'
 
-import {notify} from 'react-notify-toast';
+import { notify } from 'react-notify-toast';
 
-import {FakeDataContext} from '../../../App'
+
+import { useMutation } from '@apollo/react-hooks'
+import { UPDATE_YARDSALE, CREATE_YARDSALE } from '../../../graphql/mutations'
+import { GET_YARDSALES } from '../../../graphql/queries'
+
 const YardsaleDetailsModal = ({ yardsale = null, autofocus = true, ...props }) => {
-    let {fakeData, setFakeData} = React.useContext(FakeDataContext)
+    // let {fakeData, setFakeData} = React.useContext(FakeDataContext)
     const [open, setOpen] = useState(false)
-    
+
+    const [updateYardsaleMutation, { data: updateYardsaleMutationData, loading: updateYardsaleMutationLoading, error: updateYardsaleMutationError }] = useMutation(UPDATE_YARDSALE);
+    const [createYardsaleMutation, { data: createYardsaleMutationData, loading: createYardsaleMutationLoading, error: createYardsaleMutationError }] = useMutation(CREATE_YARDSALE);
+
     const yardsaleNameRef = useRef()
     useEffect(() => {
         if (open === true && autofocus === true) {
@@ -29,7 +36,7 @@ const YardsaleDetailsModal = ({ yardsale = null, autofocus = true, ...props }) =
 
     const initialFormValues = {
         yardsaleName: yardsale ? yardsale.name : '',
-        yardsaleInitials: yardsale ? yardsale.initials: '',
+        yardsaleInitials: yardsale ? yardsale.initials : '',
         yardsaleCompany: yardsale ? yardsale.company : '',
         yardsalePhone: yardsale ? yardsale.phone : '',
         yardsaleEmail: yardsale ? yardsale.email : '',
@@ -38,7 +45,7 @@ const YardsaleDetailsModal = ({ yardsale = null, autofocus = true, ...props }) =
     }
 
     const [formValues, setFormValues] = useState(initialFormValues)
-    
+
     const handleInputChange = (event) => {
         // TODO: Move this to a hook
         const target = event.target;
@@ -53,57 +60,58 @@ const YardsaleDetailsModal = ({ yardsale = null, autofocus = true, ...props }) =
 
     const cancel = () => {
         setFormValues(initialFormValues)
-        close()
+        closeModal()
     }
 
     const save = () => {
         // get the list of yardsales
-        
+
         if (yardsale == null || typeof yardsale == 'undefined') {
             // Create New yardsale
             // GQL Mutation
-        
-            console.log('Creating new yardsale');
-            console.log(formValues)
-            let newYardsales = fakeData.user.yardsales
-            console.log('newYardsales', newYardsales)
-            newYardsales = newYardsales.concat({
-                name: formValues.yardsaleName,
-                initials: formValues.yardsaleInitials,
-                company: formValues.yardsaleCompany,
-                phone: formValues.yardsalePhone,
-                email: formValues.yardsaleEmail,
-                address: formValues.yardsaleAddress,
-                notes: formValues.yardsaleNotes,
-                status: 'active'
+
+            createYardsaleMutation({
+                variables: {
+                    name: formValues.yardsaleName,
+                    phone: formValues.yardsalePhone,
+                    email: formValues.yardsaleEmail,
+                    address: formValues.yardsaleAddress,
+                    notes: formValues.yardsaleNotes
+                },
+                refetchQueries: [{
+                    query: GET_YARDSALES
+                }]
             })
-            
-            console.log('newYardsale After Updater', newYardsales)
-            
-            let newData = {
-                ...fakeData,
-                user: {
-                    ...fakeData.user,
-                    yardsales: newYardsales
-                }
-            }
-            console.log('New Data: ', newYardsales, fakeData.user.yardsales, newData)
-            setFakeData(newData)
-            notify.show('yardsale Created/Updated successfully ', 'success')
-            
+
+            notify.show('yardsale Created successfully ', 'success')
+
         } else {
-            
-            console.log('Editing Existing yardsale: ', yardsale.id);
+            console.log('Editing Existing yardsale: ', yardsale.uuid);
             console.log(formValues)
+            updateYardsaleMutation({
+                variables: {
+                    yardsaleUUID: yardsale.uuid,
+                    name: formValues.yardsaleName,
+                    phone: formValues.yardsalePhone,
+                    email: formValues.yardsaleEmail,
+                    address: formValues.yardsaleAddress,
+                    notes: formValues.yardsaleNotes
+                },
+                refetchQueries: [{
+                    query: GET_YARDSALES
+                }],
+                onCompleted: () => (console.log('COMPLETED UPDATE YARDSALES: '))
+            })
+            notify.show('yardsale Updated successfully ', 'success')
         }
-        close()
+        closeModal()
         props.history.push('/yardsales')
     }
-    
-    const close = () => {
+
+    const closeModal = () => {
         setOpen(false)
     }
-    
+
     const openModal = () => {
         setOpen(true)
     }
@@ -115,12 +123,12 @@ const YardsaleDetailsModal = ({ yardsale = null, autofocus = true, ...props }) =
                 <Button fluid color="blue" fluid onClick={openModal} >
                     <Icon name="edit" onClick={openModal}></Icon>{props.iconLabel}
                 </Button>
-                ) : (
+            ) : (
                     <Button compact size="small" onClick={openModal}>New Yardsale</Button>
                 )}
             <Modal
                 open={open}
-                closeIcon={<Icon name="close" onClick={close}></Icon>}
+                closeIcon={<Icon name="close" onClick={closeModal}></Icon>}
                 closeOnDimmerClick={false}
                 closeOnDocumentClick={false}
                 closeOnEscape={false}
@@ -158,16 +166,16 @@ const YardsaleDetailsModal = ({ yardsale = null, autofocus = true, ...props }) =
 
                                     <Form.Field width="7">
                                         <label>Yardsale Company</label>
-                                        <Input 
+                                        <Input
                                             icon="building"
                                             iconPosition="left"
                                             placeholder='yardsale Company'
                                             name="yardsaleCompany"
                                             value={formValues.yardsaleCompany}
                                             onChange={handleInputChange}
-                                            />
+                                        />
                                     </Form.Field>
-                                        
+
 
                                 </Form.Group>
                             </Grid.Column>
@@ -178,7 +186,7 @@ const YardsaleDetailsModal = ({ yardsale = null, autofocus = true, ...props }) =
                                 <Form.Group widths="equal">
                                     <Form.Field>
                                         <label>Phone</label>
-                                        <Input 
+                                        <Input
                                             icon="phone"
                                             iconPosition="left"
                                             placeholder='Phone'
@@ -188,11 +196,11 @@ const YardsaleDetailsModal = ({ yardsale = null, autofocus = true, ...props }) =
                                             onChange={handleInputChange}
                                         />
                                     </Form.Field>
-                                        
+
 
                                     <Form.Field>
                                         <label>Email</label>
-                                        <Input 
+                                        <Input
                                             icon="envelope"
                                             iconPosition="left"
                                             placeholder='Email'
@@ -212,7 +220,7 @@ const YardsaleDetailsModal = ({ yardsale = null, autofocus = true, ...props }) =
                                 <Form.Group widths="equal" >
                                     <Form.Field>
                                         <label>Address</label>
-                                        <TextArea 
+                                        <TextArea
                                             icon="address card"
                                             iconPosition="left"
                                             placeholder='Address'
@@ -225,7 +233,7 @@ const YardsaleDetailsModal = ({ yardsale = null, autofocus = true, ...props }) =
 
                                     <Form.Field>
                                         <label>Notes</label>
-                                        <TextArea 
+                                        <TextArea
                                             icon="sticky note"
                                             iconPosition="left"
                                             placeholder='Notes'
