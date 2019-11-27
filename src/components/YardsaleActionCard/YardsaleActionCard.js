@@ -12,6 +12,7 @@ import {
 
 import YardsaleDetailsModal from '../modals/YardsaleDetailsModal/YardsaleDetailsModal'
 import YardsaleTransactionsModal from '../modals/YardsaleTransactionsModal/YardsaleTransactionsModal'
+import YardsaleSellerModal from '../modals/YardsaleSellerModal/YardsaleSellerModal'
 import CashierModal from '../modals/CashierModal/CashierModal'
 import ConfirmModal from '../modals/generic/ConfirmModal'
 
@@ -57,10 +58,13 @@ const YardsaleActions = ({ yardsale }) => {
                     </Grid.Column>
                 </Grid.Row>
                 <Grid.Row className="py0">
-                    <Grid.Column computer={16} mobile={16} style={{ paddingTop: 14 }}>
+                    <Grid.Column computer={8} mobile={16} style={{ paddingTop: 14 }}>
+                        {/* <Button color="green" fluid ><Icon name="dollar"></Icon> Transaction History</Button> */}
+                        <YardsaleSellerModal yardsale={yardsale} iconLabel="Sellers" />
+                    </Grid.Column>
+                    <Grid.Column computer={8} mobile={16} style={{ paddingTop: 14 }}>
                         {/* <Button color="green" fluid ><Icon name="dollar"></Icon> Transaction History</Button> */}
                         <YardsaleTransactionsModal yardsale={yardsale} iconLabel="Transaction History" />
-
                     </Grid.Column>
                 </Grid.Row>
                 <Grid.Row className="py0">
