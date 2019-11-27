@@ -361,10 +361,8 @@ const YardsaleDetailsModal = ({ yardsale = null, autofocus = true, ...props }) =
                             <Grid.Column>
 
                                 <ConfirmModal
-                                    trigger={() => (
-                                        <Button negative fluid>
-                                            Cancel
-                                        </Button>)}
+                                    triggerType={"button"}
+                                    buttonProps={{ content: "Cancel", fluid: true, negative: true }}
                                     header={"Confirm"}
                                     content={"Are you sure you want to cancel this transaction?"}
                                     handleConfirm={() => (cancel())}
