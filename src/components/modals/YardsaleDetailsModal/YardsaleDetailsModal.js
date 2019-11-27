@@ -154,15 +154,7 @@ const YardsaleDetailsModal = ({ yardsale = null, autofocus = true, ...props }) =
                                         />
 
                                     </Form.Field >
-                                    <Form.Field width="2">
-                                        <label>Initials</label>
-                                        <Input
-                                            name="yardsaleInitials"
-                                            value={formValues.yardsaleInitials}
-                                            onChange={handleInputChange}
-                                        />
 
-                                    </Form.Field >
 
                                     <Form.Field width="7">
                                         <label>Yardsale Company</label>
