@@ -42,9 +42,11 @@ const ConfirmModal = ({ triggerType = 'button', disabled = false, buttonProps = 
                 <Modal.Header>{header}</Modal.Header>
                 <Modal.Content>
                     {warningMessage && (
-                        <Message content={warningMessage} negative />
+                        <Fragment>
+                            <Message content={warningMessage} negative />
+                            <Divider horizontal />
+                        </Fragment>
                     )}
-                    <Divider horizontal />
                     {content}
                 </Modal.Content>
                 <Modal.Actions>
