@@ -90,3 +90,15 @@ mutation updateYardsale($yardsaleUUID: uuid!) {
 }`
 
 
+
+//
+// Transaction Item
+//
+export const CREATE_TRANSACTION_ITEM = gql`
+mutation CreateTransactionItem($sellerUUID: uuid, $description: String, $price: money, $yardsaleUUID: uuid!) {
+  insert_transaction(objects: {description: $description, price: $price, seller_uuid: $sellerUUID, yardsale_uuid: $yardsaleUUID}) {
+    returning {
+      uuid
+    }
+  }
+}`
