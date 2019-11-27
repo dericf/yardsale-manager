@@ -55,6 +55,7 @@ const jwtDecode = require('jwt-decode')
 const authLink = setContext((_, { headers }) => {
   const token = localStorage.getItem('accessToken')
   let jwt = jwtDecode(token)
+  // TODO: IMPORTANT: check if token is expired here. If it is -> use refresh token to get another. 
   return {
     headers: {
       ...headers,
