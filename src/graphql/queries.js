@@ -25,7 +25,7 @@ query GetUser {
 // (permission: for the current user)
 export const GET_SELLERS = gql`
 query GetSellers {
-    seller {
+    seller(where: {is_deleted: {_eq: false}}, order_by: {name: asc}) {
         address_text
         email
         initials
@@ -37,6 +37,8 @@ query GetSellers {
         updated_at
         user_uuid
         uuid
+        company
+        is_user_link
     }
 }`
 
@@ -57,6 +59,8 @@ query GetSeller($uuid: uuid!) {
         updated_at
         user_uuid
         uuid
+        company
+        is_user_link
     }
 }
 `
