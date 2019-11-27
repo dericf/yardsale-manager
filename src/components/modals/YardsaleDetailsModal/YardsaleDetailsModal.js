@@ -104,6 +104,7 @@ const YardsaleDetailsModal = ({ yardsale = null, autofocus = true, ...props }) =
             })
             notify.show('yardsale Updated successfully ', 'success')
         }
+        setFormValues(initialFormValues)
         closeModal()
         props.history.push('/yardsales')
     }
@@ -141,7 +142,7 @@ const YardsaleDetailsModal = ({ yardsale = null, autofocus = true, ...props }) =
                         <Grid.Row className="pb0">
                             <Grid.Column>
                                 <Form.Group >
-                                    <Form.Field width="7">
+                                    <Form.Field width="8">
                                         <label>Yardsale Name</label>
                                         <Input
                                             icon="user"
@@ -156,7 +157,7 @@ const YardsaleDetailsModal = ({ yardsale = null, autofocus = true, ...props }) =
                                     </Form.Field >
 
 
-                                    <Form.Field width="7">
+                                    <Form.Field width="8">
                                         <label>Yardsale Company</label>
                                         <Input
                                             icon="building"
@@ -243,14 +244,24 @@ const YardsaleDetailsModal = ({ yardsale = null, autofocus = true, ...props }) =
                 </Modal.Content>
 
                 <Modal.Actions>
-                    <Button onClick={cancel} negative>
-                        Cancel
-                    </Button>
-                    <Button
-                        onClick={save}
-                        positive
-                        content={props.edit === true ? 'Save Changes' : 'Create Yardsale'}
-                    />
+                    <Grid centered>
+                        <Grid.Row>
+                            <Grid.Column width={8}>
+                                <Button fluid onClick={cancel} negative>
+                                    Cancel
+                                </Button>
+                            </Grid.Column>
+                            <Grid.Column width={8}>
+                                <Button
+                                    fluid
+                                    onClick={save}
+                                    positive
+                                    content={props.edit === true ? 'Save Changes' : 'Create Yardsale'}
+                                />
+                            </Grid.Column>
+                        </Grid.Row>
+                    </Grid>
+
                 </Modal.Actions>
             </Modal>
             {/* <Responsive as={Fragment} minWidth={768} >
