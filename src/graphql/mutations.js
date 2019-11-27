@@ -102,3 +102,31 @@ mutation CreateTransactionItem($sellerUUID: uuid, $description: String, $price: 
     }
   }
 }`
+
+
+//
+// Create Yardsale Seller Link
+//
+export const CREATE_YARDSALE_SELLER_LINK = gql`
+mutation CreateYardsaleSellerLink($sellerUUID: uuid!, $yardsaleUUID: uuid!) {
+  insert_yardsale_seller_link(objects: {seller_uuid: $sellerUUID, yardsale_uuid: $yardsaleUUID}) {
+    returning {
+      uuid
+    }
+  }
+}`
+
+
+//
+// Delete Yardsale Seller Link
+//
+export const DELETE_YARDSALE_SELLER_LINK = gql`
+mutation DeleteYardsaleSellerLink($UUID: uuid!) {
+  delete_yardsale_seller_link(where: {uuid: {_eq: $UUID}}) {
+    returning {
+      uuid
+    }
+  }
+}
+`
+
