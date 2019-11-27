@@ -13,13 +13,18 @@ import {
     Header
 } from 'semantic-ui-react'
 
-import {notify} from 'react-notify-toast';
+import { notify } from 'react-notify-toast';
 
-import {FakeDataContext} from '../../../App'
+import { useMutation } from '@apollo/react-hooks'
+import { UPDATE_SELLER, CREATE_SELLER } from '../../../graphql/mutations'
+import { GET_SELLERS } from '../../../graphql/queries'
+
 const SellerDetailsModal = ({ seller = null, autofocus = true, ...props }) => {
-    let {fakeData, setFakeData} = React.useContext(FakeDataContext)
     const [open, setOpen] = useState(false)
-    
+
+    const [updateSellerMutation, { data: sellerMutationData, loading: sellerMutationLoading, error: sellerMutationError }] = useMutation(UPDATE_SELLER);
+    const [createSellerMutation, { data: createSellerMutationData, loading: createSellerMutationLoading, error: createSellerMutationError }] = useMutation(CREATE_SELLER);
+
     const sellerNameRef = useRef()
     useEffect(() => {
         if (open === true && autofocus === true) {
@@ -29,16 +34,16 @@ const SellerDetailsModal = ({ seller = null, autofocus = true, ...props }) => {
 
     const initialFormValues = {
         sellerName: seller ? seller.name : '',
-        sellerInitials: seller ? seller.initials: '',
+        sellerInitials: seller ? seller.initials : '',
         sellerCompany: seller ? seller.company : '',
         sellerPhone: seller ? seller.phone : '',
         sellerEmail: seller ? seller.email : '',
-        sellerAddress: seller ? seller.address : '',
+        sellerAddress: seller ? seller.address_text : '',
         sellerNotes: seller ? seller.notes : ''
     }
 
     const [formValues, setFormValues] = useState(initialFormValues)
-    
+
     const handleInputChange = (event) => {
         // TODO: Move this to a hook
         const target = event.target;
@@ -53,58 +58,61 @@ const SellerDetailsModal = ({ seller = null, autofocus = true, ...props }) => {
 
     const cancel = () => {
         setFormValues(initialFormValues)
-        close()
+        closeModal()
     }
 
     const save = () => {
-        // get the list of sellers
-        
+        // 
+        // This function either creates a new seller (if seller === null)
+        // OR updates an existing seller
+        //
         if (seller == null || typeof seller == 'undefined') {
             // Create New seller
-            // GQL Mutation
-        
-            console.log('Creating new seller');
-            console.log(formValues)
-            let newSellers = fakeData.user.sellers
-            console.log('newSellers', newSellers)
-            newSellers = newSellers.concat({
-                name: formValues.sellerName,
-                initials: formValues.sellerInitials,
-                company: formValues.sellerCompany,
-                phone: formValues.sellerPhone,
-                email: formValues.sellerEmail,
-                address: formValues.sellerAddress,
-                notes: formValues.sellerNotes,
-                status: 'active'
+            createSellerMutation({
+                variables: {
+                    name: formValues.sellerName,
+                    initials: formValues.sellerInitials,
+                    company: formValues.sellerCompany,
+                    phone: formValues.sellerPhone,
+                    email: formValues.sellerEmail,
+                    address: formValues.sellerAddress,
+                    notes: formValues.sellerNotes,
+                },
+                onError: (err) => console.log('Error Updating Seller', err),
+                refetchQueries: [{
+                    query: GET_SELLERS
+                }]
             })
-            
-            console.log('newSeller After Updater', newSellers)
-            
-            let newData = {
-                ...fakeData,
-                user: {
-                    ...fakeData.user,
-                    sellers: newSellers,
-                    yardsales: {...fakeData.user.yardsales}
-                }
-            }
-            console.log('New Data: ', newSellers, fakeData.user.sellers, newData)
-            setFakeData(newData)
             notify.show('seller Created/Updated successfully ', 'success')
-            
         } else {
-            
-            console.log('Editing Existing seller: ', seller.id);
+            console.log('Editing Existing seller: ', seller.uuid);
+            updateSellerMutation({
+                variables: {
+                    sellerUUID: seller.uuid,
+                    name: formValues.sellerName,
+                    initials: formValues.sellerInitials,
+                    company: formValues.sellerCompany,
+                    phone: formValues.sellerPhone,
+                    email: formValues.sellerEmail,
+                    address: formValues.sellerAddress,
+                    notes: formValues.sellerNotes,
+                },
+                onError: (err) => console.log('Error Updating Seller', err),
+                refetchQueries: [{
+                    query: GET_SELLERS
+                }],
+                onCompleted: () => (console.log('COMPLETED UPDATE SELLER: '))
+            })
             console.log(formValues)
         }
-        close()
+        closeModal()
         props.history.push('/sellers')
     }
-    
-    const close = () => {
+
+    const closeModal = () => {
         setOpen(false)
     }
-    
+
     const openModal = () => {
         setOpen(true)
     }
@@ -116,12 +124,12 @@ const SellerDetailsModal = ({ seller = null, autofocus = true, ...props }) => {
                 <Button fluid color="blue" fluid onClick={openModal} >
                     <Icon name="edit" onClick={openModal}></Icon>{props.iconLabel}
                 </Button>
-                ) : (
+            ) : (
                     <Button compact size="small" onClick={openModal}>New Seller</Button>
                 )}
             <Modal
                 open={open}
-                closeIcon={<Icon name="close" onClick={close}></Icon>}
+                closeIcon={<Icon name="close" onClick={closeModal}></Icon>}
                 closeOnDimmerClick={false}
                 closeOnDocumentClick={false}
                 closeOnEscape={false}
@@ -130,7 +138,7 @@ const SellerDetailsModal = ({ seller = null, autofocus = true, ...props }) => {
                 <Modal.Header>{seller ? "Edit Seller Details" : "Create New Seller"}</Modal.Header>
                 <Modal.Content>
 
-                    <Form as={Grid} className="p0 m0">
+                    <Form as={Grid} className="p0 m0" loading={sellerMutationLoading}>
                         <Grid.Row className="pb0">
                             <Grid.Column>
                                 <Form.Group >
@@ -159,16 +167,16 @@ const SellerDetailsModal = ({ seller = null, autofocus = true, ...props }) => {
 
                                     <Form.Field width="7">
                                         <label>Seller Company</label>
-                                        <Input 
+                                        <Input
                                             icon="building"
                                             iconPosition="left"
                                             placeholder='seller Company'
                                             name="sellerCompany"
                                             value={formValues.sellerCompany}
                                             onChange={handleInputChange}
-                                            />
+                                        />
                                     </Form.Field>
-                                        
+
 
                                 </Form.Group>
                             </Grid.Column>
@@ -179,7 +187,7 @@ const SellerDetailsModal = ({ seller = null, autofocus = true, ...props }) => {
                                 <Form.Group widths="equal">
                                     <Form.Field>
                                         <label>Phone</label>
-                                        <Input 
+                                        <Input
                                             icon="phone"
                                             iconPosition="left"
                                             placeholder='Phone'
@@ -189,11 +197,11 @@ const SellerDetailsModal = ({ seller = null, autofocus = true, ...props }) => {
                                             onChange={handleInputChange}
                                         />
                                     </Form.Field>
-                                        
+
 
                                     <Form.Field>
                                         <label>Email</label>
-                                        <Input 
+                                        <Input
                                             icon="envelope"
                                             iconPosition="left"
                                             placeholder='Email'
@@ -213,7 +221,7 @@ const SellerDetailsModal = ({ seller = null, autofocus = true, ...props }) => {
                                 <Form.Group widths="equal" >
                                     <Form.Field>
                                         <label>Address</label>
-                                        <TextArea 
+                                        <TextArea
                                             icon="address card"
                                             iconPosition="left"
                                             placeholder='Address'
@@ -226,7 +234,7 @@ const SellerDetailsModal = ({ seller = null, autofocus = true, ...props }) => {
 
                                     <Form.Field>
                                         <label>Notes</label>
-                                        <TextArea 
+                                        <TextArea
                                             icon="sticky note"
                                             iconPosition="left"
                                             placeholder='Notes'
@@ -250,6 +258,7 @@ const SellerDetailsModal = ({ seller = null, autofocus = true, ...props }) => {
                     <Button
                         onClick={save}
                         positive
+                        loading={sellerMutationLoading}
                         content={props.edit === true ? 'Save Changes' : 'Create Seller'}
                     />
                 </Modal.Actions>
