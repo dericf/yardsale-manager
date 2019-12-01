@@ -11,6 +11,7 @@ import {
 
 
 import SellerDetailsModal from '../modals/SellerDetailsModal/SellerDetailsModal'
+import SellerTransactionsModal from '../modals/SellerTransactionsModal/SellerTransactionsModal'
 import ConfirmModal from '../modals/generic/ConfirmModal'
 
 import { notify } from 'react-notify-toast';
@@ -24,17 +25,19 @@ import { useMutation } from '@apollo/react-hooks'
 
 const SellerActions = ({ seller }) => {
 
-    const [deleteSellerMutation, { loading: deleteSellerLoading, error: deleteSellerError }] = useMutation(DELETE_SELLER, {
-        variables: {
-            sellerUUID: seller.uuid
-        },
-        refetchQueries: [{
-            query: GET_SELLERS
-        }]
-    })
+    const [deleteSellerMutation, { loading: deleteSellerLoading, error: deleteSellerError }] = useMutation(DELETE_SELLER)
 
     const confirmDeactivateSeller = () => {
-        deleteSellerMutation()
+        deleteSellerMutation(
+            {
+                variables: {
+                    sellerUUID: seller.uuid
+                },
+                refetchQueries: [{
+                    query: GET_SELLERS
+                }]
+            }
+        )
     }
     return (
         <Fragment>
@@ -45,9 +48,11 @@ const SellerActions = ({ seller }) => {
                         <SellerDetailsModal edit={true} seller={seller} iconLabel="Edit Details" ></SellerDetailsModal>
                     </Grid.Column>
                     <Grid.Column computer={8} mobile={16} style={{ paddingTop: 14 }}>
-                        <Button color="green" fluid ><Icon name="dollar"></Icon> Transactions</Button>
+                        {/* <Button color="green" fluid ><Icon name="dollar"></Icon> Transaction History</Button> */}
+                        <SellerTransactionsModal seller={seller} iconLabel="Transaction History" />
                     </Grid.Column>
                 </Grid.Row>
+
                 <Grid.Row>
                     <Grid.Column computer={16} mobile={16}>
                         <ConfirmModal
