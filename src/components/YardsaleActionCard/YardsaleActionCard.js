@@ -17,28 +17,25 @@ import CashierModal from '../modals/CashierModal/CashierModal'
 import ConfirmModal from '../modals/generic/ConfirmModal'
 
 import { notify } from 'react-notify-toast';
-import { FakeDataContext } from '../../App'
-
-// Apollo/GQL
-// import { useMutation, useQuery } from '@apollo/react-hooks';
-
-// import { GET_CLIENTS } from '../gql/queries'
-// import { DEACTIVATE_CLIENT } from '../gql/mutations'
+import { DELETE_YARDSALE } from '../../graphql/mutations'
+import { GET_YARDSALES } from '../../graphql/queries'
+import { useMutation } from '@apollo/react-hooks'
 
 const YardsaleActions = ({ yardsale }) => {
-    let { fakeData, setFakeData } = React.useContext(FakeDataContext)
+
+    const [deleteYardsaleMutation, { loading: deleteYardsaleLoading, error: deleteYardsaleError }] = useMutation(DELETE_YARDSALE, {
+
+    })
 
     const confirmDeactivateYardsale = () => {
-
-        let newData = {
-            ...fakeData,
-            user: {
-                ...fakeData.user,
-                yardsales: { ...fakeData.user.yardsales }
-            }
-        }
-        console.log('New Data: ', newData)
-        setFakeData(newData)
+        deleteYardsaleMutation({
+            variables: {
+                yardsaleUUID: yardsale.uuid
+            },
+            refetchQueries: [{
+                query: GET_YARDSALES
+            }]
+        })
     }
 
     const cashierMode = () => {
@@ -72,7 +69,6 @@ const YardsaleActions = ({ yardsale }) => {
                         <ConfirmModal
                             buttonProps={{ icon: "trash", content: "Remove", fluid: true, negative: true }}
                             handleConfirm={() => {
-                                ///HERE
                                 confirmDeactivateYardsale()
                             }}
                             handleCancel={() => console.log('cancel')}
