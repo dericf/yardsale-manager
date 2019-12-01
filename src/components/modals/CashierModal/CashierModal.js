@@ -59,10 +59,7 @@ const YardsaleDetailsModal = ({ yardsale = null, autofocus = true, ...props }) =
     const [formValues, setFormValues] = useState(initialFormValues)
 
     const { loading: sellersLoading, error: sellersError, data: sellersData } = useQuery(GET_SELLERS, {
-        onError: () => console.log('ERROR WITH QUERY'),
-        onCompleted: (data) => {
-            console.log('SELLER DATA: ', data)
-        }
+        onError: () => console.log('ERROR WITH QUERY')
     })
 
     const handleInputChange = (event, { value }) => {
@@ -161,7 +158,6 @@ const YardsaleDetailsModal = ({ yardsale = null, autofocus = true, ...props }) =
     }
 
     const calculateChangeDue = () => {
-        console.log('Tender: ', tender)
         if (tender != null && tender > 0) {
             setChangeDue(toMoney(Number(tender) - Number(calculateRunningTotal())))
         } else {

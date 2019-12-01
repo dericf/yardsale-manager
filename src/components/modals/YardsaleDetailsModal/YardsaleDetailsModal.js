@@ -86,8 +86,6 @@ const YardsaleDetailsModal = ({ yardsale = null, autofocus = true, ...props }) =
             notify.show('yardsale Created successfully ', 'success')
 
         } else {
-            console.log('Editing Existing yardsale: ', yardsale.uuid);
-            console.log(formValues)
             updateYardsaleMutation({
                 variables: {
                     yardsaleUUID: yardsale.uuid,
@@ -99,8 +97,7 @@ const YardsaleDetailsModal = ({ yardsale = null, autofocus = true, ...props }) =
                 },
                 refetchQueries: [{
                     query: GET_YARDSALES
-                }],
-                onCompleted: () => (console.log('COMPLETED UPDATE YARDSALES: '))
+                }]
             })
             notify.show('yardsale Updated successfully ', 'success')
         }

@@ -85,7 +85,7 @@ const SellerDetailsModal = ({ seller = null, autofocus = true, fluid = false, in
             })
             notify.show('Seller Created successfully ', 'success')
         } else {
-            console.log('Editing Existing seller: ', seller.uuid);
+            // console.log('Editing Existing seller: ', seller.uuid);
             updateSellerMutation({
                 variables: {
                     sellerUUID: seller.uuid,
@@ -100,10 +100,9 @@ const SellerDetailsModal = ({ seller = null, autofocus = true, fluid = false, in
                 onError: (err) => console.log('Error Updating Seller', err),
                 refetchQueries: [{
                     query: GET_SELLERS
-                }],
-                onCompleted: () => (console.log('COMPLETED UPDATE SELLER: '))
+                }]
             })
-            console.log(formValues)
+            // console.log(formValues)
             notify.show('Seller Updated successfully ', 'success')
         }
         closeModal()

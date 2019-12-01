@@ -12,11 +12,11 @@ export const auth = {
     role: ""
   },
   login: (auth, setAuth) => {
-    console.log('Login User Here')
+    // console.log('Login User Here')
     return
   },
   logout: (auth, setAuth) => {
-    console.log('Logout User Here')
+    // console.log('Logout User Here')
     localStorage.removeItem('accessToken')
     setAuth({ ...auth, isAuthenticated: false, loading: false })
     window.location.assign('/')

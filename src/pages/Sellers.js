@@ -34,7 +34,6 @@ const Sellers = ({ setTitle }) => {
             if (data == null || typeof data == 'undefined') {
                 return false
             }
-            console.log('SELLERS FROM QUERY: ', data)
             // setFetchUser(false)
             // client.writeData({ user: data["user"][0] })
             return true

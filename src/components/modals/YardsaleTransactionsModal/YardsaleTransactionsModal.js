@@ -35,7 +35,6 @@ const YardsaleTransactionsModal = ({ yardsale, iconLabel, ...props }) => {
             if (data == null || typeof data == 'undefined') {
                 return false
             }
-            console.log('TRANSACTION FROM QUERY: ', data["transaction"])
             return true
         }
     })
@@ -51,7 +50,6 @@ const YardsaleTransactionsModal = ({ yardsale, iconLabel, ...props }) => {
             if (data == null || typeof data == 'undefined') {
                 return false
             }
-            console.log('TRANSACTION Links FROM QUERY: ', data["yardsale_seller_link"])
             return true
         }
     })

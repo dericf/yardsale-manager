@@ -34,7 +34,6 @@ const refreshAccessToken = (auth, setAuth, history) => {
   ).then(res => (
     res.json()
   )).then(json => {
-    console.log('JSON: ', json)
     if (json.STATUS === 'OK' && json.newToken && json.newToken !== "") {
       localStorage.setItem('accessToken', json.newToken)
     } else if (json.STATUS == 'ERROR' && json.MESSAGE == 'refresh token expired') {
@@ -53,7 +52,6 @@ const PrivateRoute = ({ component: Component, path, ...rest }) => {
   // TEMPORARY: Overriding for prototyping
   const loading = false
   const isAuthenticated = false
-  // console.log('REST of props for private route: ', rest)
   useEffect(() => {
     setAuth({ ...auth, loading: true })
     if (localStorage.getItem('accessToken') == 'undefined') {
@@ -66,17 +64,13 @@ const PrivateRoute = ({ component: Component, path, ...rest }) => {
       setAuth({ ...auth, loading: false })
       return;
     }
-    // console.log('PATH: ', path)
-    // console.log('Token: ', localStorage.getItem('accessToken'))
     let token = localStorage.getItem('accessToken')
     if (!token || typeof token === 'undefined') {
-      console.log('NO TOKEN!')
       rest.history.push('/login')
     } else {
       let jwt = jwtDecode(token)
-      // console.log('DECODED TOKEN: ', jwt)
       if (typeof jwt.exp === 'undefined') {
-        console.log('ERROR! TOKEN NEVER EXPIRES! ')
+        // console.log('ERROR! TOKEN NEVER EXPIRES! ')
       }
 
       //
@@ -85,7 +79,7 @@ const PrivateRoute = ({ component: Component, path, ...rest }) => {
       let current_time = Date.now().valueOf() / 1000;
       if (jwt.exp < current_time) {
         // Expired
-        console.log('TOKEN IS EXPIRED!')
+        // console.log('TOKEN IS EXPIRED!')
         refreshAccessToken(auth, setAuth, rest.history)
       }
       //
@@ -97,7 +91,6 @@ const PrivateRoute = ({ component: Component, path, ...rest }) => {
       // await loginWithRedirect({
       //   appState: { targetUrl: path }
       // });
-      // console.log('FN Async func running')
     };
     fn();
   }, [loading, auth.isAuthenticated, path]);

@@ -98,7 +98,6 @@ const RegisterModal = ({ defaultOpen = false, forcedOpen = false, ...props }) =>
         ).then(res => {
             return res.json()
         }).then(json => {
-            console.log('JSON: ', json)
             if (json.STATUS === 'OK' && json.token !== "" && json.refreshToken != "") {
                 localStorage.removeItem('accessToken')
                 localStorage.removeItem('refreshToken')
@@ -108,16 +107,16 @@ const RegisterModal = ({ defaultOpen = false, forcedOpen = false, ...props }) =>
                 props.history.push('/sellers')
                 closeModal()
             } else if (json.STATUS === 'ERROR') {
-                console.log('Bad Login Credentials', json)
+                // console.log('Bad Login Credentials', json)
                 if (json.MESSAGE === 'An account with that email already exists. Please try again.') {
-                    console.log('Account with that email already exists', json)
+                    // console.log('Account with that email already exists', json)
                     setAuth(auth => ({ ...auth, loading: false, reAuthenticateRequired: false }))
                     autoFocusRef.current.focus()
                     setErrorMessage('An account with that email already exists. Please try again.')
                 }
             }
         }).catch((err) => {
-            console.log('ERROR', err)
+            // console.log('ERROR', err)
             setErrorMessage('There was a problem on our end. Please try again later.')
             setAuth(auth => ({ ...auth, loading: false }))
         })

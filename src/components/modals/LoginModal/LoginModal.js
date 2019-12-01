@@ -99,10 +99,10 @@ const LoginModal = ({ defaultOpen = false, forcedOpen = false, ...props }) => {
                 body: JSON.stringify(data)
             }
         ).then(res => {
-            console.log("Login Response is: ", res)
+            // console.log("Login Response is: ", res)
             return res.json()
         }).then(json => {
-            console.log('JSON: ', json)
+            // console.log('JSON: ', json)
             if (json.STATUS === 'OK' && json.token !== "" && json.refreshToken != "") {
                 localStorage.setItem('accessToken', json.token)
                 localStorage.setItem('refreshToken', json.refreshToken)
@@ -113,9 +113,9 @@ const LoginModal = ({ defaultOpen = false, forcedOpen = false, ...props }) => {
                 // window.location.assign(json.callback)
                 closeModal()
             } else if (json.STATUS === 'ERROR') {
-                console.log('Bad Login Credentials', json)
+                // console.log('Bad Login Credentials', json)
                 if (json.MESSAGE === 'User not found') {
-                    console.log('User not found', json)
+                    // console.log('User not found', json)
                     setAuth(auth => ({ ...auth, loading: false, reAuthenticateRequired: false }))
                     // setValues(prev => ({ ...prev, email: "" }))
                     autoFocusRef.current.focus()
@@ -123,15 +123,15 @@ const LoginModal = ({ defaultOpen = false, forcedOpen = false, ...props }) => {
                 } else if (json.MESSAGE === 'Wrong password') {
                     setErrorMessage('Password does not match. Please try again.')
                     setAuth(auth => ({ ...auth, loading: false, reAuthenticateRequired: false }))
-                    console.log('Bad password', json)
+                    // console.log('Bad password', json)
                 } else if (json.MESSAGE === 'Email not confirmed') {
                     setErrorMessage('The email associated with this account has not been confirmed yet. Please check your email and follow the link provided and then log in again.')
                     setAuth(auth => ({ ...auth, loading: false, reAuthenticateRequired: false }))
-                    console.log('Email not confirmed', json)
+                    // console.log('Email not confirmed', json)
                 }
             }
         }).catch((err) => {
-            console.log('ERROR', err)
+            // console.log('ERROR', err)
             setErrorMessage('There was a problem on our end. Please try again later.')
             setAuth(auth => ({ ...auth, loading: false }))
         })

@@ -40,7 +40,6 @@ const Yardsales = ({ setTitle }) => {
             if (data == null || typeof data == 'undefined') {
                 return false
             }
-            console.log('YARDSALES FROM QUERY: ', data)
             return true
         }
     })

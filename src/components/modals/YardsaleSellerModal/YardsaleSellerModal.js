@@ -40,7 +40,7 @@ const YardsaleTransactionsModal = ({ yardsale, iconLabel, invertedButton = false
             if (data == null || typeof data == 'undefined') {
                 return false
             }
-            console.log('TRANSACTION FROM QUERY: ', data["transaction"])
+            // console.log('TRANSACTION FROM QUERY: ', data["transaction"])
             return true
         }
     })
@@ -67,7 +67,6 @@ const YardsaleTransactionsModal = ({ yardsale, iconLabel, invertedButton = false
 
 
     const deleteLink = (link) => {
-        console.log('Deleting: ', link)
         createYardsaleSellerLink({
             variables: {
                 UUID: link.uuid
@@ -84,7 +83,6 @@ const YardsaleTransactionsModal = ({ yardsale, iconLabel, invertedButton = false
     }
 
     const createLink = (seller) => {
-        console.log('Creating link for: ', seller)
         createYardsaleSellerLink({
             variables: {
                 sellerUUID: seller.uuid,
@@ -102,22 +100,15 @@ const YardsaleTransactionsModal = ({ yardsale, iconLabel, invertedButton = false
     }
 
     const sellersToBeAdded = (all_sellers, existing_seller_links) => {
-        // console.log("all sellers: ", all_sellers)
-        // console.log("Existing Sellers: ", existing_seller_links)
         const newList = all_sellers.filter((seller) => {
             let linkExists = false
             existing_seller_links.forEach((link) => {
-                // console.log('Comparing Sellers:')
-                // console.log('link.seller', link.seller.uuid)
-                console.log('seller', seller.uuid)
                 if (link.seller.uuid === seller.uuid) {
-                    console.log('Found Match: ', seller, link.seller)
                     linkExists = true
                 }
             })
             return !linkExists
         })
-        console.log('newList', newList)
         return newList
     }
 
