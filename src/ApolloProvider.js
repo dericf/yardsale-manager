@@ -19,16 +19,16 @@ const httpLink = createHttpLink({
 
 
 const authLink = setContext((_, { headers }) => {
-  console.log('GETTING AUTH TOKEN: ', localStorage.getItem('idToken'))
+  // console.log('GETTING AUTH TOKEN: ', localStorage.getItem('idToken'))
   // get the authentication token from local storage if it exists
   const token = localStorage.getItem('idToken');
   // return the headers to the context so httpLink can read them
   return {
     headers: {
-        ...headers,
-        authorization: token ? `Bearer ${token}` : "",
-        'X-Hasura-Access-Key': 'JIHDALWhF*&#&(R#@@*(GDSF#',
-        'X-Hasura-Role': 'user'
+      ...headers,
+      authorization: token ? `Bearer ${token}` : "",
+      'X-Hasura-Access-Key': 'JIHDALWhF*&#&(R#@@*(GDSF#',
+      'X-Hasura-Role': 'user'
     }
   }
 });
@@ -60,8 +60,8 @@ export const client = new ApolloClient({
   cache: new InMemoryCache()
 })
 
-export default ( 
+export default (
   <ApolloProvider client={client}>
-      <App />
+    <App />
   </ApolloProvider>
 )

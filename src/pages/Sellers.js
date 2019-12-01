@@ -10,19 +10,15 @@ import {
 
 import { NAVBAR_HEIGHT } from '../constants'
 
-import { sellers as SellersData } from '../FakeData'
-
 import SellersFilterForm from '../components/SellersFilterForm'
 import SellerDetailsModal from '../components/modals/SellerDetailsModal/SellerDetailsModal'
 import SellerCard from '../components/cards/SellerCard/SellerCard'
 import SellerActions from '../components/SellerActionCard/SellerActionCard'
-import { FakeDataContext } from '../App'
 
 import { GET_SELLERS } from '../graphql/queries'
 import { useQuery } from '@apollo/react-hooks';
 
 const Sellers = ({ setTitle }) => {
-    let { fakeData, setFakeData } = React.useContext(FakeDataContext)
     const [filterValue, setFilterValue] = useState('active');
     const [searchVal, setSearchVal] = useState('')
 
@@ -38,7 +34,6 @@ const Sellers = ({ setTitle }) => {
             if (data == null || typeof data == 'undefined') {
                 return false
             }
-            console.log('SELLERS FROM QUERY: ', data)
             // setFetchUser(false)
             // client.writeData({ user: data["user"][0] })
             return true
@@ -82,12 +77,13 @@ const Sellers = ({ setTitle }) => {
                 {!loading && sellerData && sellerData["seller"].filter(seller => {
                     return (
                         (searchVal === '') ||
-                        (searchVal !== '' && (String(seller.name).toLowerCase().includes(searchVal)))) &&
+                        (searchVal !== '' && (String(seller.name).toLowerCase().includes(searchVal))) &&
                         (
                             (filterValue === 'all') ||
                             (filterValue === 'active' && seller.is_active === true) ||
                             (filterValue === 'inactive' && seller.is_active === false)
                         )
+                    )
                 }).map(seller => {
                     return (
                         <Fragment>

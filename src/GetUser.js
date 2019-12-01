@@ -14,7 +14,6 @@ const GetUserComp = () => {
             if (data == null || typeof data == 'undefined') {
                 return false
             }
-            console.log('USER FROM QUERY: ', data["user"][0])
             // setFetchUser(false)
             // client.writeData({ user: data["user"][0] })
             return true
@@ -27,7 +26,7 @@ const GetUserComp = () => {
         }
     }, [loading, data, auth])
     return (
-        <Fragment>Test</Fragment>
+        <Fragment></Fragment>
     )
 }
 

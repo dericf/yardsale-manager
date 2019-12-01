@@ -36,13 +36,11 @@ const YardsaleFilterForm = ({ filter, setFilter, autofocus, ...props }) => {
     }, [])
 
     const handleChange = (e, { value }) => {
-        console.log('changed')
-        setFilter({...filter, status: value})
+        setFilter({ ...filter, status: value })
     }
 
     const handleSearchInput = (e) => {
-         console.log('filter.searchText', e.target.value, filter.searchText);
-        setFilter({...filter, searchText: e.target.value})
+        setFilter({ ...filter, searchText: e.target.value })
     }
 
     const onChange = (e) => {

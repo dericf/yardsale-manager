@@ -11,32 +11,31 @@ import {
 
 
 import YardsaleDetailsModal from '../modals/YardsaleDetailsModal/YardsaleDetailsModal'
+import YardsaleTransactionsModal from '../modals/YardsaleTransactionsModal/YardsaleTransactionsModal'
+import YardsaleSellerModal from '../modals/YardsaleSellerModal/YardsaleSellerModal'
 import CashierModal from '../modals/CashierModal/CashierModal'
 import ConfirmModal from '../modals/generic/ConfirmModal'
 
 import { notify } from 'react-notify-toast';
-import { FakeDataContext } from '../../App'
-
-// Apollo/GQL
-// import { useMutation, useQuery } from '@apollo/react-hooks';
-
-// import { GET_CLIENTS } from '../gql/queries'
-// import { DEACTIVATE_CLIENT } from '../gql/mutations'
+import { DELETE_YARDSALE } from '../../graphql/mutations'
+import { GET_YARDSALES } from '../../graphql/queries'
+import { useMutation } from '@apollo/react-hooks'
 
 const YardsaleActions = ({ yardsale }) => {
-    let { fakeData, setFakeData } = React.useContext(FakeDataContext)
+
+    const [deleteYardsaleMutation, { loading: deleteYardsaleLoading, error: deleteYardsaleError }] = useMutation(DELETE_YARDSALE, {
+
+    })
 
     const confirmDeactivateYardsale = () => {
-
-        let newData = {
-            ...fakeData,
-            user: {
-                ...fakeData.user,
-                yardsales: { ...fakeData.user.yardsales }
-            }
-        }
-        console.log('New Data: ', newData)
-        setFakeData(newData)
+        deleteYardsaleMutation({
+            variables: {
+                yardsaleUUID: yardsale.uuid
+            },
+            refetchQueries: [{
+                query: GET_YARDSALES
+            }]
+        })
     }
 
     const cashierMode = () => {
@@ -56,26 +55,27 @@ const YardsaleActions = ({ yardsale }) => {
                     </Grid.Column>
                 </Grid.Row>
                 <Grid.Row className="py0">
-                    <Grid.Column computer={16} mobile={16} style={{ paddingTop: 14 }}>
-                        <Button color="green" fluid ><Icon name="dollar"></Icon> Transaction History</Button>
+                    <Grid.Column computer={8} mobile={16} style={{ paddingTop: 14 }}>
+                        {/* <Button color="green" fluid ><Icon name="dollar"></Icon> Transaction History</Button> */}
+                        <YardsaleSellerModal yardsale={yardsale} iconLabel="Sellers" />
+                    </Grid.Column>
+                    <Grid.Column computer={8} mobile={16} style={{ paddingTop: 14 }}>
+                        {/* <Button color="green" fluid ><Icon name="dollar"></Icon> Transaction History</Button> */}
+                        <YardsaleTransactionsModal yardsale={yardsale} iconLabel="Transaction History" />
                     </Grid.Column>
                 </Grid.Row>
                 <Grid.Row className="py0">
                     <Grid.Column computer={16} mobile={16} style={{ paddingTop: 14 }}>
-                        {yardsale.status != 'inactive' && <ConfirmModal
-                            edit={true}
-                            yardsale={yardsale}
-                            iconName="trash"
-                            iconLabel="Deactivate Yardsale"
-                            trigger={() => (<Button icon="trash" content="Remove" fluid negative />)}
+                        <ConfirmModal
+                            buttonProps={{ icon: "trash", content: "Remove", fluid: true, negative: true }}
                             handleConfirm={() => {
-                                ///HERE
                                 confirmDeactivateYardsale()
                             }}
                             handleCancel={() => console.log('cancel')}
-                            header="Confirm Deactivation"
-                            content={`Proceed deactivating ${yardsale.name}?`}
-                        />}
+                            header="Confirm Delete"
+                            content={`Proceed deleting ${yardsale.name}?`}
+                            warningMessage={"Warning! This action cannot be undone! Proceed with caution."}
+                        />
                     </Grid.Column>
                 </Grid.Row>
             </Grid>

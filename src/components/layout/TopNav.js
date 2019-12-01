@@ -52,7 +52,7 @@ const LeftMenu = ({ user, isAuthenticated, activeItem, setActiveItem, userQuery 
         <Fragment>
             {auth.isAuthenticated && (
                 <Fragment>
-                    <Responsive as={Fragment} minWidth={580}>
+                    <Responsive as={Fragment} minWidth={350}>
                         <Menu.Item
                             key="home"
                             as={Link}
@@ -62,6 +62,13 @@ const LeftMenu = ({ user, isAuthenticated, activeItem, setActiveItem, userQuery 
                             index="home"
                             content="Market"
                             className="horizontal" />
+
+
+
+                    </Responsive>
+
+                    <Responsive as={Fragment} minWidth={560}>
+
 
                         <Menu.Item to="yardsales"
                             index="yardsales"
@@ -74,7 +81,7 @@ const LeftMenu = ({ user, isAuthenticated, activeItem, setActiveItem, userQuery 
                     </Responsive>
 
 
-                    <Responsive as={Fragment} minWidth={800} >
+                    <Responsive as={Fragment} minWidth={680} >
 
                         <Menu.Item
                             to="sellers"
@@ -85,7 +92,7 @@ const LeftMenu = ({ user, isAuthenticated, activeItem, setActiveItem, userQuery 
                             content="My Sellers"
                             className="horizontal" />
 
-                        <SettingsModal></SettingsModal>
+                        {/* <SettingsModal></SettingsModal> */}
 
                     </Responsive>
                 </Fragment>
@@ -107,8 +114,7 @@ const RightMenu = ({ user, isAuthenticated, activeItem, setActiveItem, userQuery
                     <Menu.Item position="right" key="login" index={100} className="horizontal" >
                         <LoginModal />
                     </Menu.Item>
-                )
-                }
+                )}
 
 
                 {auth.isAuthenticated && (
@@ -155,7 +161,7 @@ const TopNav = (props) => {
 
     return (
         <Menu id="TopNav" fluid compact className={`fixed top ${activeItem}-title`} activeIndex="projects"
-            style={{ height: `${NAVBAR_HEIGHT}rem` }}>
+            style={{ height: NAVBAR_HEIGHT }}>
 
             {/* Logo */}
             <Menu.Header as="h2" className="mb0" content="Yardsale Manager" style={{ paddingTop: 6, marginRight: '16px' }} />

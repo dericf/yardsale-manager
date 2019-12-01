@@ -1,40 +1,77 @@
 import React, { Component, Fragment } from 'react'
-import { Button, Confirm, Segment } from 'semantic-ui-react'
+import { Button, Confirm, Segment, Grid, Modal, Popup, Message, Divider } from 'semantic-ui-react'
 
-const ConfirmModal = (props) => {
+const ConfirmModal = ({ triggerType = 'button', disabled = false, buttonProps = {}, handleConfirm, handleCancel, header, content, warningMessage = null, disabledMessage = null }) => {
     const [open, setOpen] = React.useState(false)
-    console.log('Confirm Modal Props: ', props)
-    const show = () => {
-        console.log('SHOWW');
+    const showModal = () => {
         setOpen(true)
     }
-    const hide = () => setOpen(false)
 
-    const handleConfirm = () => {
+    const closeModal = () => setOpen(false)
+
+    const confirm = () => {
         setOpen(false)
-        props.handleConfirm()
+        handleConfirm()
     }
-    const handleCancel = () => {
-        setOpen(false)
-        props.handleCancel()
+    const cancel = () => {
+        closeModal()
+        handleCancel()
     }
 
-    const Trigger = props.trigger
 
     return (
         <Fragment>
-            <div onClick={show}><Trigger /></div>
-            {/* <Button {...props.buttonProps} onClick={show}><Trigger /></Button> */}
-            <Confirm
+            {triggerType === 'button' && (
+                <Fragment>
+                    {disabled && disabledMessage && (
+                        <Popup inverted hideOnScroll style={{ borderRadius: 0 }} position="top center" content={disabledMessage} trigger={<Button {...buttonProps} />} />
+                    )}
+
+                    {!disabled && (
+                        <Button disabled={disabled} {...buttonProps} onClick={showModal} />
+                    )}
+                </Fragment>
+            )}
+
+            <Modal
                 open={open}
-                closeOnDimmerClick={false}
-                closeOnEscape={false}
-                closeOnDocumentClick={false}
-                onCancel={handleCancel}
-                onConfirm={handleConfirm}
-                header={props.header}
-                content={props.content}
-            />
+                closeOnEscape={true}
+                closeOnDimmerClick={true}
+                onClose={cancel}
+            >
+                <Modal.Header>{header}</Modal.Header>
+                <Modal.Content>
+                    {warningMessage && (
+                        <Fragment>
+                            <Message content={warningMessage} negative />
+                            <Divider horizontal />
+                        </Fragment>
+                    )}
+                    {content}
+                </Modal.Content>
+                <Modal.Actions>
+                    <Grid>
+                        <Grid.Row >
+                            <Grid.Column width={8}>
+                                <Button onClick={cancel} negative fluid>
+                                    No
+                                </Button>
+
+                            </Grid.Column>
+                            <Grid.Column width={8}>
+                                <Button
+                                    onClick={confirm}
+                                    positive
+                                    labelPosition='right'
+                                    icon='checkmark'
+                                    content='Yes'
+                                    fluid
+                                />
+                            </Grid.Column>
+                        </Grid.Row>
+                    </Grid>
+                </Modal.Actions>
+            </Modal>
         </Fragment>
     )
 }

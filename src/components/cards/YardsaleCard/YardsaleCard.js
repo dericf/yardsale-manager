@@ -22,13 +22,13 @@ const YardsaleCard = ({ yardsale, ...props }) => {
                         <Card.Content>
                             <Card.Header as="h3" className="mb0">{yardsale.name}</Card.Header>
                             <Card.Meta as="h6" className={`m0 ${props.inverted ? 'inverted' : ''}`}>{yardsale.company}</Card.Meta>
-                            <Card.Header as="h5" className="m0"><strong>Status:</strong> {(yardsale.status == 'active') && (<Icon name="genderless" title="Active" className="active-icon" color="green"></Icon>)}{(yardsale.status == 'inactive') && (<Icon name="genderless" color="red" title="Inactive" className="deactivated-icon"></Icon>)}</Card.Header>
+                            <Card.Header as="h5" className="m0"><strong>Status:</strong> {(yardsale.is_active === true) && (<Icon name="genderless" title="Active" className="active-icon" color="green"></Icon>)}{(yardsale.is_active === false) && (<Icon name="genderless" color="red" title="Inactive" className="deactivated-icon"></Icon>)}</Card.Header>
                         </Card.Content>
                     </Grid.Column>
 
                     <Grid.Column computer={10} mobile={16}>
                         <Card.Content>
-                            {yardsale.notes.length > 1 && (
+                            {yardsale.notes && yardsale.notes.length > 1 && (
                                 <Card.Description>
                                     <strong>Notes:</strong> {yardsale.notes}
                                 </Card.Description>
@@ -37,13 +37,13 @@ const YardsaleCard = ({ yardsale, ...props }) => {
                     </Grid.Column>
 
                 </Grid.Row>
-                {yardsale.sellers && yardsale.sellers.length > 1 && (
+                {yardsale.yardsale_seller_links && yardsale.yardsale_seller_links.sellers && yardsale.yardsale_seller_links.sellers.length > 1 && (
                     <Fragment>
                         <Divider horizontal className=""></Divider>
                         <Divider horizontal className="" >Active Sellers <Icon name="user" onClick={() => { setExpandSellers(!expandSellers) }}></Icon></Divider>
                         {expandSellers && (
                             <Segment>
-                                {yardsale.sellers.filter(seller => seller.status != 'inactive').map(seller => {
+                                {yardsale.yardsale_seller_links.sellers.filter(seller => seller.is_active === true).map(seller => {
                                     return (
                                         <SellerCard seller={seller} />
                                     )

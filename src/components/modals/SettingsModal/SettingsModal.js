@@ -29,7 +29,6 @@ const SettingsUserForm = ({ closeModal }) => {
     // const { auth, setAuth } = React.useContext(AuthContext)
 
     let user = fakeData.user
-    console.log('user', user);
     // const address = `${user.street_1} ${user.street_2}
     // ${user.city} ${user.province}, ${user.country}
     // ${user.postal}    
@@ -129,7 +128,7 @@ const SettingsModal = (props) => {
     }
 
     useEffect(() => {
-        console.log('USING EFFECT')
+        // console.log('USING EFFECT')
     }, [open])
 
     useRef(() => {
@@ -142,8 +141,7 @@ const SettingsModal = (props) => {
 
     const save = () => {
         // Call update mutation here
-        console.log('Updating User Record');
-
+        // console.log('Updating User Record');
     }
 
     return (

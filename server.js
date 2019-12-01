@@ -10,7 +10,7 @@ app.use(morgan("dev"));
 app.use(express.static(join(__dirname, "build")));
 
 app.use((_, res) => {
-  console.log('Request');
+  // console.log('Request');
   res.sendFile(join(__dirname, "build", "index.html"));
 });
 

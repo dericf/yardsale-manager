@@ -2,10 +2,13 @@ import React, { Component, Fragment, useState, useEffect } from 'react'
 import { Link, withRouter } from 'react-router-dom';
 
 import { Icon, Menu, ItemGroup, Modal, Responsive, Sidebar, Container, Image, Segment, Header, Divider } from 'semantic-ui-react'
+import LoginModal from '../../components/modals/LoginModal/LoginModal'
+
+import { AuthContext } from '../../App'
 
 const SidebarNav = ({ user, visible, setVisible, isAuthenticated }) => {
-    // const { isAuthenticated, loginWithRedirect, logout } = useAuth0();
-    
+    const { auth, setAuth } = React.useContext(AuthContext)
+
     return (
         <Sidebar
             as={Menu}
@@ -20,7 +23,7 @@ const SidebarNav = ({ user, visible, setVisible, isAuthenticated }) => {
             {/* Potentially add onClick={() => setVisible(false)} to make the sidebar autoclose when a link is clicked*/}
             <Menu.Header as="h2" className="mb0" content="Navigation" style={{ color: "#ffffff", padding: 16 }} />
             <Divider inverted className="m0"></Divider>
-            { isAuthenticated && (
+            {auth.isAuthenticated && (
                 <Fragment>
                     <Menu.Item as={Link} to="/" >
                         Home
@@ -34,15 +37,27 @@ const SidebarNav = ({ user, visible, setVisible, isAuthenticated }) => {
 
 
                     {/* <SettingsModal></SettingsModal> */}
-                    
-                    <Menu.Item to="logout" className="ml0"  position="right" key="logout" index="logout" className="vertical" style={{marginLeft: "0 !important"}} >
-                        { user && (
-                            <div onClick={() => alert('Log user out here')}><Icon name="power off" ></Icon> {`Logout (${user.username})`}</div>
-                        )}
+
+                    <Menu.Item
+                        position="left"
+                        as={Link}
+                        onClick={() => auth.logout(auth, setAuth)}
+                        content=" Logout"
+                        icon={<Icon name="power off" style={{ marginLeft: 0 }} />}
+                        key="logout"
+                        index={101}
+
+                    >
+
                     </Menu.Item>
+
                 </Fragment>
-                )
-            }
+            )}
+            {!auth.isAuthenticated && (
+                <Menu.Item position="right" key="login" index={100} className="ml0" style={{ marginLeft: 0 }} >
+                    <LoginModal />
+                </Menu.Item>
+            )}
         </Sidebar>
     )
 }

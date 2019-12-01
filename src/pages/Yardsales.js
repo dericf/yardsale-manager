@@ -18,6 +18,9 @@ import YardsaleCard from '../components/cards/YardsaleCard/YardsaleCard'
 import YardsaleActions from '../components/YardsaleActionCard/YardsaleActionCard'
 import { FakeDataContext } from '../App'
 
+import { GET_YARDSALES } from '../graphql/queries'
+import { useQuery } from '@apollo/react-hooks';
+
 const Yardsales = ({ setTitle }) => {
     let { fakeData, setFakeData } = React.useContext(FakeDataContext)
     const [filter, setFilter] = useState({
@@ -28,6 +31,18 @@ const Yardsales = ({ setTitle }) => {
     useEffect(() => {
         setTitle('Yardsales')
     }, [])
+
+
+    const { loading, error, data: yardsaleData } = useQuery(GET_YARDSALES, {
+        onError: () => console.log('ERROR WITH QUERY'),
+
+        onCompleted: (data) => {
+            if (data == null || typeof data == 'undefined') {
+                return false
+            }
+            return true
+        }
+    })
 
     return (
         <Segment style={{ padding: "16px 24px", border: 'none' }} >
@@ -61,19 +76,21 @@ const Yardsales = ({ setTitle }) => {
 
                 {/* Yardsales List */}
 
-                {fakeData.user.yardsales.filter(yardsale => {
-                    return (filter.status === 'all') || (yardsale.status === filter.status)
+                {!loading && yardsaleData && yardsaleData.yardsale && yardsaleData.yardsale.filter(yardsale => {
+                    return (
+                        (filter.searchText === '') ||
+                        (filter.searchText !== '' && (String(yardsale.name).toLowerCase().includes(filter.searchText))) &&
+                        (
+                            (filter.status === 'all') ||
+                            (filter.status === 'active' && yardsale.is_active === true) ||
+                            (filter.status === 'inactive' && yardsale.is_active === false)
+                        )
+                    )
                 }).map(yardsale => {
-                    if (filter.searchText != '') {
-                        if (!(String(yardsale.name).toLowerCase().includes(filter.searchText))) {
-                            return (<Fragment>{JSON.stringify(yardsale)}</Fragment>)
-                        }
-                    }
-
                     return (
                         <Fragment>
                             {/* Third Grid.Row (Card/Actions) */}
-                            <Grid.Row key={yardsale.id}>
+                            <Grid.Row key={yardsale.uuid}>
                                 <Grid.Column width={10} verticalAlign="middle" style={{ height: "100%" }}>
 
                                     {/* Card */}

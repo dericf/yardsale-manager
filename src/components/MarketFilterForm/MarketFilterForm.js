@@ -23,7 +23,7 @@ import {
 
 
 const SellersFilterForm = ({ filter, setFilter, autofocus, ...props }) => {
-    console.log('props for sellers filter forms', props)
+    // console.log('props for sellers filter forms', props)
     const [active, setActive] = useState(true)
     const [inactive, setInactive] = useState(false)
     const [all, setAll] = useState(false)
@@ -37,13 +37,13 @@ const SellersFilterForm = ({ filter, setFilter, autofocus, ...props }) => {
     }, [])
 
     const handleChange = (e, { value }) => {
-        console.log('changed')
-        setFilter({...filter, status: value})
+        // console.log('changed')
+        setFilter({ ...filter, status: value })
     }
 
     const handleSearchInput = (e) => {
-         console.log('filter.searchText', e.target.value, filter.searchText);
-        setFilter({...filter, searchText: e.target.value})
+        //  console.log('filter.searchText', e.target.value, filter.searchText);
+        setFilter({ ...filter, searchText: e.target.value })
     }
 
     const onChange = (e) => {
