@@ -48,6 +48,8 @@ query GetSellers {
 export const GET_SELLER_LINKS_FOR_YARDSALE = gql`
 query GetSellerLinksForYardsale($yardsaleUUID: uuid!) {
     yardsale_seller_link(where: {yardsale_uuid: {_eq: $yardsaleUUID}}) {
+      uuid
+      yardsale_uuid
       seller {
         uuid
         name
@@ -59,7 +61,27 @@ query GetSellerLinksForYardsale($yardsaleUUID: uuid!) {
             description
         }
       }
+    }
+}`
+
+// 
+// GET ALL SELLER LINKS FOR SELLER
+//
+export const GET_SELLER_LINKS_FOR_SELLER = gql`
+query GetSellerLinksForYardsale($sellerUUID: uuid!) {
+    yardsale_seller_link(where: {seller_uuid: {_eq: $sellerUUID}}) {
+      uuid
       yardsale_uuid
+      yardsale {
+        uuid
+        name
+        transactions(where: {seller_uuid: {_eq: $sellerUUID}}) {
+            seller_uuid
+            yardsale_uuid
+            price
+            description
+        }
+      }
     }
 }`
 
@@ -175,7 +197,7 @@ query GetTransactionItem($UUID: uuid!) {
     }
 }`
 // 
-// GET ALL SALE ITEMS
+// GET ALL SALE ITEMS FOR YARDSALE
 // by yardsale.id
 export const GET_TRANSACTION_ITEMS_FOR_YARDSALE = gql`
 query GetTransactionItem($yardsaleUUID: uuid!) {
@@ -187,6 +209,7 @@ query GetTransactionItem($yardsaleUUID: uuid!) {
       uuid
       yardsale_uuid
       seller {
+        uuid
         name
         initials
         email
@@ -198,6 +221,33 @@ query GetTransactionItem($yardsaleUUID: uuid!) {
       }
     }
 }`
+// 
+// GET ALL SALE ITEMS FOR SELLER
+// by yardsale.id
+export const GET_TRANSACTION_ITEMS_FOR_SELLER = gql`
+query GetTransactionItem($sellerUUID: uuid!) {
+    transaction(where: {seller_uuid: {_eq: $sellerUUID}}) {
+      uuid
+      seller_uuid
+      yardsale_uuid
+      price
+      description
+      created_at
+      yardsale {
+        uuid
+        is_active
+        name
+      }
+      seller {
+        uuid
+        is_active
+        name
+        initials
+        email
+      }
+    }
+}`
+
 //
 // GET SALE ITEM
 // by id
