@@ -82,7 +82,7 @@ mutation updateYardsale($yardsaleUUID: uuid!, $phone: String, $notes: String, $n
 //
 export const DELETE_YARDSALE = gql`
 mutation updateYardsale($yardsaleUUID: uuid!) {
-  delete_seller(where: {uuid: {_eq: $yardsaleUUID}}) {
+  delete_yardsale(where: {uuid: {_eq: $yardsaleUUID}}) {
     returning {
       uuid
     }
