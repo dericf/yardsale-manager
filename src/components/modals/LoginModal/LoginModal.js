@@ -86,19 +86,20 @@ const LoginModal = ({ defaultOpen = false, forcedOpen = false, ...props }) => {
             email: values.email,
             password: values.password
         }
-        let options = {
-            method: "POST",
-            cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data)
-        }
+        // let options = 
 
         fetch(
             uri,
-            options
+            {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json',
+                    "Access-Control-Allow-Credentials": "true",
+                },
+                body: JSON.stringify(data)
+            }
         ).then(res => {
+            console.log("Login Response is: ", res)
             return res.json()
         }).then(json => {
             console.log('JSON: ', json)
@@ -108,7 +109,8 @@ const LoginModal = ({ defaultOpen = false, forcedOpen = false, ...props }) => {
                 setValues(initialValues)
                 // props.history.push('/yardsales')
                 setAuth(auth => ({ ...auth, reAuthenticateRequired: false }))
-                window.location.assign('/yardsales')
+                props.history.push('/yardsales')
+                // window.location.assign(json.callback)
                 closeModal()
             } else if (json.STATUS === 'ERROR') {
                 console.log('Bad Login Credentials', json)
