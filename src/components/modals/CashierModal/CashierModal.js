@@ -84,11 +84,12 @@ const YardsaleDetailsModal = ({ yardsale = null, autofocus = true, ...props }) =
         closeModal()
     }
 
-    const save = () => {
-        // get the list of yardsales
-        console.log('Full Transaction: ', transactionItems)
-        // closeModal()
+    const resetModal = () => {
+        setTransactionItems([])
+        setFormValues(initialFormValues)
+    }
 
+    const postTransaction = () => {
         transactionItems.forEach((item) => {
             createTransactionItemMutation({
                 variables: {
@@ -104,13 +105,32 @@ const YardsaleDetailsModal = ({ yardsale = null, autofocus = true, ...props }) =
                 awaitRefetchQueries: true
             })
         })
+    }
+
+    const save = () => {
+        // console.log('Full Transaction: ', transactionItems)
+        postTransaction()
         notify.show('Transaction has been saved.', 'success')
         closeModal()
     }
 
-    const closeModal = () => {
+    const saveAndNew = () => {
+        // console.log('Full Transaction: ', transactionItems)
+        postTransaction()
+        notify.show('Transaction has been saved.', 'success')
+        // resetModal()
+        closeModal()
         setTransactionItems([])
         setFormValues(initialFormValues)
+        setTimeout(() => {
+            // focusRef.current.focus()
+            openModal()
+        }, 1000);
+    }
+
+
+    const closeModal = () => {
+        resetModal()
         setOpen(false)
     }
 
@@ -172,7 +192,7 @@ const YardsaleDetailsModal = ({ yardsale = null, autofocus = true, ...props }) =
     return (
         <Fragment>
 
-            <Button fluid color="brown" fluid onClick={openModal} >
+            <Button fluid color="teal" fluid onClick={openModal} >
                 <Icon name="add"></Icon>{props.iconLabel}
             </Button>
             <Modal
@@ -395,9 +415,8 @@ const YardsaleDetailsModal = ({ yardsale = null, autofocus = true, ...props }) =
 
                 <Modal.Actions>
                     <Grid>
-                        <Grid.Row columns={2}>
+                        <Grid.Row columns={3}>
                             <Grid.Column>
-
                                 <ConfirmModal
                                     triggerType={"button"}
                                     buttonProps={{ content: "Cancel", fluid: true, negative: true }}
@@ -414,6 +433,16 @@ const YardsaleDetailsModal = ({ yardsale = null, autofocus = true, ...props }) =
                                     onClick={save}
                                     positive
                                     content="Save Transaction"
+                                    disabled={transactionItems.length == 0}
+                                />
+                            </Grid.Column>
+                            <Grid.Column>
+                                <Button
+                                    fluid
+                                    onClick={saveAndNew}
+                                    positive
+                                    icon="add"
+                                    content="Save and New"
                                     disabled={transactionItems.length == 0}
                                 />
                             </Grid.Column>
