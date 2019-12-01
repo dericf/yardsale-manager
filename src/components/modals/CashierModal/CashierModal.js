@@ -109,6 +109,8 @@ const YardsaleDetailsModal = ({ yardsale = null, autofocus = true, ...props }) =
     }
 
     const closeModal = () => {
+        setTransactionItems([])
+        setFormValues(initialFormValues)
         setOpen(false)
     }
 
@@ -228,8 +230,8 @@ const YardsaleDetailsModal = ({ yardsale = null, autofocus = true, ...props }) =
                                                             labeled
                                                             floating
                                                             button
-                                                            selectOnBlur={false}
-                                                            selectOnNavigation={false}
+                                                            selectOnBlur={true}
+                                                            selectOnNavigation={true}
                                                             options={(sellersData.seller.filter(seller => seller.is_active === true).map((seller, index) => {
                                                                 return {
                                                                     key: index,
@@ -282,7 +284,7 @@ const YardsaleDetailsModal = ({ yardsale = null, autofocus = true, ...props }) =
                                                 icon="add"
                                                 content="Add Item to Transaction"
                                                 onClick={addItem}
-                                                disabled={formValues.price == null}
+                                                disabled={formValues.price == null || formValues.seller.uuid === null}
                                             />
                                         </Grid.Column>
                                     </Grid.Row>
