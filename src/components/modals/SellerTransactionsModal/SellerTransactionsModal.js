@@ -122,7 +122,7 @@ const SellerTransactionsModal = ({ seller, iconLabel, ...props }) => {
                                                 {JSON.stringify(invoice, null, 2)}
                                             </Highlight> */}
 
-                                        {data.transaction.length === 0 && (
+                                        {data.transaction && data.transaction.length === 0 && (
                                             <Table.Row textAlign="center">
                                                 <Table.Cell textAlign="center" colSpan="5">
                                                     No Transactions for this Yardsale
@@ -130,7 +130,7 @@ const SellerTransactionsModal = ({ seller, iconLabel, ...props }) => {
                                             </Table.Row>
                                         )}
 
-                                        {data.transaction.map((item, index) => {
+                                        {data.transaction && data.transaction.map((item, index) => {
                                             return (
                                                 <Table.Row key={index + 10000}>
                                                     <Table.Cell textAlign="center">{item.yardsale.name}</Table.Cell>
