@@ -53,6 +53,12 @@ const LeftMenu = ({ user, isAuthenticated, activeItem, setActiveItem, userQuery 
             {auth.isAuthenticated && (
                 <Fragment>
                     <Responsive as={Fragment} minWidth={350}>
+
+
+
+                    </Responsive>
+
+                    <Responsive as={Fragment} minWidth={560}>
                         <Menu.Item
                             key="home"
                             as={Link}
@@ -62,12 +68,6 @@ const LeftMenu = ({ user, isAuthenticated, activeItem, setActiveItem, userQuery 
                             index="home"
                             content="Market"
                             className="horizontal" />
-
-
-
-                    </Responsive>
-
-                    <Responsive as={Fragment} minWidth={560}>
 
 
                         <Menu.Item to="yardsales"
