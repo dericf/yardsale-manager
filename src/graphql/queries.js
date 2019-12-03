@@ -54,6 +54,7 @@ query GetSellerLinksForYardsale($yardsaleUUID: uuid!) {
         uuid
         name
         initials
+        is_active
         transactions(where: {yardsale_uuid: {_eq: $yardsaleUUID}}) {
             seller_uuid
             yardsale_uuid
@@ -112,7 +113,10 @@ query GetSeller($uuid: uuid!) {
 // (permission: for the current user)
 export const GET_YARDSALES = gql`
 query GetYardsales {
-    yardsale {
+    yardsale(order_by: {created_at: desc}) {
+      uuid
+      created_at
+      updated_at
       address_text
       days_of_week
       end_date
@@ -120,7 +124,6 @@ query GetYardsales {
       start_date
       start_time
       user_uuid
-      uuid
       name
       is_active
       yardsale_seller_links {
