@@ -137,6 +137,119 @@ body, html{
   margin-bottom: 0px !important;
 }
 
+/* 
+
+*****************************************************************
+MEDIA QUERIES MOBILE ( < 800 )
+*****************************************************************
+
+*/
+
+@media (max-width: 800px){
+  /* Margins */
+  .mobile-m0 {
+    margin: 0 !important;
+  }
+
+  .mobile-mt0 {
+    margin-top: 0 !important;
+  }
+
+  .mobile-mb0 {
+    margin-bottom: 0 !important;
+  }
+
+  .mobile-ml0 {
+    margin-left: 0 !important;
+  }
+
+  .mobile-mr0 {
+    margin-right: 0 !important;
+  }
+
+  /* Padding */
+  .mobile-p0 {
+    padding: 0 !important;
+  }
+
+  .mobile-pt0 {
+    padding-top: 0 !important;
+  }
+
+  .mobile-pb0 {
+    padding-bottom: 0 !important;
+  }
+
+  .mobile-pl0 {
+    padding-left: 0 !important;
+  }
+
+  .mobile-pr0 {
+    padding-right: 0 !important;
+  }
+
+
+  .mobile-py16 {
+    padding-top: 16px !important;
+    padding-bottom: 16px !important;
+  }
+
+  .mobile-py8 {
+    padding-top: 8px !important;
+    padding-bottom: 8px !important;
+  }
+
+  .mobile-py0 {
+    padding-top: 0px !important;
+    padding-bottom: 0px !important;
+  }
+
+  .mobile-px0 {
+    padding-left: 0px !important;
+    padding-right: 0px !important;
+  }
+
+  .mobile-my16 {
+    margin-top: 16px !important;
+    margin-bottom: 16px !important;
+  }
+
+  .mobile-my8 {
+    margin-top: 8px !important;
+    margin-bottom: 8px !important;
+  }
+
+  .mobile-mx16 {
+    margin-left: 16px !important;
+    margin-right: 16px !important;
+  }
+
+  .mobile-mx8 {
+    margin-left: 8px !important;
+    margin-right: 8px !important;
+  }
+
+  .mobile-mt0 {
+    margin-top: 0px !important;
+  }
+
+  .mobile-mb16 {
+    margin-bottom: 16px !important;
+  }
+
+  .mobile-my0 {
+    margin-top: 0px !important;
+    margin-bottom: 0px !important;
+  }
+
+  /* OTHER */
+  .mobile-small-button {
+    font-size: 12px !important;
+  }
+
+}
+
+
 .button.primary {
   background-color: #324376 !important;
 }
