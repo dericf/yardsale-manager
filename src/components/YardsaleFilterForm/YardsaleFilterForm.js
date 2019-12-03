@@ -64,7 +64,7 @@ const YardsaleFilterForm = ({ filter, setFilter, autofocus, ...props }) => {
         <Fragment>
             <Form>
                 <Form.Group inline className="mb0" >
-                    <Form.Field>
+                    {/* <Form.Field>
                         <Radio
                             label='Active'
                             name='active'
@@ -90,8 +90,8 @@ const YardsaleFilterForm = ({ filter, setFilter, autofocus, ...props }) => {
                             checked={filter.status === 'all'}
                             onChange={handleChange}
                         />
-                    </Form.Field>
-                    <Form.Field>
+                    </Form.Field> */}
+                    <Form.Field width="8">
                         <Input
                             placeholder="search"
                             icon="search"
