@@ -49,7 +49,7 @@ const SellerActions = ({ seller }) => {
                     </Grid.Column>
                     <Grid.Column computer={8} mobile={16} style={{ paddingTop: 14 }}>
                         {/* <Button color="green" fluid ><Icon name="dollar"></Icon> Transaction History</Button> */}
-                        <SellerTransactionsModal seller={seller} iconLabel="Transaction History" />
+                        <SellerTransactionsModal seller={seller} iconLabel="History" />
                     </Grid.Column>
                 </Grid.Row>
 
