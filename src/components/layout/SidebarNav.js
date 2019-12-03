@@ -26,7 +26,7 @@ const SidebarNav = ({ user, visible, setVisible, isAuthenticated }) => {
             {auth.isAuthenticated && (
                 <Fragment>
                     <Menu.Item as={Link} to="/" >
-                        Home
+                        Market
                         </Menu.Item>
                     <Menu.Item as={Link} to="/yardsales">
                         Yardsales
