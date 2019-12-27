@@ -183,7 +183,7 @@ const YardsaleTransactionsModal = ({ yardsale, iconLabel, invertedButton = false
                     )}
 
                     <Divider horizontal content="All Transaction Items" />
-                    {!sellerLinksLoading && sellerLinksData && sellerLinksData.yardsale_seller_link && (
+                    {!sellerLinksLoading && sellerLinksData && sellerLinksData.yardsale_seller_link && sellersData && sellersData.seller && (
                         <Fragment>
                             <Table className="mt0" striped compact celled unstackable inverted color="grey">
                                 <Table.Header>
@@ -195,9 +195,6 @@ const YardsaleTransactionsModal = ({ yardsale, iconLabel, invertedButton = false
 
                                 <Table.Body >
                                     <Fragment>
-                                        {/* <Highlight >
-                                                {JSON.stringify(invoice, null, 2)}
-                                            </Highlight> */}
 
                                         {sellerLinksData.yardsale_seller_link.length === sellersData.seller.length && (
                                             <Table.Row textAlign="center">

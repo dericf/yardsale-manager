@@ -83,7 +83,7 @@ const YardsaleDetailsModal = ({ yardsale = null, autofocus = true, ...props }) =
                 }]
             })
 
-            notify.show('yardsale Created successfully ', 'success')
+            notify.show('Yardsale Created successfully ', 'success')
 
         } else {
             updateYardsaleMutation({
@@ -99,7 +99,7 @@ const YardsaleDetailsModal = ({ yardsale = null, autofocus = true, ...props }) =
                     query: GET_YARDSALES
                 }]
             })
-            notify.show('yardsale Updated successfully ', 'success')
+            notify.show('Yardsale Updated successfully ', 'success')
         }
         setFormValues(initialFormValues)
         closeModal()

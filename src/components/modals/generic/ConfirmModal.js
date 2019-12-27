@@ -62,8 +62,6 @@ const ConfirmModal = ({ triggerType = 'button', disabled = false, buttonProps = 
                                 <Button
                                     onClick={confirm}
                                     positive
-                                    labelPosition='right'
-                                    icon='checkmark'
                                     content='Yes'
                                     fluid
                                 />

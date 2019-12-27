@@ -13,6 +13,8 @@ import {
     Header
 } from 'semantic-ui-react'
 
+// import MaskedInput from 'react-input-mask'
+
 import { notify } from 'react-notify-toast';
 
 import { useMutation } from '@apollo/react-hooks'
@@ -195,7 +197,8 @@ const SellerDetailsModal = ({ seller = null, autofocus = true, fluid = false, in
                                             name="sellerPhone"
                                             value={formValues.sellerPhone}
                                             onChange={handleInputChange}
-                                        />
+                                        >
+                                        </Input>
                                     </Form.Field>
 
 

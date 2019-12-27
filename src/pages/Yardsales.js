@@ -25,7 +25,7 @@ const Yardsales = ({ setTitle }) => {
     let { fakeData, setFakeData } = React.useContext(FakeDataContext)
     const [filter, setFilter] = useState({
         searchText: "",
-        status: "active"
+        status: "all"
     })
 
     useEffect(() => {
@@ -49,7 +49,7 @@ const Yardsales = ({ setTitle }) => {
             <Grid columns={2}>
                 <Grid.Row className="pb0">
                     {/* First Grid.Row (Filters/Buttons) */}
-                    <Grid.Column verticalAlign="middle" width={10}>
+                    <Grid.Column verticalAlign="middle" mobile={8} tablet={8} computer={10}>
                         {/* Radio Buttons + Search Field */}
                         <YardsalesFilterForm
                             filter={filter}
@@ -57,17 +57,17 @@ const Yardsales = ({ setTitle }) => {
                             autofocus={true}
                         />
                     </Grid.Column>
-                    <Grid.Column width={6} textAlign="right">
+                    <Grid.Column mobile={8} tablet={8} computer={6} textAlign="right" className="mobile-my8">
                         <YardsaleDetailsModal />
                     </Grid.Column>
                 </Grid.Row>
 
                 <Grid.Row className="pb0 pt0">
                     {/* Second Grid.Row (Dividers with headings) */}
-                    <Grid.Column width={10}>
+                    <Grid.Column mobile={8} tablet={9} computer={10}>
                         <Divider horizontal={true}>{`${filter.status} Yardsales`}</Divider>
                     </Grid.Column>
-                    <Grid.Column width={6}>
+                    <Grid.Column mobile={8} tablet={7} computer={6}>
                         <Divider horizontal={true} content="Actions"></Divider>
                     </Grid.Column>
                 </Grid.Row>
@@ -91,7 +91,7 @@ const Yardsales = ({ setTitle }) => {
                         <Fragment>
                             {/* Third Grid.Row (Card/Actions) */}
                             <Grid.Row key={yardsale.uuid}>
-                                <Grid.Column width={10} verticalAlign="middle" style={{ height: "100%" }}>
+                                <Grid.Column mobile={8} tablet={9} computer={10} verticalAlign="middle" style={{ height: "100%" }}>
 
                                     {/* Card */}
                                     <Fragment>
@@ -104,7 +104,7 @@ const Yardsales = ({ setTitle }) => {
 
                                 </Grid.Column>
 
-                                <Grid.Column width={6} verticalAlign="top">
+                                <Grid.Column mobile={8} tablet={7} computer={6} verticalAlign="top">
                                     {/* Actions */}
                                     <YardsaleActions yardsale={yardsale} />
                                 </Grid.Column>

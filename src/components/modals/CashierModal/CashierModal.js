@@ -23,7 +23,7 @@ import { user, sellers } from '../../../FakeData';
 import { toMoney, fromMoney } from '../../../utils/formating'
 
 import ConfirmModal from "../generic/ConfirmModal"
-import { GET_SELLERS, GET_TRANSACTION_ITEMS_FOR_YARDSALE, GET_SELLER_LINKS_FOR_YARDSALE } from '../../../graphql/queries'
+import { GET_TRANSACTION_ITEMS_FOR_YARDSALE, GET_SELLER_LINKS_FOR_YARDSALE } from '../../../graphql/queries'
 import { CREATE_TRANSACTION_ITEM } from '../../../graphql/mutations'
 import { useQuery, useMutation } from '@apollo/react-hooks';
 import SellerDetailsModal from '../SellerDetailsModal/SellerDetailsModal'
@@ -37,7 +37,14 @@ const YardsaleDetailsModal = ({ yardsale = null, autofocus = true, ...props }) =
     const [tender, setTender] = useState(null)
     const [changeDue, setChangeDue] = useState(0)
 
-    const [createTransactionItemMutation, { data: createTransactionItemMutationData, loading: createTransactionItemMutationLoading, error: createTransactionItemMutationError }] = useMutation(CREATE_TRANSACTION_ITEM);
+    const [
+        createTransactionItemMutation,
+        {
+            data: createTransactionItemMutationData,
+            loading: createTransactionItemMutationLoading,
+            error: createTransactionItemMutationError
+        }
+    ] = useMutation(CREATE_TRANSACTION_ITEM);
 
     const focusRef = useRef()
     useEffect(() => {
@@ -58,8 +65,12 @@ const YardsaleDetailsModal = ({ yardsale = null, autofocus = true, ...props }) =
 
     const [formValues, setFormValues] = useState(initialFormValues)
 
-    const { loading: sellersLoading, error: sellersError, data: sellersData } = useQuery(GET_SELLERS, {
-        onError: () => console.log('ERROR WITH QUERY')
+    const { loading: sellersLoading, error: sellersError, data: sellersData } = useQuery(GET_SELLER_LINKS_FOR_YARDSALE, {
+        variables: {
+            yardsaleUUID: yardsale.uuid
+        },
+        onError: () => console.log('ERROR WITH QUERY'),
+        onCompleted: (data) => { console.log('LINKS: ', data) }
     })
 
     const handleInputChange = (event, { value }) => {
@@ -233,42 +244,50 @@ const YardsaleDetailsModal = ({ yardsale = null, autofocus = true, ...props }) =
 
                                                 <Form.Field width="12">
                                                     <label>Select a Seller</label>
-                                                    {!sellersLoading && sellersData && sellersData.seller && (
+                                                    {!sellersLoading && sellersData && sellersData.yardsale_seller_link && (
 
-                                                        < Dropdown
-                                                            compact
-                                                            placeholder='Select a Seller'
-                                                            openOnFocus={true}
-                                                            name="sellerID"
-                                                            fluid
-                                                            selection
-                                                            icon="user outline"
-                                                            labeled
-                                                            floating
-                                                            button
-                                                            selectOnBlur={true}
-                                                            selectOnNavigation={true}
-                                                            options={(sellersData.seller.filter(seller => seller.is_active === true).map((seller, index) => {
-                                                                return {
-                                                                    key: index,
-                                                                    text: `${seller.initials} (${seller.name})`,
-                                                                    content: `${seller.initials} (${seller.name})`,
-                                                                    value: `${seller.uuid}|${seller.initials} (${seller.name})`,
-                                                                }
-                                                            }))}
-                                                            onChange={(e, { value }) => {
-                                                                // console.log('DROPDOWN Value: ', value.split("|"))
-                                                                // console.log('DROPDOWN TEXT: ', e.target.textContent)
-                                                                setFormValues({
-                                                                    ...formValues, seller: {
-                                                                        uuid: value.split("|")[0],
-                                                                        name: value.split("|")[1]
-                                                                    }
-                                                                })
-                                                            }}
-                                                            className="icon"
+                                                        <Fragment>
+                                                            {
+                                                                sellersData.yardsale_seller_link.length === 0 ? (
+                                                                    <span>Add Sellers to this yardsale</span>
+                                                                ) : (
+                                                                        < Dropdown
+                                                                            compact
+                                                                            placeholder='Select a Seller'
+                                                                            openOnFocus={true}
+                                                                            name="sellerID"
+                                                                            fluid
+                                                                            selection
+                                                                            icon="user outline"
+                                                                            labeled
+                                                                            floating
+                                                                            button
+                                                                            selectOnBlur={true}
+                                                                            selectOnNavigation={true}
+                                                                            options={(sellersData.yardsale_seller_link.filter(link => link.seller.is_active === true).map((link, index) => {
+                                                                                return {
+                                                                                    key: index,
+                                                                                    text: `${link.seller.initials} (${link.seller.name})`,
+                                                                                    content: `${link.seller.initials} (${link.seller.name})`,
+                                                                                    value: `${link.seller.uuid}|${link.seller.initials} (${link.seller.name})`,
+                                                                                }
+                                                                            }))}
+                                                                            onChange={(e, { value }) => {
+                                                                                // console.log('DROPDOWN Value: ', value.split("|"))
+                                                                                // console.log('DROPDOWN TEXT: ', e.target.textContent)
+                                                                                setFormValues({
+                                                                                    ...formValues, seller: {
+                                                                                        uuid: value.split("|")[0],
+                                                                                        name: value.split("|")[1]
+                                                                                    }
+                                                                                })
+                                                                            }}
+                                                                            className="icon"
 
-                                                        />
+                                                                        />
+                                                                    )
+                                                            }
+                                                        </Fragment>
                                                     )}
                                                 </Form.Field >
                                             </Form.Group>
@@ -321,35 +340,37 @@ const YardsaleDetailsModal = ({ yardsale = null, autofocus = true, ...props }) =
                                     </Table.Header>
 
                                     <Table.Body >
-                                        <Fragment>
-                                            {/* <Highlight >
-                                                    {JSON.stringify(invoice, null, 2)}
-                                                </Highlight> */}
 
-                                            {transactionItems.length === 0 && (
-                                                <Table.Row textAlign="center">
-                                                    <Table.Cell textAlign="center" colSpan="5">
-                                                        No Items in this Transaction
-                                                    </Table.Cell>
-                                                </Table.Row>
-                                            )}
+                                        {transactionItems && (
+                                            <Fragment>
+                                                {
+                                                    transactionItems.length === 0 && (
+                                                        <Table.Row textAlign="center">
+                                                            <Table.Cell textAlign="center" colSpan="5">
+                                                                No Items in this Transaction
+                                                        </Table.Cell>
+                                                        </Table.Row>
+                                                    )
+                                                }
 
-                                            {transactionItems.map(item => {
-                                                return (
-                                                    <Table.Row key={item.id}>
-                                                        <Table.Cell textAlign="center">{item.seller.name}</Table.Cell>
-                                                        <Table.Cell textAlign="right">$ {toMoney(item.price)}</Table.Cell>
-                                                        <Table.Cell textAlign="left">{item.description}</Table.Cell>
-                                                        <Table.Cell textAlign="center">
-                                                            <Button tabIndex={-1} compact color="blue" icon="add" onClick={() => duplicateTransactionItem(item)}></Button>
-                                                        </Table.Cell>
-                                                        <Table.Cell textAlign="center">
-                                                            <Button tabIndex={-1} compact color="red" icon="close" onClick={() => (removeTransactionItem(item.id))}></Button>
-                                                        </Table.Cell>
-                                                    </Table.Row>
-                                                )
-                                            })}
-                                        </Fragment>
+                                                {transactionItems.map(item => {
+                                                    return (
+                                                        <Table.Row key={item.id}>
+                                                            <Table.Cell textAlign="center">{item.seller.name}</Table.Cell>
+                                                            <Table.Cell textAlign="right">$ {toMoney(item.price)}</Table.Cell>
+                                                            <Table.Cell textAlign="left">{item.description}</Table.Cell>
+                                                            <Table.Cell textAlign="center">
+                                                                <Button tabIndex={-1} compact color="blue" icon="add" onClick={() => duplicateTransactionItem(item)}></Button>
+                                                            </Table.Cell>
+                                                            <Table.Cell textAlign="center">
+                                                                <Button tabIndex={-1} compact color="red" icon="close" onClick={() => (removeTransactionItem(item.id))}></Button>
+                                                            </Table.Cell>
+                                                        </Table.Row>
+                                                    )
+                                                })}
+                                            </Fragment>
+                                        )}
+
                                     </Table.Body>
                                 </Table>
                             </Grid.Column>
@@ -412,7 +433,7 @@ const YardsaleDetailsModal = ({ yardsale = null, autofocus = true, ...props }) =
                 <Modal.Actions>
                     <Grid>
                         <Grid.Row columns={3}>
-                            <Grid.Column>
+                            <Grid.Column className="mobile-my8" mobile={16} tablet={5} computer={5}>
                                 <ConfirmModal
                                     triggerType={"button"}
                                     buttonProps={{ content: "Cancel", fluid: true, negative: true }}
@@ -423,7 +444,7 @@ const YardsaleDetailsModal = ({ yardsale = null, autofocus = true, ...props }) =
                                 />
                             </Grid.Column>
 
-                            <Grid.Column>
+                            <Grid.Column className="mobile-my8" mobile={16} tablet={5} computer={5}>
                                 <Button
                                     fluid
                                     onClick={save}
@@ -432,7 +453,7 @@ const YardsaleDetailsModal = ({ yardsale = null, autofocus = true, ...props }) =
                                     disabled={transactionItems.length == 0}
                                 />
                             </Grid.Column>
-                            <Grid.Column>
+                            <Grid.Column className="mobile-my8" mobile={16} tablet={6} computer={6}>
                                 <Button
                                     fluid
                                     onClick={saveAndNew}
@@ -446,13 +467,6 @@ const YardsaleDetailsModal = ({ yardsale = null, autofocus = true, ...props }) =
                     </Grid>
                 </Modal.Actions>
             </Modal>
-            {/* <Responsive as={Fragment} minWidth={768} >
-                // Desktop Items
-            </Responsive>
-            
-            <Responsive as={Fragment} maxWidth={768} >
-                // Mobile Items
-            </Responsive> */}
         </Fragment>
     )
 }

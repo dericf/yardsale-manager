@@ -61,7 +61,7 @@ const YardsaleActions = ({ yardsale }) => {
                     </Grid.Column>
                     <Grid.Column computer={8} mobile={16} style={{ paddingTop: 14 }}>
                         {/* <Button color="green" fluid ><Icon name="dollar"></Icon> Transaction History</Button> */}
-                        <YardsaleTransactionsModal yardsale={yardsale} iconLabel="Transaction History" />
+                        <YardsaleTransactionsModal yardsale={yardsale} iconLabel="History" />
                     </Grid.Column>
                 </Grid.Row>
                 <Grid.Row className="py0">
