@@ -39,7 +39,7 @@ mutation updateSeller($sellerUUID: uuid!, $phone: String, $initials: String, $no
 //
 export const DELETE_SELLER = gql`
 mutation updateSeller($sellerUUID: uuid!) {
-  update_seller(where: {uuid: {_eq: $sellerUUID}}, _set: {is_deleted: true}) {
+  update_seller(where: {uuid: {_eq: $sellerUUID}}, _set: {is_deleted: true, is_active: false}) {
     returning {
       uuid
       updated_at
@@ -55,8 +55,8 @@ mutation updateSeller($sellerUUID: uuid!) {
 // Insert Yardsale
 // 
 export const CREATE_YARDSALE = gql`
-mutation CreateYardsale($email: String, $name: String, $phone: String, $address: String, $notes: String) {
-    insert_yardsale(objects: {email: $email, name: $name, address_text: $address, notes: $notes, phone: $phone}) {
+mutation CreateYardsale($email: String, $name: String, $phone: String, $address_text: String, $notes: String, $company: String) {
+    insert_yardsale(objects: {email: $email, name: $name, address_text: $address_text, notes: $notes, phone: $phone, company: $company}) {
       returning {
         uuid
         name
@@ -67,8 +67,8 @@ mutation CreateYardsale($email: String, $name: String, $phone: String, $address:
 // Update Yardsale
 //
 export const UPDATE_YARDSALE = gql`
-mutation updateYardsale($yardsaleUUID: uuid!, $phone: String, $notes: String, $name: String, $email: String $address: String) {
-  update_seller(where: {uuid: {_eq: $yardsaleUUID}}, _set: {updated_at: "NOW()", phone: $phone, notes: $notes, name: $name, email: $email, address_text: $address}) {
+mutation updateYardsale($yardsaleUUID: uuid!, $phone: String, $notes: String, $name: String, $email: String $address_text: String, $company: String) {
+  update_yardsale(where: {uuid: {_eq: $yardsaleUUID}}, _set: {phone: $phone, notes: $notes, name: $name, email: $email, address_text: $address_text, company: $company}) {
     returning {
       uuid
       name
