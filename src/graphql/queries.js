@@ -33,6 +33,7 @@ query GetSellers {
         notes
         phone
         is_active
+        is_deleted
         created_at
         updated_at
         user_uuid
@@ -55,6 +56,7 @@ query GetSellerLinksForYardsale($yardsaleUUID: uuid!) {
         name
         initials
         is_active
+        is_deleted
         transactions(where: {yardsale_uuid: {_eq: $yardsaleUUID}}) {
             seller_uuid
             yardsale_uuid
@@ -99,6 +101,7 @@ query GetSeller($uuid: uuid!) {
         notes
         phone
         is_active
+        is_deleted
         created_at
         updated_at
         user_uuid
@@ -125,12 +128,18 @@ query GetYardsales {
       start_time
       user_uuid
       name
+      company
+      phone
+      email
+      address_text
+      notes
       is_active
       yardsale_seller_links {
         seller {
           name
           email
           is_active
+          is_deleted
           uuid
           phone
           notes
@@ -157,12 +166,18 @@ query GetYardsale($yardsaleUUID: uuid) {
       user_uuid
       uuid
       name
+      company
+      phone
+      email
+      address_text
+      notes
       is_active
       yardsale_seller_links {
         seller {
           name
           email
           is_active
+          is_deleted
           uuid
           phone
           notes
@@ -213,6 +228,8 @@ query GetTransactionItem($yardsaleUUID: uuid!) {
       yardsale_uuid
       seller {
         uuid
+        is_active
+        is_deleted
         name
         initials
         email
@@ -244,6 +261,7 @@ query GetTransactionItem($sellerUUID: uuid!) {
       seller {
         uuid
         is_active
+        is_deleted
         name
         initials
         email
