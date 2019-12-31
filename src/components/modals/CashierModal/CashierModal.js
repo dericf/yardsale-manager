@@ -159,7 +159,10 @@ const YardsaleDetailsModal = ({ yardsale = null, autofocus = true, ...props }) =
                 description: formValues.description
             }])
         )
-        // setFormValues(initialFormValues)
+        setFormValues({description: "", price: "", seller: {
+            uuid: formValues.seller.uuid,
+            name: formValues.seller.name
+        }})
         focusRef.current.focus()
         focusRef.current.select()
     }
@@ -219,9 +222,9 @@ const YardsaleDetailsModal = ({ yardsale = null, autofocus = true, ...props }) =
                                     <Grid.Row className="pt0 pb16" columns={1} textAlign="right">
                                         <Grid.Column width="4" textAlign="right">
                                             <Form.Group>
-                                                <Form.Field width="16">
+                                                {/* <Form.Field width="16"> */}
                                                     <YardsaleSellerModal yardsale={yardsale} caller="cashierModal" iconLabel="Add Seller" fluidButton={false} invertedButton={false} />
-                                                </Form.Field>
+                                                {/* </Form.Field> */}
                                             </Form.Group>
                                         </Grid.Column>
                                     </Grid.Row>
@@ -264,7 +267,7 @@ const YardsaleDetailsModal = ({ yardsale = null, autofocus = true, ...props }) =
                                                                             button
                                                                             selectOnBlur={true}
                                                                             selectOnNavigation={true}
-                                                                            options={(sellersData.yardsale_seller_link.filter(link => link.seller.is_active === true).map((link, index) => {
+                                                                            options={(sellersData.yardsale_seller_link.filter(link => (link.seller.is_active === true && link.seller.is_deleted === false)).map((link, index) => {
                                                                                 return {
                                                                                     key: index,
                                                                                     text: `${link.seller.initials} (${link.seller.name})`,
