@@ -18,11 +18,12 @@ import {
     Card,
     Radio,
     Form,
-    Input
+    Input,
+    ButtonGroup
 } from 'semantic-ui-react'
 
 
-const SellersFilterForm = ({ filter, setFilter, autofocus, ...props }) => {
+const SellersFilterForm = ({ filter, setFilter, myLocation, setMyLocation, loadingMyLocation, setLoadingMyLocation, autofocus, ...props }) => {
     // console.log('props for sellers filter forms', props)
     const [active, setActive] = useState(true)
     const [inactive, setInactive] = useState(false)
@@ -63,11 +64,23 @@ const SellersFilterForm = ({ filter, setFilter, autofocus, ...props }) => {
         }
     }
 
+    const enableMyLocation = () => {
+        setLoadingMyLocation(true)
+        setMyLocation(true)
+        localStorage.setItem('useMyLocation', true)
+    }
+
+    const disableMyLocation = () => {
+        setLoadingMyLocation(true)
+        setMyLocation(false)
+        localStorage.setItem('useMyLocation', false)
+    }
+
     return (
-        <Fragment>
+        <Container>
             <Form>
                 <Form.Group inline className="mb0" >
-                    <Form.Field>
+                    {/* <Form.Field>
                         <Radio
                             label='Active'
                             name='active'
@@ -93,20 +106,42 @@ const SellersFilterForm = ({ filter, setFilter, autofocus, ...props }) => {
                             checked={filter.status === 'all'}
                             onChange={handleChange}
                         />
-                    </Form.Field>
+                    </Form.Field> */}
                     <Form.Field>
                         <Input
-                            placeholder="search"
+                            placeholder="Search Address, City"
                             icon="search"
                             focus
                             value={filter.searchText}
                             onChange={handleSearchInput}
                             ref={searchRef}
+                            
                         />
+                    </Form.Field>
+
+                    <Form.Field>
+                        <ButtonGroup>
+                            <Button
+                                content={ myLocation === true ? "Location Enabled" : "Use my Location"}
+                                icon="location arrow"
+                                labelPosition="right"
+                                color={myLocation === true ? 'green' : 'grey'}
+                                onClick={enableMyLocation}
+                                loading={loadingMyLocation}
+                            />
+                            {myLocation === true && (
+                                <Button
+                                icon="close"
+                                color='green'
+                                title="Disable my Location"
+                                onClick={disableMyLocation}
+                                />
+                            )}
+                        </ButtonGroup>
                     </Form.Field>
                 </Form.Group>
             </Form>
-        </Fragment>
+        </Container>
     )
 }
 
