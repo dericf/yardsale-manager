@@ -93,7 +93,10 @@ const YardsaleTransactionsModal = ({ yardsale, iconLabel, ...props }) => {
             >
                 <Modal.Header>{`Transactions for ${yardsale.name}`}</Modal.Header>
                 <Modal.Content scrolling>
-                    <Divider horizontal content="Seller Summary" />
+                    {!loading && data && data.transaction && data.transaction.length > 0 && (
+                        <Header className="mb0" as="h4">Grand Total: $ {toMoney(data.transaction.reduce((accum, currentItem) => (Number(accum) + Number(fromMoney(currentItem.price))), 0))}</Header>
+                    )}
+                    <Divider horizontal content="Seller Summary" className="mt0"/>
                     {!sellerLinksLoading && sellerLinksData && sellerLinksData.yardsale_seller_link && (
                         <Table className="mt0" striped compact celled unstackable inverted color="black">
                             <Table.Header>
@@ -108,7 +111,7 @@ const YardsaleTransactionsModal = ({ yardsale, iconLabel, ...props }) => {
                                     {sellerLinksData.yardsale_seller_link.map(link => {
                                         return (
                                             <Table.Row key={link.uuid}>
-                                                <Table.Cell textAlign="center">{link.seller.name} ({link.seller.initials})</Table.Cell>
+                                                <Table.Cell textAlign="center">{link.seller.name} ({link.seller.initials}) {link.seller.is_deleted === true && (<strong> - *Seller Removed*</strong>)}</Table.Cell>
                                                 <Table.Cell textAlign="right">$ {toMoney(link.seller.transactions.reduce((accum, currentItem) => (Number(accum) + Number(fromMoney(currentItem.price))), 0))}</Table.Cell>
                                             </Table.Row>
                                         )
@@ -147,12 +150,14 @@ const YardsaleTransactionsModal = ({ yardsale, iconLabel, ...props }) => {
                                         {data.transaction.map(item => {
                                             return (
                                                 <Table.Row key={item.uuid}>
-                                                    <Table.Cell textAlign="center">{item.seller.name} ({item.seller.initials})</Table.Cell>
+                                                    <Table.Cell textAlign="center">{item.seller.name} ({item.seller.initials}) {item.seller.is_deleted === true && (<strong> - *Seller Removed*</strong>)}</Table.Cell>
                                                     <Table.Cell textAlign="right">$ {toMoney(item.price)}</Table.Cell>
                                                     <Table.Cell textAlign="left">{item.description}</Table.Cell>
                                                 </Table.Row>
                                             )
                                         })}
+
+                                        
                                     </Fragment>
                                 </Table.Body>
                             </Table>
@@ -166,7 +171,7 @@ const YardsaleTransactionsModal = ({ yardsale, iconLabel, ...props }) => {
                 <Modal.Actions>
                     <Grid centered>
                         <Grid.Row columns={1} textAlign="center">
-                            <Grid.Column width={4} textAlign="center" >
+                            <Grid.Column width={16} textAlign="center" >
                                 <Button fluid onClick={closeModal} negative>
                                     Close
                                 </Button>
