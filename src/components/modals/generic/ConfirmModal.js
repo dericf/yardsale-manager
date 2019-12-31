@@ -43,11 +43,11 @@ const ConfirmModal = ({ triggerType = 'button', disabled = false, buttonProps = 
                 <Modal.Content>
                     {warningMessage && (
                         <Fragment>
-                            <Message content={warningMessage} negative />
+                            <Message content={`${warningMessage} ${content}`} negative />
                             <Divider horizontal />
                         </Fragment>
                     )}
-                    {content}
+                    {warningMessage === null && (<span>{content}</span>)}
                 </Modal.Content>
                 <Modal.Actions>
                     <Grid>
