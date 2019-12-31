@@ -44,7 +44,7 @@ const LeftMenu = ({ user, isAuthenticated, activeItem, setActiveItem, userQuery 
                 onClick={() => setActiveItem('home')}
                 index="home"
                 content="Home"
-                className="horizontal" />
+                className="horizontal topNavItem" />
         )
     }
 
@@ -67,7 +67,7 @@ const LeftMenu = ({ user, isAuthenticated, activeItem, setActiveItem, userQuery 
                             onClick={() => setActiveItem('home')}
                             index="home"
                             content="Market"
-                            className="horizontal" />
+                            className="horizontal topNavItem" />
 
 
                         <Menu.Item to="yardsales"
@@ -76,7 +76,7 @@ const LeftMenu = ({ user, isAuthenticated, activeItem, setActiveItem, userQuery 
                             active={activeItem === 'yardsales'}
                             onClick={() => setActiveItem('yardsales')}
                             content="My Yardsales"
-                            className="horizontal" />
+                            className="horizontal topNavItem" />
 
                     </Responsive>
 
@@ -90,7 +90,7 @@ const LeftMenu = ({ user, isAuthenticated, activeItem, setActiveItem, userQuery 
                             active={activeItem === 'sellers'}
                             onClick={() => setActiveItem('sellers')}
                             content="My Sellers"
-                            className="horizontal" />
+                            className="horizontal topNavItem" />
 
                         {/* <SettingsModal></SettingsModal> */}
 
@@ -164,7 +164,7 @@ const TopNav = (props) => {
             style={{ height: NAVBAR_HEIGHT }}>
 
             {/* Logo */}
-            <Menu.Header as="h2" className="mb0" content="Yardsale Manager" style={{ paddingTop: 6, marginRight: '16px' }} />
+            <Menu.Header as="h2" className="mb0" content="Yardsale Manager" style={{ paddingTop: 12, marginRight: '16px' }} />
 
             {/* Left Side of Navigation */}
             <LeftMenu activeItem={activeItem} setActiveItem={setActiveItem} />
