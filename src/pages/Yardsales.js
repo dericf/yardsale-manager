@@ -5,7 +5,7 @@ import {
     Divider,
     Grid,
     Header,
-    Segment
+    Container
 } from "semantic-ui-react";
 
 import { NAVBAR_HEIGHT } from '../constants'
@@ -45,7 +45,7 @@ const Yardsales = ({ setTitle }) => {
     })
 
     return (
-        <Segment style={{ padding: "16px 24px", border: 'none' }} >
+        <Container >
             <Grid columns={2}>
                 <Grid.Row className="pb0">
                     {/* First Grid.Row (Filters/Buttons) */}
@@ -79,11 +79,16 @@ const Yardsales = ({ setTitle }) => {
                 {!loading && yardsaleData && yardsaleData.yardsale && yardsaleData.yardsale.filter(yardsale => {
                     return (
                         (filter.searchText === '') ||
-                        (filter.searchText !== '' && (String(yardsale.name).toLowerCase().includes(filter.searchText))) &&
+                        (filter.searchText !== '' && (
+                            (String(yardsale.name).toLowerCase().includes(filter.searchText.toLowerCase())) ||
+                            (String(yardsale.company).toLowerCase().includes(filter.searchText.toLowerCase())) ||
+                            (String(yardsale.address_text).toLowerCase().includes(filter.searchText.toLowerCase()))
+                        ) &&
                         (
                             (filter.status === 'all') ||
                             (filter.status === 'active' && yardsale.is_active === true) ||
                             (filter.status === 'inactive' && yardsale.is_active === false)
+                        )
                         )
                     )
                 }).map(yardsale => {
@@ -115,7 +120,7 @@ const Yardsales = ({ setTitle }) => {
                 })}
 
             </Grid>
-        </Segment>
+        </Container>
     )
 }
 

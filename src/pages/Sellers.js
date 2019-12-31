@@ -5,7 +5,8 @@ import {
     Divider,
     Grid,
     Header,
-    Segment
+    Segment,
+    Container
 } from "semantic-ui-react";
 
 import { NAVBAR_HEIGHT } from '../constants'
@@ -19,7 +20,7 @@ import { GET_SELLERS } from '../graphql/queries'
 import { useQuery } from '@apollo/react-hooks';
 
 const Sellers = ({ setTitle }) => {
-    const [filterValue, setFilterValue] = useState('active');
+    const [filterValue, setFilterValue] = useState('all');
     const [searchVal, setSearchVal] = useState('')
 
     useEffect(() => {
@@ -40,11 +41,11 @@ const Sellers = ({ setTitle }) => {
         }
     })
     return (
-        <Segment style={{ padding: "16px 24px", border: 'none' }} >
+        <Container >
             <Grid columns={2}>
                 <Grid.Row className="pb0">
                     {/* First Grid.Row (Filters/Buttons) */}
-                    <Grid.Column verticalAlign="middle" width={10}>
+                    <Grid.Column verticalAlign="middle" mobile={8} tablet={8} computer={10}>
                         {/* Radio Buttons + Search Field */}
                         <SellersFilterForm
                             value={filterValue}
@@ -54,7 +55,7 @@ const Sellers = ({ setTitle }) => {
                             autofocus={true}
                         />
                     </Grid.Column>
-                    <Grid.Column width={6} textAlign="right">
+                    <Grid.Column mobile={8} tablet={8} computer={6} textAlign="right" className="mobile-my8">
                         <SellerDetailsModal />
                     </Grid.Column>
                 </Grid.Row>
@@ -77,7 +78,11 @@ const Sellers = ({ setTitle }) => {
                 {!loading && sellerData && sellerData["seller"].filter(seller => {
                     return (
                         (searchVal === '') ||
-                        (searchVal !== '' && (String(seller.name).toLowerCase().includes(searchVal))) &&
+                        (searchVal !== '' && (
+                            (String(seller.name).toLowerCase().includes(searchVal.toLowerCase())) ||
+                            (String(seller.initials).toLowerCase().includes(searchVal.toLowerCase())) ||
+                            (String(seller.company).toLowerCase().includes(searchVal.toLowerCase()))
+                        )) &&
                         (
                             (filterValue === 'all') ||
                             (filterValue === 'active' && seller.is_active === true) ||
@@ -88,7 +93,7 @@ const Sellers = ({ setTitle }) => {
                     return (
                         <Fragment>
                             {/* Third Grid.Row (Card/Actions) */}
-                            <Grid.Row key={seller.id}>
+                            <Grid.Row key={seller.uuid}>
                                 <Grid.Column width={10} verticalAlign="middle" style={{ height: "100%" }}>
 
                                     {/* Card */}
@@ -113,7 +118,7 @@ const Sellers = ({ setTitle }) => {
                 })}
 
             </Grid>
-        </Segment>
+        </Container>
     )
 }
 
