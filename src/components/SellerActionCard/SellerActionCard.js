@@ -65,7 +65,7 @@ const SellerActions = ({ seller }) => {
                             handleCancel={() => console.log('cancel')}
                             header="Confirm Delete"
                             content={`Proceed deleting ${seller.name}?`}
-                            warningMessage={"Warning! This action cannot be undone! Proceed with caution."}
+                            warningMessage={"Warning! This action cannot be undone!"}
                             disabledMessage={"This seller cannot be deleted. It is directly linked to the user."}
                         />
                     </Grid.Column>
