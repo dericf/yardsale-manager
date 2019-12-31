@@ -127,7 +127,7 @@ const SellerDetailsModal = ({ seller = null, autofocus = true, fluid = false, in
                     <Icon name="edit" onClick={openModal}></Icon>{props.iconLabel}
                 </Button>
             ) : (
-                    <Button compact size="small" fluid={fluid} inverted={invertedButton} onClick={openModal}>New Seller</Button>
+                    <Button size="medium" fluid={fluid} inverted={invertedButton} onClick={openModal}>New</Button>
                 )}
             <Modal
                 open={open}
@@ -140,7 +140,8 @@ const SellerDetailsModal = ({ seller = null, autofocus = true, fluid = false, in
                 <Modal.Header>{seller ? "Edit Seller Details" : "Create New Seller"}</Modal.Header>
                 <Modal.Content>
 
-                    <Form as={Grid} className="p0 m0" loading={sellerMutationLoading}>
+                    <Form onSubmit={save} id="SellerDetailsModal" className="p0 m0" loading={sellerMutationLoading}>
+                        <Grid>
                         <Grid.Row className="pb0">
                             <Grid.Column>
                                 <Form.Group >
@@ -168,11 +169,11 @@ const SellerDetailsModal = ({ seller = null, autofocus = true, fluid = false, in
                                     </Form.Field >
 
                                     <Form.Field width="7">
-                                        <label>Seller Company</label>
+                                        <label>Company</label>
                                         <Input
                                             icon="building"
                                             iconPosition="left"
-                                            placeholder='seller Company'
+                                            placeholder='Company'
                                             name="sellerCompany"
                                             value={formValues.sellerCompany}
                                             onChange={handleInputChange}
@@ -251,6 +252,7 @@ const SellerDetailsModal = ({ seller = null, autofocus = true, fluid = false, in
                                 </Form.Group>
                             </Grid.Column>
                         </Grid.Row>
+                        </Grid>
                     </Form>
                 </Modal.Content>
 
@@ -264,7 +266,8 @@ const SellerDetailsModal = ({ seller = null, autofocus = true, fluid = false, in
                             </Grid.Column>
                             <Grid.Column width={8}>
                                 <Button
-                                    onClick={save}
+                                    type="submit"
+                                    form="SellerDetailsModal"
                                     positive
                                     fluid
                                     loading={sellerMutationLoading}
