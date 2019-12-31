@@ -119,6 +119,10 @@ body, html{
   margin-bottom: 16px !important;
 }
 
+.mt16 {
+  margin-top: 16px !important;
+}
+
 .mx16 {
   margin-left: 16px !important;
   margin-right: 16px !important;
@@ -263,4 +267,23 @@ img:hover {
 
 .inverted-hover:hover {
   color:white !important;
+}
+
+
+/* UI Dropdown */
+
+.ui.selection.dropdown {
+  line-height: 20px !important;
+}
+
+
+
+/* Top Nav Items */
+
+.item.topNavItem.active {
+  background: rgba(0, 0, 0, 0.2) !important;
+}
+
+.item.topNavItem.active::before {
+  background: rgba(0, 0, 0, 0.0) !important;
 }
