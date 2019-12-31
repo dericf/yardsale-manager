@@ -122,6 +122,7 @@ const YardsaleTransactionsModal = ({ yardsale, iconLabel, invertedButton = false
                     onClick={openModal}
                     icon="user"
                     content={iconLabel}
+                    tabindex="-1"
                 />
 
             )}
@@ -133,6 +134,7 @@ const YardsaleTransactionsModal = ({ yardsale, iconLabel, invertedButton = false
                     fluid={fluidButton}
                     inverted={invertedButton}
                     onClick={openModal}
+                    tabindex="-1"
                     content={iconLabel}
                 />
             )}
@@ -142,11 +144,11 @@ const YardsaleTransactionsModal = ({ yardsale, iconLabel, invertedButton = false
                 closeIcon={<Icon name="close" onClick={closeModal}></Icon>}
                 closeOnDimmerClick={false}
                 closeOnDocumentClick={false}
-                closeOnEscape={false}
+                closeOnEscape={true}
                 dimmer="inverted"
 
             >
-                <Modal.Header>{`Transactions for ${yardsale.name}`}</Modal.Header>
+                <Modal.Header>{`Sellers for ${yardsale.name}`}</Modal.Header>
                 <Modal.Content scrolling>
                     <SellerDetailsModal iconLabel="New Seller" ></SellerDetailsModal>
                     <Divider horizontal content="Seller Summary" />
@@ -172,8 +174,8 @@ const YardsaleTransactionsModal = ({ yardsale, iconLabel, invertedButton = false
                                     {sellerLinksData.yardsale_seller_link.map((link, index) => {
                                         return (
                                             <Table.Row key={index + 10000}>
-                                                <Table.Cell textAlign="center">{link.seller.name} ({link.seller.initials})</Table.Cell>
-                                                <Table.Cell textAlign="center"> <Button icon="close" negative content={`Remove ${link.seller.initials} From This Yardsale`} onClick={() => deleteLink(link)} /></Table.Cell>
+                                                <Table.Cell textAlign="center">{link.seller.name} ({link.seller.initials}) {link.seller.is_deleted === true && (<strong> - *Seller Was Removed From System*</strong>)}</Table.Cell>
+                                                <Table.Cell textAlign="center"> <Button icon="close" negative content={`Remove ${link.seller.initials} From this Yardsale`} onClick={() => deleteLink(link)} /></Table.Cell>
                                             </Table.Row>
                                         )
                                     })}
@@ -212,12 +214,12 @@ const YardsaleTransactionsModal = ({ yardsale, iconLabel, invertedButton = false
                                             </Table.Row>
                                         )}
 
-                                        {sellersToBeAdded(sellersData.seller, sellerLinksData.yardsale_seller_link).map((seller, index) => {
+                                        {sellersToBeAdded(sellersData.seller, sellerLinksData.yardsale_seller_link).filter(seller => seller.is_deleted === false).map((seller, index) => {
                                             return (
                                                 <Table.Row key={index + 1000}>
                                                     <Table.Cell width={6} textAlign="center">{seller.name} ({seller.initials})</Table.Cell>
                                                     <Table.Cell width={10} textAlign="center">
-                                                        <Button icon="add" positive content={`Add ${seller.initials} to This Yardsale`} onClick={() => createLink(seller)} />
+                                                        <Button icon="add" positive content={`Add ${seller.initials} to this Yardsale`} onClick={() => createLink(seller)} />
                                                     </Table.Cell>
                                                 </Table.Row>
                                             )
@@ -235,7 +237,7 @@ const YardsaleTransactionsModal = ({ yardsale, iconLabel, invertedButton = false
                 <Modal.Actions>
                     <Grid centered>
                         <Grid.Row columns={1} textAlign="center">
-                            <Grid.Column width={4} textAlign="center" >
+                            <Grid.Column width={16} textAlign="center" >
                                 <Button fluid onClick={closeModal} negative>
                                     Close
                                 </Button>
