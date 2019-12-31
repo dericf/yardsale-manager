@@ -152,7 +152,7 @@ const SellerTransactionsModal = ({ seller, iconLabel, ...props }) => {
                 <Modal.Actions>
                     <Grid centered>
                         <Grid.Row columns={1} textAlign="center">
-                            <Grid.Column width={4} textAlign="center" >
+                            <Grid.Column width={16} textAlign="center" >
                                 <Button fluid onClick={closeModal} negative>
                                     Close
                                 </Button>
