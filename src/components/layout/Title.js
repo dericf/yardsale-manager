@@ -17,7 +17,7 @@ const Title = ({ title }) => {
                 content={title}
                 style={{ marginBottom: 0 }}
             />
-            <Divider style={{ marginBottom: 0, marginTop: 0 }} />
+            {/* <Divider style={{ marginBottom: 0, marginTop: 0 }} /> */}
         </Grid.Column>
     )
 }
