@@ -61,7 +61,7 @@ const SellersFilterForm = ({ value, setValue, searchVal, setSearchVal, autofocus
         <Fragment>
             <Form>
                 <Form.Group inline className="mb0" >
-                    <Form.Field>
+                    {/* <Form.Field>
                         <Radio
                             label='Active'
                             name='active'
@@ -87,11 +87,12 @@ const SellersFilterForm = ({ value, setValue, searchVal, setSearchVal, autofocus
                             checked={value === 'all'}
                             onChange={handleChange}
                         />
-                    </Form.Field>
-                    <Form.Field>
+                    </Form.Field> */}
+                    <Form.Field width={8}>
                         <Input
-                            placeholder="search"
+                            placeholder="Search"
                             icon="search"
+                            size="medium"
                             focus
                             value={searchVal}
                             onChange={(e) => setSearchVal(e.target.value)}

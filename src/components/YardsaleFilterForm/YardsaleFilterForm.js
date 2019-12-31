@@ -91,10 +91,11 @@ const YardsaleFilterForm = ({ filter, setFilter, autofocus, ...props }) => {
                             onChange={handleChange}
                         />
                     </Form.Field> */}
-                    <Form.Field width="8">
+                    <Form.Field width={8}>
                         <Input
-                            placeholder="search"
+                            placeholder="Search"
                             icon="search"
+                            size="medium"
                             focus
                             value={filter.searchText}
                             onChange={handleSearchInput}
