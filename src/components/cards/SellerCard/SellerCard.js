@@ -18,23 +18,34 @@ const SellerCard = ({ seller, ...props }) => {
                 <Grid.Row verticalAlign="top">
                     <Grid.Column computer={6} mobile={16} verticalAlign="top" >
                         <Card.Content>
-                            <Card.Header as="h3" className="mb0">{seller.name}</Card.Header>
+                            <Card.Header as="h3" className="mb0">{seller.name} ({seller.initials})</Card.Header>
                             <Card.Meta as="h6" className={`m0 ${props.inverted ? 'inverted' : ''}`}>{seller.company}</Card.Meta>
-                            <Card.Header as="h5" className="m0"><strong>Status:</strong> {(seller.is_active === true) && (<Icon name="genderless" title="Active" className="active-icon" color="green"></Icon>)}{(seller.is_active === false) && (<Icon name="genderless" color="red" title="Inactive" className="deactivated-icon"></Icon>)}</Card.Header>
+                            {/* <Card.Header as="h5" className="m0"><strong>Status:</strong> {(seller.is_active === true) && (<Icon name="genderless" title="Active" className="active-icon" color="green"></Icon>)}{(seller.is_active === false) && (<Icon name="genderless" color="red" title="Inactive" className="deactivated-icon"></Icon>)}</Card.Header> */}
                         </Card.Content>
                     </Grid.Column>
 
                     <Grid.Column computer={10} mobile={16}>
                         <Card.Content>
-                            <Card.Description>
-                                <strong>Phone:</strong> {seller.phone || 'None'}
-                            </Card.Description>
-                            <Card.Description>
-                                <strong>Email:</strong> {seller.email || 'None'}
-                            </Card.Description>
+                            {seller.phone && (
+                                <Card.Description>
+                                    <strong>Phone: </strong>{seller.phone}
+                                </Card.Description>
+                            )}
+                            {seller.email && (
+                                <Card.Description>
+                                    <strong>Email: </strong>{seller.email}
+                                </Card.Description>
+                            )}
                             {seller.notes && seller.notes.length > 1 && (
                                 <Card.Description>
-                                    <strong>Notes:</strong> {seller.notes}
+                                    <strong>Notes: </strong>
+                                    {String(seller.notes)
+                                    .split("\n")
+                                    .map(line => (
+                                        <Fragment>
+                                        {line} <br />
+                                        </Fragment>
+                                    ))}
                                 </Card.Description>
                             )}
                         </Card.Content>
