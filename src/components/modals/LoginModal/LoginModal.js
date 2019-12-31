@@ -145,7 +145,6 @@ const LoginModal = ({ defaultOpen = false, forcedOpen = false, ...props }) => {
             <Modal
                 style={{ width: 350 }}
                 open={open}
-                closeIcon={<Icon name="close" onClick={forcedOpen ? () => null : closeModal}></Icon>}
                 closeOnDimmerClick={false}
                 closeOnDocumentClick={false}
                 closeOnEscape={true}
@@ -153,7 +152,15 @@ const LoginModal = ({ defaultOpen = false, forcedOpen = false, ...props }) => {
             >
                 <Modal.Header>Log In</Modal.Header>
                 <Modal.Content scrolling>
-                    <Form as={Grid} className="m0" loading={auth.loading}>
+                    <Form 
+                        name="login-form"
+                        id="LoginForm"
+                        as={Form} 
+                        className="m0" 
+                        loading={auth.loading}
+                        onSubmit={handleSubmit}
+                    >
+                    <Grid>
                         <Grid.Row className="py0">
                             <Grid.Column width={16}>
                                 <Form.Group  >
@@ -161,7 +168,7 @@ const LoginModal = ({ defaultOpen = false, forcedOpen = false, ...props }) => {
                                         <label>Email</label>
                                         <Input
                                             fluid
-                                            type="text"
+                                            type="email"
                                             name="email"
                                             icon="at"
                                             iconPosition="left"
@@ -211,6 +218,7 @@ const LoginModal = ({ defaultOpen = false, forcedOpen = false, ...props }) => {
                                 {/* <RegisterModal onClick={closeModal} /> */}
                             </Grid.Column>
                         </Grid.Row>
+                    </Grid>
                     </Form>
                 </Modal.Content>
 
@@ -229,7 +237,8 @@ const LoginModal = ({ defaultOpen = false, forcedOpen = false, ...props }) => {
 
                             <Grid.Column width={8}>
                                 <Button
-                                    onClick={handleSubmit}
+                                    form="LoginForm"
+                                    type="submit"
                                     positive
                                     content='Login'
                                     fluid
