@@ -170,7 +170,13 @@ const RegisterModal = ({
         closeOnEscape={true}
         dimmer="inverted"
       >
-        <Modal.Header>Create a New Account</Modal.Header>
+        {!accountCreated && (
+          <Modal.Header>Create a New Account</Modal.Header>
+        )}
+
+        {accountCreated && (
+          <Modal.Header>Success!</Modal.Header>
+        )}
         <Modal.Content scrolling>
           {!accountCreated && (
             <Form
@@ -330,7 +336,8 @@ const RegisterModal = ({
               </Grid.Column> */}
 
               <Grid.Column width={16}>
-                <Button
+                {!accountCreated && (
+                  <Button
                   form="RegisterForm"
                   type="submit"
                   positive
@@ -344,6 +351,16 @@ const RegisterModal = ({
                     values.password !== values.confirmPassword
                   }
                 />
+                )}
+
+                {accountCreated && (
+                  <Button
+                  positive
+                  content="Go to Log in"
+                  fluid
+                  onClick={() => props.history.push('/login')}
+                />
+                )}
               </Grid.Column>
             </Grid.Row>
           </Grid>
