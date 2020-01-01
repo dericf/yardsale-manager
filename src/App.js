@@ -38,6 +38,7 @@ import { defaultFakeData } from './FakeData'
 
 import { auth as defaultAuth } from './Auth'
 import LoginModal from "./components/modals/LoginModal/LoginModal";
+import RegistrationConfirmationModal from "./components/modals/RegistrationConfirmationModal/RegistrationConfirmationModal";
 import RegisterModal from "./components/modals/RegisterModal/RegisterModal";
 
 import { GET_USER } from './graphql/queries'
@@ -111,6 +112,12 @@ const App = () => {
                       exact
                       path="/register"
                       render={props => <RegisterModal {...props} defaultOpen={true} forcedOpen={true} />}
+                    />
+
+                    <Route
+                      exact
+                      path="/register/confirm-email"
+                      render={props => <RegistrationConfirmationModal {...props} defaultOpen={true} forcedOpen={true} />}
                     />
                   </Switch>
 
