@@ -21,7 +21,8 @@ import {
   Header,
   Tab,
   Message,
-  Item
+  Item,
+  Popup
 } from "semantic-ui-react";
 
 // Apollo/GQL
@@ -182,7 +183,7 @@ const RegisterModal = ({
                 <Grid.Column width={10}>
                   <Form.Group>
                     <Form.Field width={16}>
-                      <label>Name (optional)</label>
+                      <label>Name</label>
                       <Input
                         fluid
                         type="text"
@@ -235,7 +236,17 @@ const RegisterModal = ({
                 <Grid.Column width={16}>
                   <Form.Group>
                     <Form.Field width={16}>
-                      <label>Password</label>
+                      <label>
+                        Password{" "}
+                        <Popup
+                          size="mini"
+                          trigger={<Icon name="info circle"></Icon>}
+                        >
+                          <Popup.Content>
+                            Password must be at least 6 characters long.
+                          </Popup.Content>
+                        </Popup>
+                      </label>
                       <Input
                         fluid
                         type="password"
@@ -283,7 +294,7 @@ const RegisterModal = ({
                     as={Link}
                     to="/login"
                     className="hover-pointer"
-                    content="Already have an account? Log in."
+                    content="Already have an account? Log in"
                     onClick={closeModal}
                   ></Item>
                 </Grid.Column>
@@ -294,8 +305,8 @@ const RegisterModal = ({
 
         <Modal.Actions>
           <Grid>
-            <Grid.Row columns={2}>
-              <Grid.Column width={8}>
+            <Grid.Row columns={1}>
+              {/* <Grid.Column width={8}>
                 <Button
                   onClick={closeModal}
                   negative
@@ -304,20 +315,20 @@ const RegisterModal = ({
                 >
                   Cancel
                 </Button>
-              </Grid.Column>
+              </Grid.Column> */}
 
-              <Grid.Column width={8}>
+              <Grid.Column width={16}>
                 <Button
                   form="RegisterForm"
                   type="submit"
                   positive
-                  content="Confirm"
+                  content="Create Account"
                   fluid
                   loading={auth.loading}
                   disabled={
                     values.email == "" ||
                     values.password == "" ||
-                    values.password.length < 4 ||
+                    values.password.length < 6 ||
                     values.password !== values.confirmPassword
                   }
                 />
