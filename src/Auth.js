@@ -19,7 +19,7 @@ export const auth = {
     // console.log('Logout User Here')
     localStorage.removeItem('accessToken')
     setAuth({ ...auth, isAuthenticated: false, loading: false })
-    window.location.assign('/')
+    window.location.assign('/login')
     return
   }
 }
