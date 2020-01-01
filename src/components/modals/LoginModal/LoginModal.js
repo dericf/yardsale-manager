@@ -122,9 +122,10 @@ const LoginModal = ({ defaultOpen = false, forcedOpen = false, ...props }) => {
           setValues(initialValues);
           // props.history.push('/yardsales')
           setAuth(auth => ({ ...auth, reAuthenticateRequired: false }));
-          props.history.push("/yardsales");
+        props.history.push("/yardsales");
+          // window.location.assign('/yardsales')
           // window.location.assign(json.callback)
-          closeModal();
+        //   closeModal();
         } else if (json.STATUS === "ERROR") {
           // console.log('Bad Login Credentials', json)
           if (json.MESSAGE === "User not found") {
