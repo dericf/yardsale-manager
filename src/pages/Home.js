@@ -42,7 +42,7 @@ const Home = ({ setTitle }) => {
     }
 
     useEffect(() => {
-        setTitle('Marketplace')
+        setTitle('Yardsale Market')
     }, [])
 
     useEffect(() => {
@@ -76,6 +76,7 @@ const Home = ({ setTitle }) => {
                         {filter.searchText != "" ? (
                             <Segment
                                 inverted
+                                raised
                                 style={{height: "50vh"}}>
                                 <Dimmer active>
                                     <Loader size="large"><p>Searching for Yardsales near <strong>{filter.searchText}</strong></p> <Message content="Note: This feature is still under development."></Message></Loader>
@@ -84,6 +85,8 @@ const Home = ({ setTitle }) => {
                         ) : (
                             <Segment
                                 inverted
+                                padded
+                                raised
                                 style={{height: "50vh"}}>
                                     <p>Search for a Yardsale near you!</p>
 
