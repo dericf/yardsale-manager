@@ -45,7 +45,7 @@ const SellerActions = ({ seller }) => {
             <Grid>
                 <Grid.Row className="py0">
                     <Grid.Column computer={8} mobile={16} style={{ paddingTop: 14 }}>
-                        <SellerDetailsModal edit={true} seller={seller} iconLabel="Edit Details" ></SellerDetailsModal>
+                        <SellerDetailsModal edit={true} seller={seller} iconLabel="Edit" ></SellerDetailsModal>
                     </Grid.Column>
                     <Grid.Column computer={8} mobile={16} style={{ paddingTop: 14 }}>
                         {/* <Button color="green" fluid ><Icon name="dollar"></Icon> Transaction History</Button> */}
