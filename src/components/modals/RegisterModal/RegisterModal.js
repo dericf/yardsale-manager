@@ -43,6 +43,7 @@ const RegisterModal = ({
   // TODO: (Future) make this more responsive. Add more than just two widths
   // const nameRef = createRef()
   const { auth, setAuth } = React.useContext(AuthContext);
+  const [accountCreated, setAccountCreated] = useState(false)
   const client = props.client;
   const autoFocusRef = useRef();
   const initialValues = {
@@ -117,10 +118,11 @@ const RegisterModal = ({
           localStorage.removeItem("accessToken");
           localStorage.removeItem("refreshToken");
           setValues(initialValues);
+          setAccountCreated(true)
           // props.history.push('/yardsales')
           setAuth(auth => ({ ...auth, reAuthenticateRequired: false }));
-          props.history.push("/sellers");
-          closeModal();
+          // props.history.push("/sellers");
+          // closeModal();
         } else if (json.STATUS === "ERROR") {
           // console.log('Bad Login Credentials', json)
           if (
@@ -170,7 +172,8 @@ const RegisterModal = ({
       >
         <Modal.Header>Create a New Account</Modal.Header>
         <Modal.Content scrolling>
-          <Form
+          {!accountCreated && (
+            <Form
             name="register-form"
             id="RegisterForm"
             onSubmit={handleSubmit}
@@ -301,6 +304,15 @@ const RegisterModal = ({
               </Grid.Row>
             </Grid>
           </Form>
+          )}
+
+          {accountCreated && (
+            <Message success>
+              <Message.Content>
+                Your account was created. Please check your email for confirmation.
+              </Message.Content>
+            </Message>
+          )}
         </Modal.Content>
 
         <Modal.Actions>
