@@ -4,5 +4,5 @@ git checkout master
 echo "Building app"
 npm run build
 echo "Deploying files to server"
-rsync -avP build/ appsuser@172.105.15.184:/var/www/yardsalemanager.com/
+rsync -avP --exclude='manifest.json' build/ appsuser@172.105.15.184:/var/www/yardsalemanager.com/
 echo "Deployment complete"
