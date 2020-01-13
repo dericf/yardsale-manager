@@ -1,0 +1,201 @@
+// Vars
+$primaryColor: #0B4F6C; // rgb(79, 93, 117);
+$primaryColor2: rgba(50, 67, 118, 0.384);
+$primaryColorLight: rgba(50, 67, 118, 0.513);
+
+// Buttons
+$cancelButtonColor: #757575;
+$saveButtonColor: $primaryColor; // rgb(79, 93, 117);
+$newButtonColor: $primaryColor; // rgba(197, 198, 202, 0.639);
+
+$buttonHoverOpacity: 0.8;
+
+// Colors
+$white: #FBFBFF;
+$black: #2d3142;
+$grey: #bfc0c0;
+
+.sidebar-item:hover {
+  background-color: $primaryColor;
+  opacity: $buttonHoverOpacity;
+  cursor: pointer;
+  color: $white;
+}
+
+.sidebar-sub-item:hover {
+    background-color: $primaryColor !important;
+    opacity: $buttonHoverOpacity;
+    cursor: pointer;
+    // color: $white;
+}
+
+// .sidebar-sub-item:hover {
+//   background-color: rgba(50, 67, 118, 0.62) !important;
+//   //   background: rgba(50, 67, 118, 0.62) !important;
+//   i {
+//     color: #fff !important;
+//   }
+// }
+
+ui.menu .ui.dropdown .menu > .item:hover {
+    background: $primaryColor !important;
+    opacity: 0.8;
+    // color: rgba(0, 0, 0, 0.95) !important;
+}
+
+.sidebar-item {
+  line-height: 1;
+}
+
+.corner-label {
+  border-right: 0 !important;
+  border-top: 0 !important;
+  border-bottom: 0 !important;
+  // border-bottom: 0 !important;
+}
+
+.left-input-borderless-label {
+  border: 0 !important;
+}
+
+
+@media(max-width: 650px) {
+    .buttons.yardsale-actions-mobile-buttons {
+        .button{
+            display: block !important;
+            text-align: center !important;
+            // padding-left: 0 !important;
+            // padding-right: 0 !important;
+            // min-width: 26px !important;
+
+            // i {
+            //     min-width: 26px !important;
+            // }   
+        }
+    }
+}
+
+.mx-auto {
+    margin-left: auto !important;
+    margin-right: auto !important;
+}
+
+
+#SidebarMiddle {
+  .active.item {
+    background-color: transparent;
+    .icon.sidebar-item {
+      color: $white;
+      background-color: $primaryColor;
+      
+
+    }
+    &:hover {
+      opacity: $buttonHoverOpacity;
+    }
+  }
+}
+
+#SidebarTop {
+  width: 65px !important;
+  border: 0 !important;
+}
+
+#SidebarMiddle {
+  height: "100%";
+  border-radius: 0;
+  width: 65px !important;
+  border: 0 !important
+}
+
+#NotificationMessage {
+  box-shadow: none;
+  .content {
+    padding-top: 7px !important;
+
+    .icon:hover {
+      cursor: pointer;
+    }
+  }
+}
+
+#SettingsPortal {
+  border-radius: 8px !important;
+}
+
+.ui.button.cancel {
+  background-color: $cancelButtonColor !important; // rgba(50, 67, 118, 0.62) !important;
+  color: $white !important;
+  
+  &:hover {
+    opacity: 0.8 !important;
+
+  }
+  
+  &:active, &:focus {
+    text-decoration: underline !important;
+  }
+
+}
+// 
+// Button - Save
+// 
+.ui.button.save {
+  background-color: $saveButtonColor !important; // rgba(50, 67, 118, 0.62) !important;
+  color: $white !important;
+  
+  &:hover {
+    opacity: 0.8 !important;
+
+  }
+  
+  &:active, &:focus {
+    text-decoration: underline !important;
+  }
+}
+// 
+// Button - New
+// 
+.ui.button.new {
+  background-color: $newButtonColor !important; // rgba(50, 67, 118, 0.62) !important;
+  color: $white !important;
+  
+  &:hover {
+    opacity: 0.8 !important;
+
+  }
+  
+  &:active, &:focus {
+    text-decoration: underline !important;
+  }
+}
+
+.ui.segment.rounded {
+  border-radius: 8px !important;
+}
+
+
+.borderless {
+  border: 0 !important;
+}
+
+// .icon {
+//   color: $primaryColor;
+
+//   :hover {
+//     color: $white !important;
+//   }
+// }
+
+.info-popup-icon:hover {
+  cursor: help !important;
+}
+
+.yardsale-list-segment:hover {
+  cursor: pointer;
+  background-color: $primaryColor !important;
+  color: $white !important;
+}
+.ui.menu .ui.dropdown .menu > .item:hover {
+  background-color: rgba(50, 67, 118, 0.62) !important;
+}
