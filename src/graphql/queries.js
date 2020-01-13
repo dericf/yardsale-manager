@@ -16,6 +16,7 @@ query GetUser {
       first_name
       last_name
       role
+      has_completed_onboarding
     }
 }
   
@@ -134,6 +135,9 @@ query GetYardsales {
       address_text
       notes
       is_active
+      pos_lng
+      pos_lat
+      is_public
       yardsale_seller_links {
         seller {
           name
@@ -172,6 +176,9 @@ query GetYardsale($yardsaleUUID: uuid) {
       address_text
       notes
       is_active
+      pos_lng
+      pos_lat
+      is_public
       yardsale_seller_links {
         seller {
           name
