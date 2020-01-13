@@ -3,13 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "start": "react-scripts start",
+    "start": "parcel src/index.html --out-dir='public' --port 3000",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
   "dependencies": {
     "@apollo/react-hooks": "0.1.0-beta.11",
+    "@react-google-maps/api": "^1.8.1",
     "apollo-boost": "^0.4.3",
     "apollo-cache-inmemory": "^1.6.2",
     "apollo-client": "^2.6.3",
@@ -17,22 +18,33 @@
     "apollo-link-http": "^1.5.15",
     "apollo-link-ws": "^1.0.19",
     "express": "^4.16.4",
+    "google-maps-api-loader": "^1.1.1",
     "graphql": "^14.4.2",
     "highlight.js": "^9.15.6",
     "jwt-decode": "^2.2.0",
+    "less": "^3.10.3",
     "morgan": "^1.9.1",
     "react": "^16.8.6",
     "react-apollo": "^2.1.11",
     "react-datepicker": "^2.9.6",
     "react-dom": "^16.8.6",
+    "react-geocode": "^0.2.1",
+    "react-google-autocomplete": "^1.1.2",
+    "react-google-maps": "^9.4.5",
     "react-notify-toast": "^0.5.1",
     "react-router-dom": "^5.0.0",
-    "react-scripts": "3.0.1",
-    "semantic-ui-css": "^2.4.1",
+    "react-scripts": "^3.3.0",
+    "semantic-ui": "^2.4.2",
+    "semantic-ui-less": "^2.4.1",
     "semantic-ui-react": "^0.87.3",
     "subscriptions-transport-ws": "^0.9.16"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "@craco/craco": "^5.6.2",
+    "@semantic-ui-react/craco-less": "^1.2.1",
+    "babel-core": "^6.26.3",
+    "sass": "^1.24.2"
+  },
   "eslintConfig": {
     "extends": "react-app"
   },
