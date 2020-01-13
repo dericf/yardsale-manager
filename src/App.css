@@ -1,15 +1,30 @@
-body, html{
-  margin:0;
-  padding:0;
+
+*{
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body,
+html {
+  margin: 0;
+  padding: 0;
   overflow: hidden;
+  background-color: #E9EDF0;
+  font-family: 'Open Sans', sans-serif !Important;
+  color: #2d3142;
+}
+
+.item, .text, a, .button, input, textarea, label {
+  font-family: 'Open Sans', sans-serif !important;
 }
 
 #TopNav {
-  border-bottom: solid 4px ; 
+  border-bottom: solid 4px;
   border-left: unset;
   border-right: unset;
   margin-left: 0 !important;
-  background-color:  #fff;  
+  background-color: #fff;
   padding-left: 16px;
   padding-right: 16px;
 }
@@ -18,23 +33,22 @@ body, html{
   background-color: rgb(53, 53, 53) !important;
   padding-top: 16px !important;
   padding-bottom: 16px !important;
-  margin:0 !important;
-  width: 100vw !important
+  margin: 0 !important;
+  width: 100vw !important;
 }
 
 #MainContent {
   margin-left: 0 !important;
   margin-right: 0 !important;
-  padding-top: "1rem";
-  padding-left: "0"; 
-  padding-right: "0";
-  border-radius: "unset";
+  padding: "20px" !important;
+  border-radius: 0 !important;
+  border: 0 !important;
+  border-left: 1px solid #d0d0d06e !important;
 }
 
 .inverted {
-  background-color: #1E1F1A !important;
+  background-color: #1e1f1a !important;
 }
-
 
 .modal > i.close.icon {
   position: fixed;
@@ -98,7 +112,6 @@ body, html{
   padding-right: 0 !important;
 }
 
-
 .pt16 {
   padding-top: 16px !important;
 }
@@ -120,6 +133,43 @@ body, html{
 .px0 {
   padding-left: 0px !important;
   padding-right: 0px !important;
+}
+
+.py8 {
+  padding-top: 8px !important;
+  padding-bottom: 8px !important;
+}
+
+.px8 {
+  padding-left: 8px !important;
+  padding-right: 8px !important;
+}
+
+.pt8 {
+  padding-top: 8px !important;
+}
+
+.pb8 {
+  padding-bottom: 8px !important;
+}
+
+
+.my8 {
+  margin-top: 8px !important;
+  padding-bottom: 8px !important;
+}
+
+.mx8 {
+  margin-left: 8px !important;
+  padding-right: 8px !important;
+}
+
+.mt8 {
+  margin-top: 8px !important;
+}
+
+.mb8 {
+  margin-bottom: 8px !important;
 }
 
 .my16 {
@@ -144,6 +194,11 @@ body, html{
   margin-bottom: 16px !important;
 }
 
+.mx0 {
+  margin-left: 0px !important;
+  margin-right: 0px !important;
+}
+
 .my0 {
   margin-top: 0px !important;
   margin-bottom: 0px !important;
@@ -157,7 +212,7 @@ MEDIA QUERIES MOBILE ( < 800 )
 
 */
 
-@media (max-width: 800px){
+@media (max-width: 800px) {
   /* Margins */
   .mobile-m0 {
     margin: 0 !important;
@@ -199,7 +254,6 @@ MEDIA QUERIES MOBILE ( < 800 )
   .mobile-pr0 {
     padding-right: 0 !important;
   }
-
 
   .mobile-py16 {
     padding-top: 16px !important;
@@ -258,12 +312,11 @@ MEDIA QUERIES MOBILE ( < 800 )
   .mobile-small-button {
     font-size: 12px !important;
   }
-
 }
 
-
+/* TODO: PRIMARY?? */
 .button.primary {
-  background-color: #324376 !important;
+  background-color: #324376;
 }
 .hover-pointer:hover {
   cursor: pointer;
@@ -274,17 +327,14 @@ img:hover {
 }
 
 .inverted-hover:hover {
-  color:white !important;
+  color: white !important;
 }
-
 
 /* UI Dropdown */
 
 .ui.selection.dropdown {
   line-height: 20px !important;
 }
-
-
 
 /* Top Nav Items */
 
@@ -293,5 +343,99 @@ img:hover {
 }
 
 .item.topNavItem.active::before {
-  background: rgba(0, 0, 0, 0.0) !important;
+  background: rgba(0, 0, 0, 0) !important;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+.layout-sidebar {
+  grid-area: layout-sidebar;
+  height:100vh;
+  
+  /* width:2vw; */
+  /* background: rgb(24, 83, 212); */
+}
+
+.layout-content {
+  grid-area: layout-content;
+  height: 100vh;
+  background-color: #E9EDF0;
+}
+
+.layout-notifications {
+  grid-area: layout-notifications;
+  height: 5vh;
+  display: none;
+  background-color: #FFFFFF;
+}
+
+/* .layout-top {
+  grid-area: layout-top;
+  height: 2vh;
+  backgroud-color: #E9EDF0;
+} */
+
+.wrapper {
+  display: grid;
+  grid-gap: 0px;
+  grid-template-columns: 65px auto;
+  /* grid-template-rows: 50px 10px; */
+  grid-template-areas:
+  "layout-sidebar layout-notifications"  
+  "layout-sidebar layout-content";
+}
+
+.font-dark {
+  color: #2C2626;
+}
+
+/* .inverted {
+  background-color: #0346D2
+} */
+
+input.cashier-large-input, .input.cashier-large-input, .dropdown.cashier-large-input {
+  height: 66px !important;
+  font-size: 20px !important ;
+  width: 100%;
+  text-align: right !important;
+  /* max-width: 165px !important; */
+  padding-left: 26px !important;
+}
+
+
+input.cashier-large-input.money, .input.cashier-large-input.money, .dropdown.cashier-large-input.money {
+  max-width: 165px !important;
+}
+
+.cashier-large-input > i.icon {
+  font-size: 26px;
+}
+
+.dropdown > .text {
+  line-height: 2;
+  font-size: 20px !important;
+}
+
+/* TODO: Move to LESS */
+.ui.popup {
+  z-index: 100000 !important
+}
+
+
+
+
+
+/* .sidebar-item > i:hover {
+  color: #fff;
+} */  
+
+
