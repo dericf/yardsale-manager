@@ -78,11 +78,22 @@ const RegisterModal = ({
     const target = event.target;
     const val = target.type === "checkbox" ? target.checked : target.value;
     const name = target.name;
+    console.log(String(String(val).split(' ').map(name => name[0])))
+    console.log("NAME: ", name)
+    let setInitials = null;
+    let computedInitials = ""
+
+    if (name === 'name') {
+      setInitials = true
+      computedInitials = String(String(val).split(' ').map(name => name[0])).replace(',', '')
+    }
 
     setValues({
       ...values,
-      [name]: val
+      [name]: val,
+      initials: setInitials ? computedInitials : values.initials
     });
+
   };
 
   const handleSubmit = e => {
@@ -154,7 +165,7 @@ const RegisterModal = ({
   return (
     <Fragment>
       <Menu.Item
-        tabindex="-1"
+        tabIndex="-1"
         as="a"
         index={0}
         content="Create a New Account"
@@ -163,12 +174,12 @@ const RegisterModal = ({
       />
 
       <Modal
-        style={{ width: 350 }}
+        style={{ width: 385 }}
         open={open}
         closeOnDimmerClick={false}
         closeOnDocumentClick={false}
         closeOnEscape={true}
-        dimmer="inverted"
+        dimmer={false}
       >
         {!accountCreated && (
           <Modal.Header>Create a New Account</Modal.Header>
@@ -209,7 +220,40 @@ const RegisterModal = ({
                 <Grid.Column width={6}>
                   <Form.Group>
                     <Form.Field width={16}>
-                      <label>Initials</label>
+                      {/* TODO: Turn this Help Popup into its own component: Start the standard for the help popup for consistency */}
+                      <Popup
+                        hoverable
+                        inverted
+                        position="top right"
+                        content={
+                          <Grid centered>
+                            <Grid.Row centered>
+                            <Grid.Column width={16}>
+                              <p className="text">
+                                Will this user be used as a Seller?
+                              {/* If the user you are creating now will be a seller, use this field as a unique identifier for this seller.  */}
+                              {/* <br />  */}
+
+                              {/* <br /> */}
+                              {/* Typically this is simply the initials of the seller but can be any unique value." */}
+                              </p>
+                            </Grid.Column>
+                            </Grid.Row>
+                            <Grid.Row>
+                              <Grid.Column width={8}>
+                              <Button fluid className="cancel"><Icon name="close" />No</Button>
+                              </Grid.Column>
+                              <Grid.Column width={8}>
+                                <Button fluid className="save"><Icon name="check" />Yes</Button>
+                              </Grid.Column>
+                            </Grid.Row>
+
+                            <Grid.Row>
+                            </Grid.Row>
+                          </Grid>
+                        }
+                        trigger={<label className="info-popup-icon">Initials or I.D.<Icon fitted name="info circle" style={{color: "red", float: "right"}} /></label>}
+                      />
                       <Input
                         fluid
                         type="text"
@@ -223,7 +267,7 @@ const RegisterModal = ({
                   </Form.Group>
                 </Grid.Column>
               </Grid.Row>
-              <Grid.Row className="py0">
+              <Grid.Row className="">
                 <Grid.Column width={16}>
                   <Form.Group>
                     <Form.Field width={16}>
@@ -241,15 +285,15 @@ const RegisterModal = ({
                   </Form.Group>
                 </Grid.Column>
               </Grid.Row>
-              <Grid.Row className="py0">
+              <Grid.Row className="pb0">
                 <Grid.Column width={16}>
                   <Form.Group>
                     <Form.Field width={16}>
                       <label>
                         Password{" "}
                         <Popup
-                          size="mini"
-                          trigger={<Icon name="info circle"></Icon>}
+                          inverted
+                          trigger={<Icon className="info-popup-icon" name="info circle" style={{color: "red"}}></Icon>}
                         >
                           <Popup.Content>
                             Password must be at least 6 characters long.
@@ -269,7 +313,7 @@ const RegisterModal = ({
                   </Form.Group>
                 </Grid.Column>
               </Grid.Row>
-              <Grid.Row className="py0">
+              <Grid.Row className="pt0">
                 <Grid.Column width={16}>
                   <Form.Group>
                     <Form.Field width={16}>
@@ -297,13 +341,25 @@ const RegisterModal = ({
                   </Grid.Column>
                 </Grid.Row>
               )}
-              <Grid.Row className="py0">
+              <Grid.Row className="pt0">
                 <Grid.Column>
                   <Item
                     as={Link}
                     to="/login"
                     className="hover-pointer"
                     content="Already have an account? Log in"
+                    onClick={closeModal}
+                  ></Item>
+                </Grid.Column>
+              </Grid.Row>
+
+              <Grid.Row className="pb0">
+                <Grid.Column>
+                  <Item
+                    as={Link}
+                    to="/request-change-password"
+                    className="hover-pointer"
+                    content="Forgot your password? Change it here"
                     onClick={closeModal}
                   ></Item>
                 </Grid.Column>
@@ -340,7 +396,7 @@ const RegisterModal = ({
                   <Button
                   form="RegisterForm"
                   type="submit"
-                  positive
+                  className="save"
                   content="Create Account"
                   fluid
                   loading={auth.loading}
