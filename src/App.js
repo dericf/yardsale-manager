@@ -1,4 +1,4 @@
-import React, { Component, Fragment, useState, useContext } from "react";
+import React, { Component, Fragment, useState, useContext, useEffect } from "react";
 
 import { Router, Route, Switch, Redirect, Link } from "react-router-dom";
 
@@ -40,13 +40,12 @@ import Yardsales from "./pages/Yardsales";
 import Home from "./pages/Home";
 import Onboarding from "./pages/Onboarding";
 import Market from "./pages/Market";
-import ForgotPasswordModal from './components/modals/ForgotPasswordModal/ForgotModalPassword'
+import ForgotPasswordModal from "./components/modals/ForgotPasswordModal/ForgotModalPassword";
 
 import "./utils/prototypes";
 
 import { NAVBAR_HEIGHT, FOOTER_HEIGHT, TITLE_HEIGHT } from "./constants";
 
-import { defaultFakeData } from "./FakeData";
 
 import { auth as defaultAuth } from "./Auth";
 import LoginModal from "./components/modals/LoginModal/LoginModal";
@@ -63,10 +62,6 @@ import Login from "./pages/Login";
 import SidebarNav from "./components/layout/SidebarNav";
 import ConfirmNewPasswordModalBody from "./components/modals/ForgotPasswordModal/ConfirmNewPasswordModalBody";
 
-export const FakeDataContext = React.createContext([
-  defaultFakeData,
-  () => defaultFakeData
-]);
 export const AuthContext = React.createContext([
   defaultAuth,
   () => defaultAuth
@@ -74,10 +69,11 @@ export const AuthContext = React.createContext([
 
 const defaultAppContext = {
   activePage: "",
+  showLoginModal: false,
   notifications: {
     show: false,
     dismiss: true,
-    message: "This is a test notification",
+    message: "",
     level: "info"
   },
   sidebar: {
@@ -87,7 +83,7 @@ const defaultAppContext = {
     searchQuery: "",
     activeYardsaleUUID: null
   }
-}
+};
 
 export const AppContext = React.createContext([
   defaultAppContext,
@@ -96,32 +92,33 @@ export const AppContext = React.createContext([
 
 const App = () => {
   const [title, setTitle] = useState("");
-  const [fakeData, setFakeData] = useState(defaultFakeData);
   const [auth, setAuth] = useState(defaultAuth);
-  const [app, setApp] = useState(defaultAppContext)
+  const [app, setApp] = useState(defaultAppContext);
+
+  // useEffect(() => {
+  //   console.log('APP Context', app)
+  // }, [app])
   return (
     <Router history={history}>
-      {/* Eventually remove this FakeDataContext */}
-      <FakeDataContext.Provider value={{ fakeData, setFakeData }}>
-        <AuthContext.Provider value={{ auth, setAuth }}>
+      <AuthContext.Provider value={{ auth, setAuth }}>
         <AppContext.Provider value={{ app, setApp }}>
-          <Notifications options={{ zIndex: 20000, top: "85vh" }} />
+
+          {app && app.showLoginModal === true && (
+            <LoginModal defaultOpen={true} noTrigger={true} />
+          )}
 
           <div className="wrapper">
             <div className="layout-notifications" id="TopNotificationBar">
-              <TopNotifications />
+              {/* <TopNotifications /> */}
             </div>
+
+            {/* Render the Sidebar (Uses CSS Grid) */}
             <SidebarNav />
+
             <div className="layout-content">
+              {/* Main Container */}
               <Container as={Segment} fluid id="MainContent">
                 <Grid>
-                  {/* <Grid.Row
-                    className="p0 m0"
-                    verticalAlign="middle"
-                    style={{ height: TITLE_HEIGHT }}
-                  >
-                    <Title title={title}></Title>
-                  </Grid.Row> */}
                   <Grid.Row
                     className="p0 m0"
                     style={{
@@ -140,20 +137,17 @@ const App = () => {
                           )}
                         />
 
-                        <PrivateRoute
+                        <Route
                           exact
                           path="/login"
-                          render={props => (
-                            <Login {...props} />
-                          )}
+                          render={props => <Login {...props} />}
                         />
+
                         {/* Onboarding */}
                         <PrivateRoute
                           exact
                           path="/welcome"
-                          render={props => (
-                            <Onboarding {...props} />
-                          )}
+                          render={props => <Onboarding {...props} />}
                         />
                         {/* Market */}
                         <PrivateRoute
@@ -182,20 +176,19 @@ const App = () => {
                         <Route
                           exact
                           path="/request-change-password"
-                          render={props => (
-                            <ForgotPasswordModal {...props}  />
-                          )}
+                          render={props => <ForgotPasswordModal {...props} />}
                         />
 
                         <Route
                           exact
                           path="/confirm-change-password"
                           render={props => (
-                            <ConfirmNewPasswordModalBody defaultOpen={true} {...props}  />
+                            <ConfirmNewPasswordModalBody
+                              defaultOpen={true}
+                              {...props}
+                            />
                           )}
                         />
-
-                        
 
                         <PrivateRoute
                           exact
@@ -220,15 +213,14 @@ const App = () => {
                             />
                           )}
                         />
-
-                        <Route 
-                        path="/404" 
-                        render={props => (                            
-                            <NotFoundPage
-                              {...props}
-                            />
-                          )} />
+                        {/* Handle the 404 Error case */}
+                        <Route
+                          path="/404"
+                          render={props => <NotFoundPage {...props} />}
+                        />
+                        {/* If no matches found: redirect to 404 */}
                         <Redirect to="/404" />
+
                       </Switch>
                     </Grid.Column>
                   </Grid.Row>
@@ -250,8 +242,7 @@ const App = () => {
 
            */}
         </AppContext.Provider>
-        </AuthContext.Provider>
-      </FakeDataContext.Provider>
+      </AuthContext.Provider>
     </Router>
   );
 };
