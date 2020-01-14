@@ -31,16 +31,21 @@ import {
 import { notify } from "react-notify-toast";
 
 import { BASE_URL } from "../../../constants";
-import { FakeDataContext } from "../../../App";
 
-import { AuthContext } from "../../../App";
+import { AuthContext, AppContext } from "../../../App";
 
 import RegisterModal from "../RegisterModal/RegisterModal";
 
-const LoginModal = ({ defaultOpen = false, forcedOpen = false, ...props }) => {
+const LoginModal = ({
+  defaultOpen = true,
+  forcedOpen = false,
+  noTrigger = false,
+  ...props
+}) => {
   // TODO: (Future) make this more responsive. Add more than just two widths
   // const nameRef = createRef()
   const { auth, setAuth } = React.useContext(AuthContext);
+  const { app, setApp } = React.useContext(AppContext);
   const client = props.client;
   const autoFocusRef = useRef();
   const initialValues = {
@@ -54,6 +59,12 @@ const LoginModal = ({ defaultOpen = false, forcedOpen = false, ...props }) => {
 
   const closeModal = () => {
     setOpen(false);
+    setAuth(auth => ({
+      ...auth,
+      loading: false
+    }));
+    setApp({...app, showLoginModal: false})
+    
   };
   const openModal = () => {
     setOpen(true);
@@ -121,11 +132,12 @@ const LoginModal = ({ defaultOpen = false, forcedOpen = false, ...props }) => {
           localStorage.setItem("refreshToken", json.refreshToken);
           setValues(initialValues);
           // props.history.push('/yardsales')
-          setAuth(auth => ({ ...auth, reAuthenticateRequired: false }));
-        props.history.push("/yardsales");
+          setAuth(auth => ({ ...auth, loading: false, reAuthenticateRequired: false }));
+          closeModal()
+          props.history.push("/yardsales");
           // window.location.assign('/yardsales')
           // window.location.assign(json.callback)
-        //   closeModal();
+          //   closeModal();
         } else if (json.STATUS === "ERROR") {
           // console.log('Bad Login Credentials', json)
           if (json.MESSAGE === "User not found") {
@@ -172,21 +184,25 @@ const LoginModal = ({ defaultOpen = false, forcedOpen = false, ...props }) => {
 
   return (
     <Fragment>
-      <Menu.Item
-        as="a"
-        index={0}
-        content="Login"
-        className="horizontal"
-        onClick={openModal}
-      />
+      {/* {props.children ? (openModal => (props.children)
+      ) : (
+        <Fragment>
+      )} */}
 
+      {noTrigger === false && (
+        <Menu.Item
+          as="a"
+          index={0}
+          content="Login"
+          className="horizontal"
+          onClick={openModal}
+        />
+      )}
       <Modal
-        style={{ width: 350 }}
+        style={{ width: 385 }}
         open={open}
-        closeOnDimmerClick={false}
-        closeOnDocumentClick={false}
-        closeOnEscape={true}
-        dimmer="inverted"
+        closeIcon={<Icon name="close" onClick={closeModal}></Icon>}
+        dimmer={true}
       >
         <Modal.Header>Log In</Modal.Header>
         <Modal.Content scrolling>
@@ -201,7 +217,7 @@ const LoginModal = ({ defaultOpen = false, forcedOpen = false, ...props }) => {
             <Grid>
               <Grid.Row className="py0">
                 <Grid.Column width={16}>
-                  <Form.Group>
+                  <Form.Group className="mb0">
                     <Form.Field width={16}>
                       <label>Email</label>
                       <Input
@@ -220,7 +236,7 @@ const LoginModal = ({ defaultOpen = false, forcedOpen = false, ...props }) => {
               </Grid.Row>
               <Grid.Row className="py0">
                 <Grid.Column width={16}>
-                  <Form.Group>
+                  <Form.Group className="mb0">
                     <Form.Field width={16}>
                       <label>Password</label>
                       <Input
@@ -246,14 +262,23 @@ const LoginModal = ({ defaultOpen = false, forcedOpen = false, ...props }) => {
                   </Grid.Column>
                 </Grid.Row>
               )}
-              <Grid.Row className="py0">
-                <Grid.Column>
+              <Grid.Row className="pb8 pt16" divided centered>
+                <Grid.Column width={8} textAlign="left">
                   <Item
                     as={Link}
                     to="/register"
                     content="Create a New Account"
                   />
-                  {/* <RegisterModal onClick={closeModal} /> */}
+                </Grid.Column>
+
+                <Grid.Column width={8} textAlign="right">
+                  <Item
+                    as={Link}
+                    to="/request-change-password"
+                    className="hover-pointer"
+                    content="Forgot your password?"
+                    onClick={closeModal}
+                  ></Item>
                 </Grid.Column>
               </Grid.Row>
             </Grid>
@@ -263,21 +288,11 @@ const LoginModal = ({ defaultOpen = false, forcedOpen = false, ...props }) => {
         <Modal.Actions>
           <Grid>
             <Grid.Row columns={1}>
-              {/* <Grid.Column width={8}>
-                                <Button
-                                    onClick={closeModal}
-                                    negative
-                                    fluid
-                                    disabled={forcedOpen}>
-                                    Cancel
-                                </Button>
-                            </Grid.Column> */}
-
               <Grid.Column width={16}>
                 <Button
                   form="LoginForm"
                   type="submit"
-                  positive
+                  className="save"
                   content="Log In"
                   fluid
                   loading={auth.loading}
