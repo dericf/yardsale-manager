@@ -91,7 +91,7 @@ const Sellers = ({ setTitle }) => {
                     )
                 }).map(seller => {
                     return (
-                        <Fragment>
+                        <Fragment key={seller.uuid}>
                             {/* Third Grid.Row (Card/Actions) */}
                             <Grid.Row key={seller.uuid}>
                                 <Grid.Column width={10} verticalAlign="middle" style={{ height: "100%" }}>
