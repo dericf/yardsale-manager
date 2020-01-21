@@ -22,10 +22,10 @@ const Home = ({ setTitle }) => {
   const minRowHeight = "30vh"
   return (
     <Segment style={{ border: "0" }}>
-      <Grid centered as={Container}>
+      <Grid centered as={Container} stackable>
         <Grid.Row className="py0 mt16 mb0" centered style={{minHeight: "40vh"}}>
           <Grid.Column verticalAlign="middle" width={10} style={{ zIndex: 10 }}>
-            <Container text textAlign="center" style={{ width: "100%" }}>
+            <Container as={Segment} raised text textAlign="center" style={{ width: "100%" }}>
               <Header
                 textAlign="center"
                 as="h1"
@@ -66,16 +66,16 @@ const Home = ({ setTitle }) => {
         {/* Cards */}
         <Grid.Row className="py0 mt16 mb0" style={{ minHeight: "30vh" }}>
           <Grid.Column mobile={8} computer={4}>
-            <Segment className="rounded" fluid>
+            <Segment className="rounded" fluid raised>
               <Header textAlign="center" as="h3" content="The Problem" />
-              <p textAlign="left" className="small text">
+              <p  className="small text">
                 Manual entry is painful and leaves room for mistakes, requiring
                 records to be transfered to a spreadsheet or application.
               </p>
             </Segment>
           </Grid.Column>
           <Grid.Column mobile={8} computer={4}>
-            <Segment className="rounded" fluid>
+            <Segment className="rounded" fluid raised>
               <Header
                 textAlign="left"
                 as="h3"
@@ -85,7 +85,7 @@ const Home = ({ setTitle }) => {
             </Segment>
           </Grid.Column>
           <Grid.Column mobile={8} computer={4}>
-            <Segment className="rounded" fluid>
+            <Segment className="rounded" fluid raised>
               <Header
                 textAlign="left"
                 as="h3"
@@ -95,7 +95,7 @@ const Home = ({ setTitle }) => {
             </Segment>
           </Grid.Column>
           <Grid.Column mobile={8} computer={4}>
-            <Segment className="rounded" fluid>
+            <Segment className="rounded" fluid raised>
               <Header
                 textAlign="left"
                 as="h3"
