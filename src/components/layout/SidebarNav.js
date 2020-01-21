@@ -38,61 +38,69 @@ const SidebarNav = ({ ...props }) => {
   };
 
   return (
-    <Menu borderless stackable id="SidebarMiddle" compact icon vertical>
-      <SettingsPortal />
+    <div class="grid-sidebar-subgrid">
+      <div class="grid-sidebar-settings">
+        <Menu id="SettingsSidebar" borderless compact icon vertical>
+          <SettingsPortal />
+        </Menu>
+      </div>
 
-      <Menu.Item active={app.activePage === "home"} name="home">
-        <Icon
-          circular
-          name="home"
-          active={app.activePage === "home"}
-          onClick={() => {
-            setActivePage("home");
-            history.push("/");
-          }}
-          className="sidebar-item"
-        />
-      </Menu.Item>
+      <div class="grid-sidebar-middle">
+        <Menu borderless stackable id="SidebarMiddle" compact icon vertical>
+          <Menu.Item active={app.activePage === "home"} name="home">
+            <Icon
+              circular
+              name="home"
+              active={app.activePage === "home"}
+              onClick={() => {
+                setActivePage("home");
+                history.push("/");
+              }}
+              className="sidebar-item"
+            />
+          </Menu.Item>
 
-      <Menu.Item name="market" active={app.activePage === "market"}>
-        <Icon
-          circular
-          name="map marker alternate"
-          className="sidebar-item"
-          active={app.activePage === "market"}
-          onClick={() => {
-            setActivePage("market");
-            history.push("/market");
-          }}
-        />
-      </Menu.Item>
+          <Menu.Item name="market" active={app.activePage === "market"}>
+            <Icon
+              circular
+              name="map marker alternate"
+              className="sidebar-item"
+              active={app.activePage === "market"}
+              onClick={() => {
+                setActivePage("market");
+                history.push("/market");
+              }}
+            />
+          </Menu.Item>
 
-      <Menu.Item name="sellers" active={app.activePage === "sellers"}>
-        <Icon
-          circular
-          name="users"
-          onClick={() => {
-            setActivePage("sellers");
-            history.push("/sellers");
-          }}
-          active={app.activePage === "sellers"}
-          className="sidebar-item"
-        />
-      </Menu.Item>
+          <Menu.Item name="sellers" active={app.activePage === "sellers"}>
+            <Icon
+              circular
+              name="users"
+              onClick={() => {
+                setActivePage("sellers");
+                history.push("/sellers");
+              }}
+              active={app.activePage === "sellers"}
+              className="sidebar-item"
+            />
+          </Menu.Item>
 
-      <Menu.Item name="yardsales" active={app.activePage === "yardsales"}>
-        <Icon
-          circular
-          name="map signs"
-          active={app.activePage === "yardsales"}
-          onClick={() => {
-            setActivePage("yardsales");
-            history.push("/yardsales");
-          }}
-          className="sidebar-item"
-        />
-      </Menu.Item>
-    </Menu>
+          <Menu.Item name="yardsales" active={app.activePage === "yardsales"}>
+            <Icon
+              circular
+              name="map signs"
+              active={app.activePage === "yardsales"}
+              onClick={() => {
+                setActivePage("yardsales");
+                history.push("/yardsales");
+              }}
+              className="sidebar-item"
+            />
+          </Menu.Item>
+        </Menu>
+      </div>
+    </div>
   );
 };
 

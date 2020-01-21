@@ -40,7 +40,16 @@ body {
   font-family: 'Lato', sans-serif;
 }
 
-.layout-sidebar {
+
+// 
+// 
+// 
+// END GRID DEFINITIONS
+// 
+// 
+// 
+
+.grid-sidebar {
   grid-area: layout-sidebar;
   height: 100vh;
   background-color: $primaryColor !important;
@@ -49,21 +58,21 @@ body {
   /* background: rgb(24, 83, 212); */
 }
 
-.layout-content {
+.grid-content {
   grid-area: layout-content;
   height: 100vh;
   background-color: $white;
   border: none !important;
 }
 
-.layout-notifications {
+.grid-notifications {
   grid-area: layout-notifications;
   height: 5vh;
   display: none;
   background-color: $primaryColor;
 }
 
-.wrapper {
+.grid-wrapper {
   display: grid;
   grid-gap: 0px;
   grid-template-columns: $sidebarWidth auto;
@@ -73,6 +82,37 @@ body {
     "layout-sidebar layout-content";
 }
 
+
+.grid-sidebar-settings {
+  grid-area: grid-sidebar-settings;
+  width: $sidebarWidth;
+  /* border: 4px solid red; */
+}
+
+.grid-sidebar-middle {
+  grid-area: grid-sidebar-middle;
+  width: $sidebarWidth;
+}
+
+.grid-sidebar-subgrid {
+  display: grid;
+  width: $sidebarWidth;
+  grid-template-rows: 30vh  auto;
+  grid-template-columns: 15vw;
+  grid-template-areas:
+    "grid-sidebar-settings"
+    "grid-sidebar-middle";
+  /* border: 4px solid red; */
+}
+
+
+// 
+// 
+// 
+// END GRID DEFINITIONS
+// 
+// 
+// 
 #MainContent {
   // padding: 0 !important;
   height: 100vh !important;
@@ -84,12 +124,12 @@ body {
   width: 100% !important;
 }
 
-#SidebarMiddle {
+#SidebarMiddle, #SettingsSidebar {
   border-radius: 0 !important;
   border: none !important;
-  position: fixed !important;
-  top: 0;
-  left: 0;
+  // position: fixed !important;
+  // top: 0;
+  // left: 0;
   background-color: $primaryColor;
   width: $sidebarWidth !important;
 
@@ -145,19 +185,21 @@ body {
 }
 
 #SettingsPortal {
-  left: 65px;
+  margin-top: 0 !important;
+  left: $sidebarWidth;
   position: fixed;
   top: 0;
   z-index: 1000;
-  border-radius: 0;
-  background-color: $primaryColor !important;
+  border-radius: 0 !important;
+  background-color: $white !important;
+  // border-radius: 8px !important;
 }
 
-  .sidebar-item:hover {
-  background-color: $primaryColor;
-  opacity: $buttonHoverOpacity;
-  cursor: pointer;
-  color: $white;
+.sidebar-item:hover {
+    background-color: $primaryColor;
+    opacity: $buttonHoverOpacity;
+    cursor: pointer;
+    color: $white;
 }
 
 .sidebar-sub-item:hover {
@@ -242,10 +284,6 @@ ui.menu .ui.dropdown .menu > .item:hover {
       cursor: pointer;
     }
   }
-}
-
-#SettingsPortal {
-  border-radius: 8px !important;
 }
 
 .ui.button.cancel {
@@ -652,3 +690,16 @@ img:hover {
 .timepicker {
   min-width: 200px;
 }
+
+
+// .button.list-action-icon {
+//   &:hover {
+//     color: $primaryColor !important;
+
+//   }
+//   .icon:hover {
+//     color: $primaryColor !important;
+//   }
+// }
+
+
