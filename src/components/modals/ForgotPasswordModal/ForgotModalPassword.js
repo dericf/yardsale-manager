@@ -55,6 +55,7 @@ const ForgotPasswordModal = ({
 
   const closeModal = () => {
     setOpen(false);
+    props.history.replace('/')
   };
   const openModal = () => {
     setOpen(true);
@@ -170,7 +171,7 @@ const ForgotPasswordModal = ({
         closeOnDimmerClick={false}
         closeOnDocumentClick={false}
         closeOnEscape={true}
-        dimmer="blurring"
+        closeIcon={<Icon name="close" onClick={closeModal}></Icon>}
       >
         <Modal.Header>Reset Your Password</Modal.Header>
         <Modal.Content scrolling>

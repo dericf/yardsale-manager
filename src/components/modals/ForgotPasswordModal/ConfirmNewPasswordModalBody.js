@@ -195,7 +195,7 @@ const ConfirmNewPasswordModalBody = ({
                             values.password.length < 6) &&
                           "Password needs to be at least 6 characters (preferably greater than 10)"
                         }
-                        trigger={<label className="info-popup-icon">Password <Icon name="info circle" /></label>}
+                        trigger={<label className="info-popup-icon">Password <Icon name="help circle" /></label>}
                       />
                       <Input
                         fluid
