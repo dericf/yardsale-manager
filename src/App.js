@@ -39,7 +39,6 @@ import PrivateRoute from "./components/PrivateRoute";
 
 import Loading from "./components/layout/Loading";
 import Title from "./components/layout/Title";
-import TopNav from "./components/layout/TopNav";
 import Footer from "./components/layout/Footer";
 import Sellers from "./pages/Sellers";
 import Yardsales from "./pages/Yardsales";
@@ -111,15 +110,16 @@ const App = () => {
             <LoginModal defaultOpen={true} noTrigger={true} />
           )}
 
-          <div className="wrapper">
-            <div className="layout-notifications" id="TopNotificationBar">
+          <div className="grid-wrapper">
+            <div className="grid-notifications" id="TopNotificationBar">
               {/* <TopNotifications /> */}
             </div>
 
             {/* Render the Sidebar (Uses CSS Grid) */}
-            <SidebarNav />
-
-            <div className="layout-content">
+            <div className="grid-sidebar">
+              <SidebarNav />
+            </div>
+            <div className="grid-content">
               <Segment basic id="MainContent" textAlign="center">
                 <Switch>
                   {/* Home (root/index) */}
