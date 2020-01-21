@@ -1,4 +1,10 @@
-import React, { Component, Fragment, useState, useContext, useEffect } from "react";
+import React, {
+  Component,
+  Fragment,
+  useState,
+  useContext,
+  useEffect
+} from "react";
 
 import { Router, Route, Switch, Redirect, Link } from "react-router-dom";
 
@@ -23,7 +29,7 @@ import history from "./utils/history";
 
 // import 'semantic-ui-css/semantic.min.css';
 import "../semantic/dist/semantic.css";
-import "./index.css";
+// import "./index.css";
 import "./App.scss";
 // import 'semantic-ui-less/themes/flat/globals'
 
@@ -45,7 +51,6 @@ import ForgotPasswordModal from "./components/modals/ForgotPasswordModal/ForgotM
 import "./utils/prototypes";
 
 import { NAVBAR_HEIGHT, FOOTER_HEIGHT, TITLE_HEIGHT } from "./constants";
-
 
 import { auth as defaultAuth } from "./Auth";
 import LoginModal from "./components/modals/LoginModal/LoginModal";
@@ -102,7 +107,6 @@ const App = () => {
     <Router history={history}>
       <AuthContext.Provider value={{ auth, setAuth }}>
         <AppContext.Provider value={{ app, setApp }}>
-
           {app && app.showLoginModal === true && (
             <LoginModal defaultOpen={true} noTrigger={true} />
           )}
@@ -116,131 +120,97 @@ const App = () => {
             <SidebarNav />
 
             <div className="layout-content">
-              {/* Main Container */}
-              <Container as={Segment} fluid id="MainContent">
-                <Grid>
-                  <Grid.Row
-                    className="p0 m0"
-                    style={{
-                      overflowY: "auto",
-                      overflowX: "hidden",
-                      height: "100vh"
-                    }}
-                  >
-                    <Grid.Column width={16} className="p0">
-                      <Switch>
-                        <Route
-                          exact
-                          path="/"
-                          render={props => (
-                            <Home {...props} setTitle={setTitle} />
-                          )}
-                        />
+              <Segment basic id="MainContent" textAlign="center">
+                <Switch>
+                  {/* Home (root/index) */}
+                  <Route
+                    exact
+                    path="/"
+                    render={props => <Home {...props} setTitle={setTitle} />}
+                  />
+                  {/* Login */}
+                  <Route
+                    exact
+                    path="/login"
+                    render={props => <Login {...props} />}
+                  />
 
-                        <Route
-                          exact
-                          path="/login"
-                          render={props => <Login {...props} />}
-                        />
+                  {/* Onboarding */}
+                  <PrivateRoute
+                    exact
+                    path="/welcome"
+                    render={props => <Onboarding {...props} />}
+                  />
+                  {/* Market */}
+                  <PrivateRoute
+                    exact
+                    path="/market"
+                    render={props => <Market {...props} setTitle={setTitle} />}
+                  />
 
-                        {/* Onboarding */}
-                        <PrivateRoute
-                          exact
-                          path="/welcome"
-                          render={props => <Onboarding {...props} />}
-                        />
-                        {/* Market */}
-                        <PrivateRoute
-                          exact
-                          path="/market"
-                          render={props => (
-                            <Market {...props} setTitle={setTitle} />
-                          )}
-                        />
+                  <PrivateRoute
+                    exact
+                    path="/sellers"
+                    render={props => <Sellers {...props} setTitle={setTitle} />}
+                  />
+                  <PrivateRoute
+                    exact
+                    path="/yardsales"
+                    render={props => (
+                      <Yardsales {...props} setTitle={setTitle} />
+                    )}
+                  />
 
-                        <PrivateRoute
-                          exact
-                          path="/sellers"
-                          render={props => (
-                            <Sellers {...props} setTitle={setTitle} />
-                          )}
-                        />
-                        <PrivateRoute
-                          exact
-                          path="/yardsales"
-                          render={props => (
-                            <Yardsales {...props} setTitle={setTitle} />
-                          )}
-                        />
+                  <Route
+                    exact
+                    path="/request-change-password"
+                    render={props => <ForgotPasswordModal {...props} />}
+                  />
 
-                        <Route
-                          exact
-                          path="/request-change-password"
-                          render={props => <ForgotPasswordModal {...props} />}
-                        />
+                  <Route
+                    path="/confirm-change-password/:resetCode/:uuid"
+                    render={props => (
+                      <ConfirmNewPasswordModalBody
+                        defaultOpen={true}
+                        {...props}
+                      />
+                    )}
+                  />
 
-                        <Route
-                          exact
-                          path="/confirm-change-password"
-                          render={props => (
-                            <ConfirmNewPasswordModalBody
-                              defaultOpen={true}
-                              {...props}
-                            />
-                          )}
-                        />
+                  <PrivateRoute
+                    exact
+                    path="/register"
+                    render={props => (
+                      <RegisterModal
+                        {...props}
+                        defaultOpen={true}
+                        forcedOpen={true}
+                      />
+                    )}
+                  />
 
-                        <PrivateRoute
-                          exact
-                          path="/register"
-                          render={props => (
-                            <RegisterModal
-                              {...props}
-                              defaultOpen={true}
-                              forcedOpen={true}
-                            />
-                          )}
-                        />
-
-                        <Route
-                          exact
-                          path="/register/confirm-email"
-                          render={props => (
-                            <RegistrationConfirmationModal
-                              {...props}
-                              defaultOpen={true}
-                              forcedOpen={true}
-                            />
-                          )}
-                        />
-                        {/* Handle the 404 Error case */}
-                        <Route
-                          path="/404"
-                          render={props => <NotFoundPage {...props} />}
-                        />
-                        {/* If no matches found: redirect to 404 */}
-                        <Redirect to="/404" />
-
-                      </Switch>
-                    </Grid.Column>
-                  </Grid.Row>
-                  {/* <Grid.Row
-                    className="p0 m0"
-                    style={{ position: "fixed", bottom: 0, left: 0 }}
-                  >
-                    <Grid.Column width={16} className="p0">
-                      <Footer></Footer>
-                    </Grid.Column>
-                  </Grid.Row> */}
-                </Grid>
-              </Container>
+                  <Route
+                    exact
+                    path="/register/confirm-email"
+                    render={props => (
+                      <RegistrationConfirmationModal
+                        {...props}
+                        defaultOpen={true}
+                        forcedOpen={true}
+                      />
+                    )}
+                  />
+                  {/* Handle the 404 Error case */}
+                  <Route
+                    path="/404"
+                    render={props => <NotFoundPage {...props} />}
+                  />
+                  {/* If no matches found: redirect to 404 */}
+                  <Redirect to="/404" />
+                </Switch>
+              </Segment>
             </div>
           </div>
-
-          {/* <TopNav />
-          <GetUserComp />
-
-           */}
         </AppContext.Provider>
       </AuthContext.Provider>
     </Router>
