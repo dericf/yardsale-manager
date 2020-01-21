@@ -31,7 +31,7 @@ import {
 import { notify } from "react-notify-toast";
 
 import { BASE_URL } from "../../../constants";
-import { FakeDataContext } from "../../../App";
+import { Context } from "../../../App";
 
 import { AuthContext } from "../../../App";
 
@@ -178,7 +178,7 @@ const RegisterModal = ({
         open={open}
         closeOnDimmerClick={false}
         closeOnDocumentClick={false}
-        closeOnEscape={true}
+        closeOnEscape={false}
         dimmer={false}
       >
         {!accountCreated && (
@@ -342,7 +342,7 @@ const RegisterModal = ({
                 </Grid.Row>
               )}
               <Grid.Row className="pt0">
-                <Grid.Column>
+                <Grid.Column textAlign="center"> 
                   <Item
                     as={Link}
                     to="/login"
@@ -354,7 +354,7 @@ const RegisterModal = ({
               </Grid.Row>
 
               <Grid.Row className="pb0">
-                <Grid.Column>
+                <Grid.Column textAlign="center">
                   <Item
                     as={Link}
                     to="/request-change-password"
