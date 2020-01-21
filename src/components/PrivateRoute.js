@@ -1,75 +1,77 @@
-
-
-
 import React, { useEffect } from "react";
 import { Route, withRouter } from "react-router-dom";
 // import { useAuth0 } from "../react-auth0-spa";
 
-import LoginModal from './modals/LoginModal/LoginModal'
+import LoginModal from "./modals/LoginModal/LoginModal";
 
-import { BASE_URL } from '../constants'
-import { AuthContext } from '../App'
+import { BASE_URL } from "../constants";
+import { AuthContext, AppContext } from "../App";
 
-const jwtDecode = require('jwt-decode');
+const jwtDecode = require("jwt-decode");
 
 const refreshAccessToken = (auth, setAuth, history) => {
-  let uri = `${BASE_URL}/auth/refresh`
+  let uri = `${BASE_URL}/auth/refresh`;
   let data = {
-    refreshToken: localStorage.getItem('refreshToken')
-  }
+    refreshToken: localStorage.getItem("refreshToken")
+  };
   let options = {
     method: "POST",
-    cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+    cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
     headers: {
-      'Content-Type': 'application/json'
+      "Content-Type": "application/json"
       // 'Content-Type': 'application/x-www-form-urlencoded',
     },
-    referrer: 'no-referrer', // no-referrer, *client
+    referrer: "no-referrer", // no-referrer, *client
     body: JSON.stringify(data)
-  }
+  };
 
-  fetch(
-    uri,
-    options
-  ).then(res => (
-    res.json()
-  )).then(json => {
-    if (json.STATUS === 'OK' && json.newToken && json.newToken !== "") {
-      localStorage.setItem('accessToken', json.newToken)
-    } else if (json.STATUS == 'ERROR' && json.MESSAGE == 'refresh token expired') {
-      setAuth(auth => ({ ...auth, reAuthenticateRequired: true }))
-      localStorage.removeItem('accessToken')
-      localStorage.removeItem('refreshToken')
-      history.push('/login')
-    }
-  })
-}
+  fetch(uri, options)
+    .then(res => res.json())
+    .then(json => {
+      if (json.STATUS === "OK" && json.newToken && json.newToken !== "") {
+        localStorage.setItem("accessToken", json.newToken);
+      } else if (
+        json.STATUS == "ERROR" &&
+        json.MESSAGE == "refresh token expired"
+      ) {
+        setAuth(auth => ({ ...auth, reAuthenticateRequired: true }));
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("refreshToken");
+        history.push("/login");
+        setAuth({...auth, loading: false})
+        setApp({...app, showLoginModal: true})
+      }
+    });
+};
 
 const PrivateRoute = ({ component: Component, path, ...rest }) => {
   // const { loading, isAuthenticated, loginWithRedirect } = useAuth0();
-  let { auth, setAuth } = React.useContext(AuthContext)
-
+  let { auth, setAuth } = React.useContext(AuthContext);
+  let { app, setApp } = React.useContext(AppContext);
   // TEMPORARY: Overriding for prototyping
-  const loading = false
-  const isAuthenticated = false
+  const loading = false;
+  const isAuthenticated = false;
   useEffect(() => {
-    setAuth({ ...auth, loading: true })
-    if (localStorage.getItem('accessToken') == 'undefined') {
-      rest.history.push('/login')
+    setAuth({ ...auth, loading: false });
+    if (localStorage.getItem("accessToken") == "undefined") {
+      // rest.history.push("/login");
+      setAuth({ ...auth, loading: false });
+      setApp({...app, showLoginModal: true})
     }
     //
     // Don't do any auth checks if user is already on the login page.
     //
-    if (path === '/login' || path === '/register') {
-      setAuth({ ...auth, loading: false })
+    if (path === "/login" || path === "/register") {
+      setAuth({ ...auth, loading: false });
       return;
     }
-    let token = localStorage.getItem('accessToken')
-    if (!token || typeof token === 'undefined') {
-      rest.history.push('/login')
+    let token = localStorage.getItem("accessToken");
+    if (!token || typeof token === "undefined") {
+      // rest.history.push("/login");
+      setApp({...app, showLoginModal: true})
     } else {
-      let jwt = jwtDecode(token)
-      if (typeof jwt.exp === 'undefined') {
+      let jwt = jwtDecode(token);
+      if (typeof jwt.exp === "undefined") {
         // console.log('ERROR! TOKEN NEVER EXPIRES! ')
       }
 
@@ -80,12 +82,12 @@ const PrivateRoute = ({ component: Component, path, ...rest }) => {
       if (jwt.exp < current_time) {
         // Expired
         // console.log('TOKEN IS EXPIRED!')
-        refreshAccessToken(auth, setAuth, rest.history)
+        refreshAccessToken(auth, setAuth, rest.history);
       }
       //
       // Token is valid (TODO: do other checks here)
       //
-      setAuth({ ...auth, isAuthenticated: true, loading: false })
+      setAuth({ ...auth, isAuthenticated: true, loading: false });
     }
     const fn = async () => {
       // await loginWithRedirect({
@@ -95,7 +97,12 @@ const PrivateRoute = ({ component: Component, path, ...rest }) => {
     fn();
   }, [loading, auth.isAuthenticated, path]);
 
-  const render = props => auth.isAuthenticated === true ? <Component {...props} /> : <LoginModal defaultOpen={true} forcedOpen={true} />;
+  const render = props =>
+    auth.isAuthenticated === true ? (
+      <Component {...props} />
+    ) : (
+      <LoginModal defaultOpen={true} forcedOpen={true} />
+    );
 
   return <Route path={path} render={render} {...rest} />;
 };
