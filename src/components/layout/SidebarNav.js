@@ -1,65 +1,235 @@
-import React, { Component, Fragment, useState, useEffect } from 'react'
-import { Link, withRouter } from 'react-router-dom';
+import React, { useState, useEffect, Fragment } from "react";
+import { withRouter, Link } from "react-router-dom";
+import {
+  Menu,
+  Icon,
+  Portal,
+  Segment,
+  Button,
+  Header,
+  Popup
+} from "semantic-ui-react";
+import App, { AuthContext, AppContext } from "../../App";
 
-import { Icon, Menu, ItemGroup, Modal, Responsive, Sidebar, Container, Image, Segment, Header, Divider } from 'semantic-ui-react'
-import LoginModal from '../../components/modals/LoginModal/LoginModal'
+import { useQuery } from "@apollo/react-hooks";
+import { GET_USER } from "../../graphql/queries";
 
-import { AuthContext } from '../../App'
+const SidebarNav = ({ ...props }) => {
+  const history = props.history;
+  const { auth, setAuth } = React.useContext(AuthContext);
+  const { app, setApp } = React.useContext(AppContext);
+  const [settingsPortalOpen, setSettingsPortalOpen] = useState(false);
 
-const SidebarNav = ({ user, visible, setVisible, isAuthenticated }) => {
-    const { auth, setAuth } = React.useContext(AuthContext)
+  useEffect(() => {
+    let pathname = "";
+    try {
+      pathname = window.location.pathname;
+    } catch {
+      pathname = props.match.path;
+    }
+    console.log("Pathname at Sidebar Mount is: ", pathname, props.history);
+    let path = pathname === "/" ? "home" : pathname.substr(1);
+    setApp({ ...app, activePage: path });
 
-    return (
-        <Sidebar
-            as={Menu}
-            animation='overlay'
-            inverted
-            onHide={() => setVisible(false)}
-            vertical
-            visible={visible}
-            width='thin'
-            direction="left"
+    console.log('APP CONTEXT SIDEBAR MOUNT: ', app)
+  }, []);
+
+  const { loading: userLoading, error: userError, data: userData } = useQuery(
+    GET_USER,
+    {
+      onError: e => console.log("ERROR WITH Get User QUERY", e),
+      onCompleted: data => {
+        if (data) {
+          setAuth({ ...auth, user: data.user[0] });
+        }
+      }
+    }
+  );
+  const setActivePage = page => {
+    setApp({ ...app, activePage: page });
+  };
+
+  const openLoginModal = () => {
+    setApp({ ...app, showLoginModal: true });
+    console.log("Opened the modal");
+  };
+  return (
+    <div className="layout-sidebar">
+      <Menu
+        borderless
+        stackable
+        id="SidebarMiddle"
+        compact
+        icon
+        vertical
+      >
+      <Menu.Item>
+          <Icon
+            basic
+            circular
+            name="setting"
+            size="large"
+            className="sidebar-item"
+            onClick={() => setSettingsPortalOpen(true)}
+          ></Icon>
+          {/* TODO: Move this to a component */}
+          <Portal
+            onClose={() => setSettingsPortalOpen(false)}
+            open={settingsPortalOpen}
+          >
+            <Segment
+              raised
+              style={{
+                left: "65px",
+                position: "fixed",
+                top: "10px",
+                zIndex: 1000,
+                borderLeft: "3px solid rgba(50, 67, 118, 0.513)",
+                borderRadius: 8
+              }}
+              id="SettingsPortal"
+              loading={userLoading}
+            >
+              <Fragment>
+                {auth && auth.user && (
+                  <Fragment>
+                    <Header>Settings</Header>
+                    <p>
+                      User: {auth.user.email}
+                      {auth.user.has_confirmed && (
+                        <Popup
+                          trigger={
+                            <Icon name="check" color="green" size="small" />
+                          }
+                          content={"Verified Email"}
+                        />
+                      )}
+                    </p>
+                    <p>
+                      <Link
+                        to="/request-change-password"
+                        onClick={() => setSettingsPortalOpen(false)}
+                      >
+                        Change Password
+                      </Link>
+                    </p>
+                    {!auth.user.has_completed_onboarding && (
+                      <p>
+                        <Link
+                          to="/welcome"
+                          onClick={() => setSettingsPortalOpen(false)}
+                        >
+                          Click here to resume the onboarding process
+                        </Link>
+                      </p>
+                    )}
+                    <Button
+                      basic
+                      circular
+                      fluid
+                      icon="power off"
+                      content="Logout"
+                      onClick={() => setAuth(auth.logout(auth, setAuth))}
+                    />
+                  </Fragment>
+                )}
+                {/* {JSON.stringify(auth.user)} */}
+              </Fragment>
+              {auth && !auth.user && (
+                <Button
+                  basic
+                  circular
+                  fluid
+                  icon="power off"
+                  content="Log In"
+                  onClick={openLoginModal}
+                />
+              )}
+            </Segment>
+          </Portal>
+        </Menu.Item>
+        <Menu.Item active={app.activePage === "home"}  name="home">
+          <Icon
+            circular
+            
+            name="home"
+            active={app.activePage === "home"}
+            onClick={() => {
+              setActivePage("home");
+              history.push("/");
+            }}
+            className="sidebar-item"
+          />
+        </Menu.Item>
+
+        <Menu.Item
+          
+          name="market"
+          active={app.activePage === "market"}
         >
-            {/* Potentially add onClick={() => setVisible(false)} to make the sidebar autoclose when a link is clicked*/}
-            <Menu.Header as="h2" className="mb0" content="Navigation" style={{ color: "#ffffff", padding: 16 }} />
-            <Divider inverted className="m0"></Divider>
-            {auth.isAuthenticated && (
-                <Fragment>
-                    <Menu.Item as={Link} to="/" >
-                        Market
-                        </Menu.Item>
-                    <Menu.Item as={Link} to="/yardsales">
-                        Yardsales
-                        </Menu.Item>
-                    <Menu.Item as={Link} to="/sellers">
-                        Sellers
-                        </Menu.Item>
+          <Icon
+            circular
+            
+            name="location arrow"
+            className="sidebar-item"
+            active={app.activePage === "market"}
+            onClick={() => {
+              setActivePage("market");
+              history.push("/market");
+            }}
+          />
+        </Menu.Item>
 
+        <Menu.Item
+          
+          name="sellers"
+          active={app.activePage === "sellers"}
+        >
+          <Icon
+            circular
+            
+            name="users"
+            onClick={() => {
+              setActivePage("sellers");
+              history.push("/sellers");
+            }}
+            active={app.activePage === "sellers"}
+            className="sidebar-item"
+          />
+        </Menu.Item>
 
-                    {/* <SettingsModal></SettingsModal> */}
+        <Menu.Item
+          
+          name="yardsales"
+          active={app.activePage === "yardsales"}
+        >
+          <Icon
+            circular
+            
+            name="map signs"
+            active={app.activePage === "yardsales"}
+            onClick={() => {
+              setActivePage("yardsales");
+              history.push("/yardsales");
+            }}
+            className="sidebar-item"
+          />
 
-                    <Menu.Item
-                        position="left"
-                        as={Link}
-                        onClick={() => auth.logout(auth, setAuth)}
-                        content=" Logout"
-                        icon={<Icon name="power off" style={{ marginLeft: 0 }} />}
-                        key="logout"
-                        index={101}
+          {/* <Icon
+            circular
+            
+            name="tags"
+            active={app.activePage === "items"}
+            onClick={() => {
+              setActivePage("items");
+              history.push("/items");
+            }}
+            className="sidebar-item"
+          /> */}
+        </Menu.Item>
+      </Menu>
+    </div>
+  );
+};
 
-                    >
-
-                    </Menu.Item>
-
-                </Fragment>
-            )}
-            {!auth.isAuthenticated && (
-                <Menu.Item position="right" key="login" index={100} className="ml0" style={{ marginLeft: 0 }} >
-                    <LoginModal />
-                </Menu.Item>
-            )}
-        </Sidebar>
-    )
-}
-
-export default withRouter(SidebarNav)
+export default withRouter(SidebarNav);
