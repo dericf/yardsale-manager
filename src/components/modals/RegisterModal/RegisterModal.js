@@ -34,6 +34,7 @@ import { BASE_URL } from "../../../constants";
 import { Context } from "../../../App";
 
 import { AuthContext } from "../../../App";
+import InitialsInfoPopup from "./InitialsInfoPopup";
 
 const RegisterModal = ({
   defaultOpen = false,
@@ -226,33 +227,9 @@ const RegisterModal = ({
                         inverted
                         position="top right"
                         content={
-                          <Grid centered>
-                            <Grid.Row centered>
-                            <Grid.Column width={16}>
-                              <p className="text">
-                                Will this user be used as a Seller?
-                              {/* If the user you are creating now will be a seller, use this field as a unique identifier for this seller.  */}
-                              {/* <br />  */}
-
-                              {/* <br /> */}
-                              {/* Typically this is simply the initials of the seller but can be any unique value." */}
-                              </p>
-                            </Grid.Column>
-                            </Grid.Row>
-                            <Grid.Row>
-                              <Grid.Column width={8}>
-                              <Button fluid className="cancel"><Icon name="close" />No</Button>
-                              </Grid.Column>
-                              <Grid.Column width={8}>
-                                <Button fluid className="save"><Icon name="check" />Yes</Button>
-                              </Grid.Column>
-                            </Grid.Row>
-
-                            <Grid.Row>
-                            </Grid.Row>
-                          </Grid>
+                          <InitialsInfoPopup />
                         }
-                        trigger={<label className="info-popup-icon">Initials or I.D.<Icon fitted name="info circle" style={{color: "red", float: "right"}} /></label>}
+                        trigger={<label >Initials or I.D.<Icon className="info-popup-icon" fitted name="help circle" style={{float: "right"}} /></label>}
                       />
                       <Input
                         fluid
@@ -293,7 +270,7 @@ const RegisterModal = ({
                         Password{" "}
                         <Popup
                           inverted
-                          trigger={<Icon className="info-popup-icon" name="info circle" style={{color: "red"}}></Icon>}
+                          trigger={<Icon className="info-popup-icon" name="help circle"></Icon>}
                         >
                           <Popup.Content>
                             Password must be at least 6 characters long.
