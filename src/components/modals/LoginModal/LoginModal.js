@@ -52,7 +52,7 @@ const LoginModal = ({
     email: "",
     password: ""
   };
-
+  const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(defaultOpen);
   const [values, setValues] = useState(initialValues);
   const [errorMessage, setErrorMessage] = useState(null);
@@ -64,6 +64,9 @@ const LoginModal = ({
       loading: false
     }));
     setApp({...app, showLoginModal: false})
+    props.history.replace('/')
+    // if (props.history.match === '/login') {
+    // }
     
   };
   const openModal = () => {
@@ -102,6 +105,7 @@ const LoginModal = ({
   const handleSubmit = e => {
     e.preventDefault();
     setAuth({ ...auth, loading: true });
+    setLoading(true);
     let uri = `${BASE_URL}/auth/login`;
     let data = {
       email: values.email,
@@ -133,7 +137,10 @@ const LoginModal = ({
           setValues(initialValues);
           // props.history.push('/yardsales')
           setAuth(auth => ({ ...auth, loading: false, reAuthenticateRequired: false }));
+          setLoading(false);
           closeModal()
+          // TODO : server should also return some of the user fields so here we can check if the user
+          // has completed the onboarding process or not. If not: redirect to the /welcome page. otherwise redirect to yardsales (or sellers... can't decide.)
           props.history.push("/yardsales");
           // window.location.assign('/yardsales')
           // window.location.assign(json.callback)
@@ -147,6 +154,7 @@ const LoginModal = ({
               loading: false,
               reAuthenticateRequired: false
             }));
+            setLoading(false);
             // setValues(prev => ({ ...prev, email: "" }))
             autoFocusRef.current.focus();
             setErrorMessage(
@@ -159,6 +167,7 @@ const LoginModal = ({
               loading: false,
               reAuthenticateRequired: false
             }));
+            setLoading(false);
             // console.log('Bad password', json)
           } else if (json.MESSAGE === "Email not confirmed") {
             setErrorMessage(
@@ -169,6 +178,7 @@ const LoginModal = ({
               loading: false,
               reAuthenticateRequired: false
             }));
+            setLoading(false);
             // console.log('Email not confirmed', json)
           }
         }
@@ -179,6 +189,7 @@ const LoginModal = ({
           "There was a problem on our end. Please try again later."
         );
         setAuth(auth => ({ ...auth, loading: false }));
+        setLoading(false);
       });
   };
 
@@ -211,7 +222,7 @@ const LoginModal = ({
             id="LoginForm"
             as={Form}
             className="m0"
-            loading={auth.loading}
+            loading={loading}
             onSubmit={handleSubmit}
           >
             <Grid>
@@ -295,7 +306,7 @@ const LoginModal = ({
                   className="save"
                   content="Log In"
                   fluid
-                  loading={auth.loading}
+                  loading={loading}
                   disabled={
                     values.email == "" ||
                     values.password == "" ||
