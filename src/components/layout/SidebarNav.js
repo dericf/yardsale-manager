@@ -18,6 +18,8 @@ import SettingsPortal from "../SettingsPortal";
 const SidebarNav = ({ ...props }) => {
   const history = props.history;
   const { app, setApp } = React.useContext(AppContext);
+  const { auth, setAuth } = React.useContext(AuthContext);
+
 
   useEffect(() => {
     let pathname = "";
@@ -38,14 +40,14 @@ const SidebarNav = ({ ...props }) => {
   };
 
   return (
-    <div class="grid-sidebar-subgrid">
-      <div class="grid-sidebar-settings">
+    <div className="grid-sidebar-subgrid">
+      <div className="grid-sidebar-settings">
         <Menu id="SettingsSidebar" borderless compact icon vertical>
           <SettingsPortal />
         </Menu>
       </div>
 
-      <div class="grid-sidebar-middle">
+      <div className="grid-sidebar-middle">
         <Menu borderless stackable id="SidebarMiddle" compact icon vertical>
           <Menu.Item active={app.activePage === "home"} name="home">
             <Icon
@@ -73,31 +75,38 @@ const SidebarNav = ({ ...props }) => {
             />
           </Menu.Item>
 
-          <Menu.Item name="sellers" active={app.activePage === "sellers"}>
-            <Icon
-              circular
-              name="users"
-              onClick={() => {
-                setActivePage("sellers");
-                history.push("/sellers");
-              }}
-              active={app.activePage === "sellers"}
-              className="sidebar-item"
-            />
-          </Menu.Item>
+          {auth && auth.user && (
+            <Fragment>
+              <Menu.Item name="sellers" active={app.activePage === "sellers"}>
+                <Icon
+                  circular
+                  name="users"
+                  onClick={() => {
+                    setActivePage("sellers");
+                    history.push("/sellers");
+                  }}
+                  active={app.activePage === "sellers"}
+                  className="sidebar-item"
+                />
+              </Menu.Item>
 
-          <Menu.Item name="yardsales" active={app.activePage === "yardsales"}>
-            <Icon
-              circular
-              name="map signs"
-              active={app.activePage === "yardsales"}
-              onClick={() => {
-                setActivePage("yardsales");
-                history.push("/yardsales");
-              }}
-              className="sidebar-item"
-            />
-          </Menu.Item>
+              <Menu.Item
+                name="yardsales"
+                active={app.activePage === "yardsales"}
+              >
+                <Icon
+                  circular
+                  name="map signs"
+                  active={app.activePage === "yardsales"}
+                  onClick={() => {
+                    setActivePage("yardsales");
+                    history.push("/yardsales");
+                  }}
+                  className="sidebar-item"
+                />
+              </Menu.Item>
+            </Fragment>
+          )}
         </Menu>
       </div>
     </div>
