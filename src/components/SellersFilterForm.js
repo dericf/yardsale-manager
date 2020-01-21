@@ -92,7 +92,8 @@ const SellersFilterForm = ({ value, setValue, searchVal, setSearchVal, autofocus
                         <Input
                             placeholder="Search"
                             icon="search"
-                            size="medium"
+                            size="small"
+                            iconPosition="left"
                             focus
                             value={searchVal}
                             onChange={(e) => setSearchVal(e.target.value)}

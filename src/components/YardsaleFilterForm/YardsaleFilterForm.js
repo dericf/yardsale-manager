@@ -95,8 +95,9 @@ const YardsaleFilterForm = ({ filter, setFilter, autofocus, ...props }) => {
                         <Input
                             placeholder="Search"
                             icon="search"
-                            size="medium"
+                            size="small"
                             focus
+                            iconPosition="left"
                             value={filter.searchText}
                             onChange={handleSearchInput}
                             ref={searchRef}
