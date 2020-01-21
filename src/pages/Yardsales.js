@@ -5,33 +5,30 @@ import {
     Divider,
     Grid,
     Header,
-    Container
+    Container,
+    Segment
 } from "semantic-ui-react";
 
 import { NAVBAR_HEIGHT } from '../constants'
 
-import { yardsales as YardsalesData, yardsales } from '../FakeData'
 
 import YardsalesFilterForm from '../components/YardsaleFilterForm/YardsaleFilterForm'
 import YardsaleDetailsModal from '../components/modals/YardsaleDetailsModal/YardsaleDetailsModal'
 import YardsaleCard from '../components/cards/YardsaleCard/YardsaleCard'
 import YardsaleActions from '../components/YardsaleActionCard/YardsaleActionCard'
-import { FakeDataContext } from '../App'
 
 import { GET_YARDSALES } from '../graphql/queries'
 import { useQuery } from '@apollo/react-hooks';
+import CashierModal from '../components/modals/CashierModal/CashierModal';
+import Loading from '../components/layout/Loading';
 
 const Yardsales = ({ setTitle }) => {
-    let { fakeData, setFakeData } = React.useContext(FakeDataContext)
     const [filter, setFilter] = useState({
         searchText: "",
         status: "all"
     })
 
-    useEffect(() => {
-        setTitle('Yardsales')
-    }, [])
-
+    const [cashierActive, setCashierActive] = useState(null)
 
     const { loading, error, data: yardsaleData } = useQuery(GET_YARDSALES, {
         onError: () => console.log('ERROR WITH QUERY'),
@@ -44,9 +41,20 @@ const Yardsales = ({ setTitle }) => {
         }
     })
 
+    const handleClick = (yardsale) => {
+        console.log('Clicked on card', yardsale)
+        setCashierActive(yardsale)
+    }
+    
     return (
-        <Container >
-            <Grid columns={2}>
+
+        <Fragment >
+            {(cashierActive) && yardsaleData && yardsaleData.yardsale && (
+                
+                <CashierModal yardsale={cashierActive} autoOpen={true} setCashierActive={setCashierActive} />
+                
+            )}
+            <Grid columns={2} centered className="m0">
                 <Grid.Row className="pb0">
                     {/* First Grid.Row (Filters/Buttons) */}
                     <Grid.Column verticalAlign="middle" mobile={8} tablet={8} computer={10}>
@@ -64,18 +72,20 @@ const Yardsales = ({ setTitle }) => {
 
                 <Grid.Row className="pb0 pt0">
                     {/* Second Grid.Row (Dividers with headings) */}
-                    <Grid.Column mobile={8} tablet={9} computer={10}>
-                        <Divider horizontal={true}>{`${filter.status} Yardsales`}</Divider>
+                    <Grid.Column computer={16}>
+                        <Divider className="my0" horizontal={true}>{`Yard Sales`}</Divider>
                     </Grid.Column>
-                    <Grid.Column mobile={8} tablet={7} computer={6}>
+                    {/* <Grid.Column mobile={8} tablet={7} computer={6}>
                         <Divider horizontal={true} content="Actions"></Divider>
-                    </Grid.Column>
+                    </Grid.Column> */}
                 </Grid.Row>
 
 
 
                 {/* Yardsales List */}
-
+                {loading && (
+                    <Loading />
+                )}
                 {!loading && yardsaleData && yardsaleData.yardsale && yardsaleData.yardsale.filter(yardsale => {
                     return (
                         (filter.searchText === '') ||
@@ -93,34 +103,29 @@ const Yardsales = ({ setTitle }) => {
                     )
                 }).map(yardsale => {
                     return (
-                        <Fragment>
-                            {/* Third Grid.Row (Card/Actions) */}
-                            <Grid.Row key={yardsale.uuid}>
-                                <Grid.Column mobile={8} tablet={9} computer={10} verticalAlign="middle" style={{ height: "100%" }}>
+                        <Grid.Row key={yardsale.uuid}>
+                            <Grid.Column width={12} textAlign="center">
+                            
+                                {/* Card */}
+                                <Fragment>
+                                    <YardsaleCard
+                                        yardsale={yardsale}
+                                        filterValue={filter.status}
+                                        handleClick={handleClick}
+                                        setCashierActive={setCashierActive}
+                                    ></YardsaleCard>
+                                </Fragment>
+                            </Grid.Column>
 
-                                    {/* Card */}
-                                    <Fragment>
-                                        <YardsaleCard
-                                            yardsale={yardsale}
-                                            filterValue={filter.status}
-                                        ></YardsaleCard>
-
-                                    </Fragment>
-
-                                </Grid.Column>
-
-                                <Grid.Column mobile={8} tablet={7} computer={6} verticalAlign="top">
-                                    {/* Actions */}
-                                    <YardsaleActions yardsale={yardsale} />
-                                </Grid.Column>
-                            </Grid.Row>
-                            {yardsales.length > 1 && (<Divider></Divider>)}
-                        </Fragment>
+                            {/* <Grid.Column mobile={8} tablet={7} computer={6} verticalAlign="top">
+                                <YardsaleActions yardsale={yardsale} />
+                            </Grid.Column> */}
+                        </Grid.Row>
                     )
                 })}
 
             </Grid>
-        </Container>
+        </Fragment>
     )
 }
 
