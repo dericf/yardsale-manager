@@ -57,17 +57,16 @@ const LoginModal = ({
   const [values, setValues] = useState(initialValues);
   const [errorMessage, setErrorMessage] = useState(null);
 
-  const closeModal = () => {
+  const closeModal = (withRedirect=true) => {
     setOpen(false);
     setAuth(auth => ({
       ...auth,
       loading: false
     }));
     setApp({...app, showLoginModal: false})
-    props.history.replace('/')
-    // if (props.history.match === '/login') {
-    // }
-    
+    if (withRedirect === true) {
+      props.history.replace('/')
+    }    
   };
   const openModal = () => {
     setOpen(true);
@@ -136,12 +135,23 @@ const LoginModal = ({
           localStorage.setItem("refreshToken", json.refreshToken);
           setValues(initialValues);
           // props.history.push('/yardsales')
-          setAuth(auth => ({ ...auth, loading: false, reAuthenticateRequired: false }));
+          setAuth(auth => ({ ...auth, loading: false, reAuthenticateRequired: false, user:json.user }));
           setLoading(false);
-          closeModal()
+          closeModal(false)
           // TODO : server should also return some of the user fields so here we can check if the user
           // has completed the onboarding process or not. If not: redirect to the /welcome page. otherwise redirect to yardsales (or sellers... can't decide.)
-          props.history.push("/yardsales");
+          setTimeout(() => {
+            if (json.user.has_completed_onboarding === false) {
+              console.log('ONBOARDING FALSE: ', json.user, json.user.has_completed_onboarding)
+              props.history.push("/welcome");
+  
+            } else {
+              console.log('ONBOARDING TRUE: ', json.user, json.user.has_completed_onboarding)
+              props.history.push("/yardsales");
+              
+            }
+          }, 1000);
+          
           // window.location.assign('/yardsales')
           // window.location.assign(json.callback)
           //   closeModal();
