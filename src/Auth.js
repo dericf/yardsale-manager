@@ -7,19 +7,17 @@ export const auth = {
   isAuthenticated: false,
   loading: false,
   reAuthenticateRequired: false,
-  user: {
-    email: "",
-    role: ""
-  },
+  isLoggedIn: false,
+  user: null,
   login: (auth, setAuth) => {
     // console.log('Login User Here')
     return
   },
-  logout: (auth, setAuth) => {
+  logout: (auth, setAuth, history) => {
     // console.log('Logout User Here')
     localStorage.removeItem('accessToken')
-    setAuth({ ...auth, isAuthenticated: false, loading: false })
-    window.location.assign('/login')
+    setAuth({ ...auth, isAuthenticated: false, loading: false, user: null })
+    history.push('/login')
     return
   }
 }

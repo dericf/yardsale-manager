@@ -23,9 +23,9 @@ import Home from "./Home";
 
 const Login = ({ ...props }) => {
   let { app, setApp } = React.useContext(AppContext);
-  console.log('Login PATH: ', props.match.path)
-
+  
   useEffect(() => {
+    console.log('Login PATH: ', props.match.path)
     console.log('Login mounted')
   }, [])
   

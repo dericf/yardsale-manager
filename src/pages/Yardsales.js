@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useEffect, useRef } from 'react'
+import React, { Fragment, useState, useEffect, useRef, useContext } from 'react'
 import { Link, withRouter } from 'react-router-dom';
 
 import {
@@ -18,9 +18,11 @@ import YardsaleCard from '../components/cards/YardsaleCard/YardsaleCard'
 import YardsaleActions from '../components/YardsaleActionCard/YardsaleActionCard'
 
 import { GET_YARDSALES } from '../graphql/queries'
-import { useQuery } from '@apollo/react-hooks';
+import { useQuery, useSubscription } from '@apollo/react-hooks';
 import CashierModal from '../components/modals/CashierModal/CashierModal';
 import Loading from '../components/layout/Loading';
+import { SUBSCRIBE_YARDSALES } from '../graphql/subscriptions';
+import { AppContext } from '../App';
 
 const Yardsales = ({ setTitle }) => {
     const [filter, setFilter] = useState({
@@ -29,16 +31,12 @@ const Yardsales = ({ setTitle }) => {
     })
 
     const [cashierActive, setCashierActive] = useState(null)
-
+    const {app, setApp} = useContext(AppContext)
     const { loading, error, data: yardsaleData } = useQuery(GET_YARDSALES, {
         onError: () => console.log('ERROR WITH QUERY'),
-
-        onCompleted: (data) => {
-            if (data == null || typeof data == 'undefined') {
-                return false
-            }
-            return true
-        }
+        // onCompleted: (data) => {
+        //     console.log('Sub Data: ', data)
+        // }
     })
 
     const handleClick = (yardsale) => {
@@ -46,6 +44,10 @@ const Yardsales = ({ setTitle }) => {
         setCashierActive(yardsale)
     }
     
+    useEffect(() => {
+        setApp({ ...app, activePage: 'yardsales' });
+    }, [])
+
     return (
 
         <Fragment >
@@ -54,10 +56,10 @@ const Yardsales = ({ setTitle }) => {
                 <CashierModal yardsale={cashierActive} autoOpen={true} setCashierActive={setCashierActive} />
                 
             )}
-            <Grid columns={2} centered className="m0">
-                <Grid.Row className="pb0">
+            <Grid columns={2} centered className="m0 p0">
+                <Grid.Row className="py0">
                     {/* First Grid.Row (Filters/Buttons) */}
-                    <Grid.Column verticalAlign="middle" mobile={8} tablet={8} computer={10}>
+                    <Grid.Column verticalAlign="middle" mobile={8} tablet={8} computer={10} className="pl0">
                         {/* Radio Buttons + Search Field */}
                         <YardsalesFilterForm
                             filter={filter}
@@ -65,7 +67,7 @@ const Yardsales = ({ setTitle }) => {
                             autofocus={true}
                         />
                     </Grid.Column>
-                    <Grid.Column mobile={8} tablet={8} computer={6} textAlign="right" className="mobile-my8">
+                    <Grid.Column mobile={8} tablet={8} computer={6} textAlign="right" className="mobile-my8 pr0">
                         <YardsaleDetailsModal />
                     </Grid.Column>
                 </Grid.Row>
@@ -73,7 +75,7 @@ const Yardsales = ({ setTitle }) => {
                 <Grid.Row className="pb0 pt0">
                     {/* Second Grid.Row (Dividers with headings) */}
                     <Grid.Column computer={16}>
-                        <Divider className="my0" horizontal={true}>{`Yard Sales`}</Divider>
+                        <Divider className="my0" horizontal={true}>{`My Yard Sales`}</Divider>
                     </Grid.Column>
                     {/* <Grid.Column mobile={8} tablet={7} computer={6}>
                         <Divider horizontal={true} content="Actions"></Divider>

@@ -16,12 +16,10 @@ const refreshAccessToken = (auth, setAuth, history) => {
   };
   let options = {
     method: "POST",
-    cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+    cache: "no-cache",
     headers: {
       "Content-Type": "application/json"
-      // 'Content-Type': 'application/x-www-form-urlencoded',
     },
-    referrer: "no-referrer", // no-referrer, *client
     body: JSON.stringify(data)
   };
 
@@ -45,12 +43,12 @@ const refreshAccessToken = (auth, setAuth, history) => {
 };
 
 const PrivateRoute = ({ component: Component, path, ...rest }) => {
-  // const { loading, isAuthenticated, loginWithRedirect } = useAuth0();
   let { auth, setAuth } = React.useContext(AuthContext);
   let { app, setApp } = React.useContext(AppContext);
-  // TEMPORARY: Overriding for prototyping
+
   const loading = false;
   const isAuthenticated = false;
+  
   useEffect(() => {
     setAuth({ ...auth, loading: false });
     if (localStorage.getItem("accessToken") == "undefined") {
@@ -101,7 +99,7 @@ const PrivateRoute = ({ component: Component, path, ...rest }) => {
     auth.isAuthenticated === true ? (
       <Component {...props} />
     ) : (
-      <LoginModal defaultOpen={true} forcedOpen={true} />
+      {/* <LoginModal defaultOpen={true} forcedOpen={true} /> */}
     );
 
   return <Route path={path} render={render} {...rest} />;

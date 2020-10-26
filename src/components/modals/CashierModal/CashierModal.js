@@ -4,7 +4,8 @@ import React, {
   useState,
   useEffect,
   useRef,
-  createRef
+  createRef,
+  useContext
 } from "react";
 import { Link, withRouter } from "react-router-dom";
 import {
@@ -40,6 +41,8 @@ import { useQuery, useMutation } from "@apollo/react-hooks";
 import SellerDetailsModal from "../SellerDetailsModal/SellerDetailsModal";
 import YardsaleSellerModal from "../YardsaleSellerModal/YardsaleSellerModal";
 import YardsaleTransactionsModal from "../YardsaleTransactionsModal/YardsaleTransactionsModal";
+import { AppContext } from "../../../App";
+import Notifications from "../../../utils/Notifications";
 
 const CashierModal = ({
   yardsale = null,
@@ -48,6 +51,8 @@ const CashierModal = ({
   setCashierActive,
   ...props
 }) => {
+
+  const {app, setApp} = useContext(AppContext)
   const modalRef = createRef();
   const [open, setOpen] = useState(autoOpen ? true : false);
 
@@ -184,6 +189,12 @@ const CashierModal = ({
   //[{ id: 1, text: "", value: "" }]
 
   const addItem = () => {
+    setApp({...app, notifications: {
+      show: true,
+      message: "Item Added",
+      level: "success",
+      dismiss: true
+    }})
     setTransactionItems(
       transactionItems.concat([
         {
@@ -358,15 +369,13 @@ const CashierModal = ({
                             invertedButton={false}
                           />
 
-                          <YardsaleTransactionsModal 
+                          <YardsaleTransactionsModal
                             yardsale={yardsale}
                             iconLabel={null}
                           />
                         </Form.Field>
-                        
                       </Form.Group>
                     </Grid.Column>
-                    
                   </Grid.Row>
                   <Grid.Row>
                     <Grid.Column>
@@ -391,6 +400,7 @@ const CashierModal = ({
                       <Button
                         fluid
                         icon="check"
+                        content="Add"
                         className="save"
                         onClick={addItem}
                         disabled={
@@ -446,7 +456,7 @@ const CashierModal = ({
 
                           {transactionItems.map((item, index) => {
                             return (
-                              <Table.Row key={item.id}>
+                              <Table.Row key={item.key}>
                                 <Table.Cell textAlign="center">
                                   {index + 1}
                                 </Table.Cell>
@@ -512,25 +522,21 @@ const CashierModal = ({
               )}
             </Grid.Row>
             {/* <Divider className="px0" content="Transaction Totals" horizontal /> */}
-            {transactionItems && (transactionItems.length > 0) && (
-              <Grid.Row
-              className="py16 mb16 mx16 mt0"
-              columns={1}
-              centered
-            >
-              <Grid.Column
-                mobile={16}
-                tablet={16}
-                computer={8}
-                textAlign="center"
-                style={{maxWidth: 400}}
-              >
-                <Grid.Row>
-                  <Grid.Column >
-                    <Form>
-                      <Form.Group widths="equal">
-                        <Form.Field>
-                          <Input
+            {transactionItems && transactionItems.length > 0 && (
+              <Grid.Row className="py16 mb16 mx16 mt0" columns={1} centered>
+                <Grid.Column
+                  mobile={16}
+                  tablet={16}
+                  computer={14}
+                  textAlign="center"
+                >
+                  <Grid.Row>
+                    <Grid centered stackable columns="3">
+                      <Grid.Column mobile={12} tablet={12} computer={5} textAlign="center" >
+                        <Form>
+                          <Form.Group widths="equal">
+                            <Form.Field>
+                              {/* <Input
                             label={<Label size="huge" content="Total" basic className="left-input-borderless-label" ></Label>}
                             type="text"
                             size="huge"
@@ -539,41 +545,54 @@ const CashierModal = ({
                             
                             value={calculateRunningTotal()}
                             input={<input type="text" style={{textAlign: "right"}} className="huge" /> }
-                          />
-                        </Form.Field>
-                      </Form.Group>
-                    </Form>
-                  </Grid.Column>
-                </Grid.Row>
+                          /> */}
+                              <Label size="huge" tag content="Total">
+                                Total: &nbsp;$ &nbsp;
+                                {calculateRunningTotal()}
+                              </Label>
+                            </Form.Field>
+                          </Form.Group>
+                        </Form>
+                      </Grid.Column>
+                      <Grid.Column mobile={12} tablet={12} computer={5} textAlign="center">
+                        <Form>
+                          <Form.Group widths="equal">
+                            <Form.Field style={{textAlign: "center"}} >
+                              <Label
+                                size="huge"
+                                basic                                
+                              >
+                                Collected: &nbsp;
+                                <Input
+                                
+                                  name="tender"
+                                  labelPosition="left"
+                                  value={tender}
+                                  onBlur={e => {
+                                    setTender(toMoney(e.target.value));
+                                  }}
+                                  icon={<Icon name="dollar" />}
+                                  iconPosition="left"
+                                  onChange={handleTenderChange}
+                                  input={
+                                    <input
+                                      type="text"
+                                      style={{ textAlign: "right", maxWidth: 165 }}
+                                      autoComplete={false}
+                                    />
+                                  }
+                                />
+                              </Label>
+                            </Form.Field>
+                          </Form.Group>
+                        </Form>
+                      </Grid.Column>
 
-                <Grid.Row>
-                  <Grid.Column >
-                    <Form>
-                      <Form.Group widths="equal">
-                        <Form.Field>
-                          <Input
-                            name="tender"
-                            label={<Label size="huge" basic content="Collected" className="left-input-borderless-label" />}
-                            labelPosition="left"
-                            value={tender}
-                            onBlur={e => {
-                              setTender(toMoney(e.target.value));
-                            }}
-                            onChange={handleTenderChange}
-                            size="huge"
-                            input={<input type="text" style={{textAlign: "right"}} className="huge" autoComplete={false} /> }
-                          />
-                        </Form.Field>
-                      </Form.Group>
-                    </Form>
-                  </Grid.Column>
-                </Grid.Row>
-                <Grid.Row>
-                  <Grid.Column >
-                    <Form>
-                      <Form.Group widths="equal">
-                        <Form.Field>
-                          <Input
+                      <Grid.Column mobile={12} tablet={12} computer={5} textAlign="center">
+                        <Form>
+                          <Form.Group widths="equal">
+                            <Form.Field>
+                              {/* <Input
                             type="text"
                             label={<Label size="huge" basic content="Change Due" className="left-input-borderless-label" />}
                             size="huge"
@@ -581,24 +600,30 @@ const CashierModal = ({
                             tabIndex={-1}
                             input={<input type="text" style={{textAlign: "right"}} className="huge" /> }
                             value={changeDue}
-                          />
-                        </Form.Field>
-                      </Form.Group>
-                    </Form>
-                  </Grid.Column>
-                </Grid.Row>
-              </Grid.Column>
-            </Grid.Row>
+                          /> */}
+
+                              <Label size="huge" tag content="Total">
+                                Change Due: &nbsp;$&nbsp;
+                                {changeDue}
+                              </Label>
+                            </Form.Field>
+                          </Form.Group>
+                        </Form>
+                      </Grid.Column>
+                    </Grid>
+                  </Grid.Row>
+                </Grid.Column>
+              </Grid.Row>
             )}
           </Grid>
         </Modal.Content>
 
         <Modal.Actions>
-          <Grid>
-            <Grid.Row columns={2}>
+          <Grid stackable centered>
+            <Grid.Row columns={2} centered>
               <Grid.Column
                 className="mobile-my8"
-                mobile={8}
+                mobile={10}
                 tablet={8}
                 computer={8}
               >
@@ -607,7 +632,7 @@ const CashierModal = ({
                   buttonProps={{
                     content: "Cancel",
                     fluid: true,
-                    className:"cancel"
+                    className: "cancel"
                   }}
                   header={"Confirm"}
                   content={"Are you sure you want to cancel this transaction?"}
@@ -618,11 +643,11 @@ const CashierModal = ({
 
               <Grid.Column
                 className="mobile-my8"
-                mobile={8}
+                mobile={10}
                 tablet={8}
                 computer={8}
               >
-                <ButtonGroup circular style={{ paddingRight: 38 }} fluid>
+                <ButtonGroup style={{ paddingRight: 38 }} fluid>
                   <Button
                     onClick={save}
                     content="Save Transaction"
@@ -634,19 +659,19 @@ const CashierModal = ({
                     size="small"
                     position="top right"
                     inverted
-                    
                     content="Save Transaction and Start a new one"
                     trigger={
                       <Button
                         onClick={saveAndNew}
                         basic
-                        black                        
+                        black
                         icon="add"
                         style={{ maxWidth: 38 }}
                         disabled={transactionItems.length == 0}
                       />
                     }
                   ></Popup>
+                {/* <Notifications show={true} message="Testing Messages"  /> */}
                 </ButtonGroup>
               </Grid.Column>
             </Grid.Row>

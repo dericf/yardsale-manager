@@ -20,7 +20,9 @@ import {
   Menu,
   Icon,
   Dropdown,
-  Portal
+  Portal,
+  IconGroup,
+  Responsive
 } from "semantic-ui-react";
 
 import Notifications, { notify } from "react-notify-toast";
@@ -59,12 +61,12 @@ import NotFoundPage from "./pages/NotFoundPage";
 
 import { GET_USER } from "./graphql/queries";
 import { useQuery } from "@apollo/react-hooks";
-import GetUserComp from "./GetUser";
 
 import TopNotifications from "./utils/Notifications";
 import Login from "./pages/Login";
 import SidebarNav from "./components/layout/SidebarNav";
 import ConfirmNewPasswordModalBody from "./components/modals/ForgotPasswordModal/ConfirmNewPasswordModalBody";
+import BottomNavBar from "./components/layout/Footer";
 
 export const AuthContext = React.createContext([
   defaultAuth,
@@ -74,18 +76,20 @@ export const AuthContext = React.createContext([
 const defaultAppContext = {
   activePage: "",
   showLoginModal: false,
+  showFeedbackModal: false,
   notifications: {
-    show: false,
-    dismiss: true,
-    message: "",
-    level: "info"
+    show: true,
+    dismiss: false,
+    message: "Testing",
+    level: "error"
   },
   sidebar: {
     settingsPortalOpen: false
   },
-  yardsalePage: {
+  market: null,
+  yardsales: {
     searchQuery: "",
-    activeYardsaleUUID: null
+    selectedYardsale: null
   }
 };
 
@@ -99,6 +103,11 @@ const App = () => {
   const [auth, setAuth] = useState(defaultAuth);
   const [app, setApp] = useState(defaultAppContext);
 
+  const openLoginModal = () => {
+    setApp({ ...app, showLoginModal: true });
+    console.log("Opened the modal");
+  };
+
   // useEffect(() => {
   //   console.log('APP Context', app)
   // }, [app])
@@ -110,16 +119,30 @@ const App = () => {
             <LoginModal defaultOpen={true} noTrigger={true} />
           )}
 
-          <div className="grid-wrapper">
-            <div className="grid-notifications" id="TopNotificationBar">
-              {/* <TopNotifications /> */}
-            </div>
+          
 
+            <TopNotifications />
+          <div className="grid-wrapper">
             {/* Render the Sidebar (Uses CSS Grid) */}
-            <div className="grid-sidebar">
+            <div
+              className="grid-sidebar"
+              style={{
+                zIndex: app.showLoginModal === true ? "100000" : "initial"
+              }}
+            >
               <SidebarNav />
             </div>
             <div className="grid-content">
+              {history.location.pathname === "/" && auth && !auth.user && (
+                <Button
+                  fluid
+                  className="save"
+                  icon="power off"
+                  content="Log In"
+                  onClick={openLoginModal}
+                  id="HomePageLoginButton"
+                />
+              )}
               <Segment basic id="MainContent" textAlign="center">
                 <Switch>
                   {/* Home (root/index) */}
@@ -142,7 +165,7 @@ const App = () => {
                     render={props => <Onboarding {...props} />}
                   />
                   {/* Market */}
-                  <PrivateRoute
+                  <Route
                     exact
                     path="/market"
                     render={props => <Market {...props} setTitle={setTitle} />}
@@ -209,6 +232,10 @@ const App = () => {
                   <Redirect to="/404" />
                 </Switch>
               </Segment>
+            </div>
+
+            <div className="grid-bottom-bar">
+              <BottomNavBar />
             </div>
           </div>
         </AppContext.Provider>

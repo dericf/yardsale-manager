@@ -99,7 +99,7 @@ const YardsaleTransactionsModal = ({
             basic
             circular
             tabIndex="-1"
-            className="icon"
+            className="icon list-action-icon"
           ></Button>
         }
       />
@@ -107,9 +107,10 @@ const YardsaleTransactionsModal = ({
       <Modal
         open={open}
         closeIcon={<Icon name="close" onClick={closeModal}></Icon>}
+        onClose={closeModal}
         closeOnDimmerClick={true}
         closeOnEscape={true}
-        dimmer={false}
+        dimmer="blurring"
         style={{ height: "90vh", width: 500 }}
       >
         <Modal.Header>{`Transactions for ${yardsale.name}`}</Modal.Header>
@@ -186,7 +187,6 @@ const YardsaleTransactionsModal = ({
                       <Label
                         style={{ width: 275 }}
                         size="large"
-                        color="white"
                         content={`Grand Total: $ ${toMoney(
                           data.transaction.reduce(
                             (accum, currentItem) =>

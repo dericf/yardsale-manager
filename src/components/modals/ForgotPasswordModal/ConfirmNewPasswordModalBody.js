@@ -201,7 +201,7 @@ const ConfirmNewPasswordModalBody = ({
                         fluid
                         type="password"
                         name="password"
-                        icon="at"
+                        icon="key"
                         iconPosition="left"
                         ref={autoFocusRef}
                         value={values.password}

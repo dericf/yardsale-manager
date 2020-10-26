@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "parcel src/index.html --out-dir='public' --port 3000",
-    "build": "react-scripts build",
+    "build": "parcel build src/index.html --out-dir='public'",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -31,6 +31,7 @@
     "react-geocode": "^0.2.1",
     "react-google-autocomplete": "^1.1.2",
     "react-google-maps": "^9.4.5",
+    "react-markdown": "^4.3.1",
     "react-notify-toast": "^0.5.1",
     "react-router-dom": "^5.1.2",
     "react-scripts": "^3.3.0",

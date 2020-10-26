@@ -27,7 +27,8 @@ import YardsaleSellerModal from "../components/modals/YardsaleSellerModal/Yardsa
 import SellerDetailsModal from "../components/modals/SellerDetailsModal/SellerDetailsModal";
 import YardsaleDetailsModal from "../components/modals/YardsaleDetailsModal/YardsaleDetailsModal";
 import { GET_USER } from "../graphql/queries";
-import { useQuery } from "@apollo/react-hooks";
+import { useQuery, useMutation } from "@apollo/react-hooks";
+import { UPDATE_USER_ONBOARDING } from "../graphql/mutations";
 
 const OnBoarding = ({ setTitle, ...props }) => {
   const { auth, setAuth } = React.useContext(AuthContext);
@@ -47,6 +48,20 @@ const OnBoarding = ({ setTitle, ...props }) => {
   const [sellers, setSellers] = useState([]);
   const [yardsales, setYardsales] = useState([]);
   const [userAsSeller, setUserAsSeller] = useState(null);
+
+
+  const [updateUserOnboarding] = useMutation(UPDATE_USER_ONBOARDING)
+
+  const handleOnboardingComplete = () => {
+    const {loading, error } = updateUserOnboarding({variables: {UUID: auth.user.uuid}})
+  }
+  
+  useEffect(() => {
+    console.log('Secctions completed has changed...', sectionsCompleted)
+    if (sectionsCompleted.all === true) {
+      handleOnboardingComplete()
+    }
+  }, [sectionsCompleted])
 
   return (
     <Segment className="borderless" style={{ width: "100%" }}>

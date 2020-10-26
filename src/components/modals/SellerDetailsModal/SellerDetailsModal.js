@@ -1,4 +1,4 @@
-import React, { Component, Fragment, useState, useEffect, useRef } from "react";
+import React, { Component, Fragment, useState, useEffect, useRef, useContext } from "react";
 import { Link, withRouter } from "react-router-dom";
 import {
   Card,
@@ -15,11 +15,10 @@ import {
 
 // import MaskedInput from 'react-input-mask'
 
-import { notify } from "react-notify-toast";
-
 import { useMutation } from "@apollo/react-hooks";
 import { UPDATE_SELLER, CREATE_SELLER } from "../../../graphql/mutations";
 import { GET_SELLERS } from "../../../graphql/queries";
+import { AppContext } from "../../../App";
 
 const SellerDetailsModal = ({
   seller = null, // null or Seller DB JSON Object
@@ -34,7 +33,7 @@ const SellerDetailsModal = ({
   ...props
 }) => {
   const [open, setOpen] = useState(autoOpen);
-
+  const {app, setApp} = useContext(AppContext)
   const [
     updateSellerMutation,
     {
@@ -108,7 +107,7 @@ const SellerDetailsModal = ({
     // This function either creates a new seller (if seller === null)
     // OR updates an existing seller
     //
-    if (seller == null || typeof seller == "undefined") {
+    if (seller === null || typeof seller === "undefined") {
       // Create New seller
       createSellerMutation({
         variables: {
@@ -127,7 +126,15 @@ const SellerDetailsModal = ({
           }
         ]
       });
-      notify.show("Seller Created successfully ", "success");
+      setApp({
+        ...app,
+        notifications: {
+          show: true,
+          dismiss: true,
+          message: `${formValues.sellerName} has been created`,
+          level: "success"
+        }
+      });
     } else {
       // console.log('Editing Existing seller: ', seller.uuid);
       updateSellerMutation({
@@ -148,8 +155,16 @@ const SellerDetailsModal = ({
           }
         ]
       });
+      setApp({
+        ...app,
+        notifications: {
+          show: true,
+          dismiss: true,
+          message: `${seller.name} was updated`,
+          level: "info"
+        }
+      });
       // console.log(formValues)
-      notify.show("Seller Updated successfully ", "success");
     }
     closeModal();
     // props.history.push('/sellers')
@@ -182,19 +197,17 @@ const SellerDetailsModal = ({
         <Fragment>
           {props.edit === true ? (
             <Button
-              fluid
-              color="blue"
-              className="icon"
-              fluid
+              circular
+              basic
               onClick={openModal}
-            >
-              <Icon name="edit" onClick={openModal}></Icon>
-              {props.iconLabel}
-            </Button>
+              icon={<Icon name="edit" fitted onClick={openModal}></Icon>}
+              content={props.iconLabel && props.iconLabel}
+            ></Button>
           ) : (
             <Button
               size="small"
               fluid={fluid}
+              className="new"
               inverted={invertedButton}
               onClick={openModal}
             >
@@ -207,7 +220,10 @@ const SellerDetailsModal = ({
       <Modal
         open={open}
         closeIcon={<Icon name="close" onClick={closeModal}></Icon>}
-        dimmer={false}
+        onClose={closeModal}
+        closeOnDimmerClick={true}
+        closeOnEscape={true}
+        dimmer="blurring"
       >
         <Modal.Header>
           {seller
@@ -245,6 +261,8 @@ const SellerDetailsModal = ({
                       <label>Initials</label>
                       <Input
                         name="sellerInitials"
+                        icon="address card"
+                        iconPosition="left"
                         value={formValues.sellerInitials}
                         onChange={handleInputChange}
                       />
@@ -303,8 +321,6 @@ const SellerDetailsModal = ({
                     <Form.Field>
                       <label>Address</label>
                       <TextArea
-                        icon="address card"
-                        iconPosition="left"
                         placeholder="Address"
                         name="sellerAddress"
                         value={formValues.sellerAddress}
@@ -316,8 +332,6 @@ const SellerDetailsModal = ({
                     <Form.Field>
                       <label>Notes</label>
                       <TextArea
-                        icon="sticky note"
-                        iconPosition="left"
                         placeholder="Notes"
                         name="sellerNotes"
                         value={formValues.sellerNotes}
@@ -336,11 +350,7 @@ const SellerDetailsModal = ({
           <Grid>
             <Grid.Row>
               <Grid.Column width={8}>
-                <Button
-                  fluid
-                  onClick={cancel}
-                  className="cancel"
-                >
+                <Button fluid onClick={cancel} className="cancel">
                   Cancel
                 </Button>
               </Grid.Column>
@@ -360,13 +370,6 @@ const SellerDetailsModal = ({
           </Grid>
         </Modal.Actions>
       </Modal>
-      {/* <Responsive as={Fragment} minWidth={768} >
-                // Desktop Items
-            </Responsive>
-            
-            <Responsive as={Fragment} maxWidth={768} >
-                // Mobile Items
-            </Responsive> */}
     </Fragment>
   );
 };

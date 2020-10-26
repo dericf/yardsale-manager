@@ -13,12 +13,13 @@ import { AppContext, AuthContext } from "../App";
 import { GET_USER } from "../graphql/queries";
 import { useQuery } from "@apollo/react-hooks";
 
-const SettingsPortal = () => {
+const SettingsPortal = ({ mobile = false, ...props }) => {
   const [settingsPortalOpen, setSettingsPortalOpen] = useState(false);
   const { auth, setAuth } = React.useContext(AuthContext);
   const { app, setApp } = useContext(AppContext);
 
   const openLoginModal = () => {
+    setSettingsPortalOpen(false);
     setApp({ ...app, showLoginModal: true });
     console.log("Opened the modal");
   };
@@ -34,20 +35,22 @@ const SettingsPortal = () => {
       }
     }
   );
+
   return (
-    <Menu.Item>
-      <Icon
-        circular
-        name="setting"
-        className="sidebar-item"
+    <Fragment>
+      <Button
+        icon
+        className="settings-portal-button"
         onClick={() => setSettingsPortalOpen(true)}
-      ></Icon>
-      {/* TODO: Move this to a component */}
+      >
+        <Icon fitted name="setting"></Icon>
+      </Button>
+
       <Portal
         onClose={() => setSettingsPortalOpen(false)}
         open={settingsPortalOpen}
       >
-        <Segment id="SettingsPortal" loading={userLoading}>
+        <Segment id="SettingsPortal" loading={userLoading} raised>
           <Fragment>
             {auth.user && (
               <Fragment>
@@ -76,7 +79,7 @@ const SettingsPortal = () => {
                   fluid
                   icon="power off"
                   content="Logout"
-                  onClick={() => setAuth(auth.logout(auth, setAuth))}
+                  onClick={() => auth.logout(auth, setAuth, props.history)}
                 />
               </Fragment>
             )}
@@ -93,7 +96,7 @@ const SettingsPortal = () => {
           )}
         </Segment>
       </Portal>
-    </Menu.Item>
+    </Fragment>
   );
 };
 

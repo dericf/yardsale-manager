@@ -44,44 +44,55 @@ const DesktopActionGroup = ({
       className="mx-auto rounded"
       style={{ border: 0 }}
     >
-      <Grid centered padded stackable>
-        
+      <Grid centered padded stackable columns="equal">
         <Grid.Row centered className="py0">
-          <YardsaleDetailsModal
-            edit={true}
-            yardsale={yardsale}
-          />
+          <Grid.Column
+            textAlign="center"
+            style={{ paddingTop: 0, paddingBottom: 0 }}
+          >
+            <YardsaleDetailsModal edit={true} yardsale={yardsale} />
+          </Grid.Column>
 
-          <YardsaleSellerModal
-            yardsale={yardsale}
-          />
-          {(mobileMenuOpen || desktop) && (
-            <Fragment>
-              <YardsaleTransactionsModal
-                yardsale={yardsale}
-                iconLabel={false && "History"}
-              />
-              <ConfirmModal
-                circular={true}
-                buttonProps={{
-                  icon: "trash",
-                  content: false && "Remove",
-                  circular: true,
-                  className: "list-action-icon"
-                }}
-                handleConfirm={() => {
-                  confirmDeactivateYardsale();
-                }}
-                handleCancel={() => console.log("cancel")}
-                header="Confirm Delete"
-                content={`Proceed deleting ${yardsale.name}?`}
-                warningMessage={"Warning! This action cannot be undone!"}
-                popupEnabled={true}
-                popupMessage={"Remove Yardsale"}
-                popupPosition={"top center"}
-              />
-            </Fragment>
-          )}
+          <Grid.Column
+            textAlign="center"
+            style={{ paddingTop: 0, paddingBottom: 0 }}
+          >
+            <YardsaleSellerModal yardsale={yardsale} />
+          </Grid.Column>
+
+          <Grid.Column
+            textAlign="center"
+            style={{ paddingTop: 0, paddingBottom: 0 }}
+          >
+            <YardsaleTransactionsModal
+              yardsale={yardsale}
+              iconLabel={false && "History"}
+            />
+          </Grid.Column>
+          <Grid.Column
+            textAlign="center"
+            style={{ paddingTop: 0, paddingBottom: 0 }}
+          >
+            <ConfirmModal
+              circular={true}
+              buttonProps={{
+                icon: "trash",
+                content: false && "Remove",
+                circular: true,
+                className: "list-action-icon"
+              }}
+              handleConfirm={() => {
+                confirmDeactivateYardsale();
+              }}
+              handleCancel={() => console.log("cancel")}
+              header="Confirm Delete"
+              content={`Proceed deleting ${yardsale.name}?`}
+              warningMessage={"Warning! This action cannot be undone!"}
+              popupEnabled={true}
+              popupMessage={"Remove Yard Sale"}
+              popupPosition={"top center"}
+            />
+          </Grid.Column>
         </Grid.Row>
       </Grid>
     </Segment>

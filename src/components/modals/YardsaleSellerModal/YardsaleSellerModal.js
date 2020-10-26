@@ -187,10 +187,10 @@ const YardsaleTransactionsModal = ({
       <Modal
         open={open}
         closeIcon={<Icon name="close" onClick={closeModal}></Icon>}
+        onClose={closeModal}
         closeOnDimmerClick={true}
-        closeOnDocumentClick={true}
         closeOnEscape={true}
-        dimmer={false}
+        dimmer="blurring"
         style={{ maxWidth: 400 }}
       >
         <Modal.Header>{`Sellers for ${yardsale.name}`}</Modal.Header>

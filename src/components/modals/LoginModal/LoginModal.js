@@ -131,10 +131,16 @@ const LoginModal = ({
           json.token !== "" &&
           json.refreshToken != ""
         ) {
+          // TODO: This should be changed to not use localStorage eventually
           localStorage.setItem("accessToken", json.token);
           localStorage.setItem("refreshToken", json.refreshToken);
           setValues(initialValues);
-          // props.history.push('/yardsales')
+          
+          // setTimeout(() => {
+          //   console.log('Refreshing JWT')
+          //   setAuth({...auth, reAuthenticateRequired: true})
+          // }, 2000);
+
           setAuth(auth => ({ ...auth, loading: false, reAuthenticateRequired: false, user:json.user }));
           setLoading(false);
           closeModal(false)
@@ -143,6 +149,7 @@ const LoginModal = ({
           setTimeout(() => {
             if (json.user.has_completed_onboarding === false) {
               console.log('ONBOARDING FALSE: ', json.user, json.user.has_completed_onboarding)
+              setApp({ ...app, activePage: 'home' });
               props.history.push("/welcome");
   
             } else {
@@ -150,7 +157,7 @@ const LoginModal = ({
               props.history.push("/yardsales");
               
             }
-          }, 1000);
+          }, 500);
           
           // window.location.assign('/yardsales')
           // window.location.assign(json.callback)
@@ -223,7 +230,10 @@ const LoginModal = ({
         style={{ width: 385 }}
         open={open}
         closeIcon={<Icon name="close" onClick={closeModal}></Icon>}
-        dimmer={true}
+        dimmer={"blurring"}
+        onClose={closeModal}
+        closeOnDimmerClick={true}
+        closeOnEscape={true}
       >
         <Modal.Header>Log In</Modal.Header>
         <Modal.Content scrolling>

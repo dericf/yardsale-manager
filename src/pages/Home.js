@@ -56,7 +56,7 @@ const Home = ({ setTitle }) => {
         </Grid.Row>
 
         <Grid.Row className="py0 mt16 mb0">
-          <Grid.Column width={16}>
+          <Grid.Column width={8}>
             <Segment className="borderless mb0" fluid>
               <Header textAlign="center" as="h2" content="Motivation" />
             </Segment>
@@ -64,51 +64,34 @@ const Home = ({ setTitle }) => {
         </Grid.Row>
 
         {/* Cards */}
-        <Grid.Row className="py0 mt16 mb0" style={{ minHeight: "30vh" }}>
-          <Grid.Column mobile={8} computer={4}>
+        <Grid.Row className="py16 mt16 mb0" style={{ minHeight: "30vh" }}>
+          <Grid.Column mobile={8} computer={8} className="my16">
             <Segment className="rounded" fluid raised>
-              <Header textAlign="center" as="h3" content="The Problem" />
+              <Header textAlign="left" as="h3" content="The Goal" />
               <p  className="small text">
-                Manual entry is painful and leaves room for mistakes, requiring
-                records to be transfered to a spreadsheet or application.
+                The original goal of Yardsale Manager was to build a web application that could track users, yardsales, sellers and transactions, while displaying totals for each seller and each yard sale.
+
               </p>
             </Segment>
           </Grid.Column>
-          <Grid.Column mobile={8} computer={4}>
+          <Grid.Column mobile={8} computer={8} className="my16">
             <Segment className="rounded" fluid raised>
               <Header
                 textAlign="left"
                 as="h3"
-                content="The Solution"
-                subheader="Build a simple application to track users, sellers, yard sales and all transactions."
+                content="The Result"
               />
-            </Segment>
-          </Grid.Column>
-          <Grid.Column mobile={8} computer={4}>
-            <Segment className="rounded" fluid raised>
-              <Header
-                textAlign="left"
-                as="h3"
-                content="Why not Spreadsheets?"
-                subheader="They're okay for small yard sales but get complicated quickly and aren't fun to work with"
-              />
-            </Segment>
-          </Grid.Column>
-          <Grid.Column mobile={8} computer={4}>
-            <Segment className="rounded" fluid raised>
-              <Header
-                textAlign="left"
-                as="h3"
-                content=""
-                subheader="Leaves no room for accounting errors."
-              />
+                <p  className="small text">
+                  Build a simple application to track Users, Sellers, Yard Sales and all Transactions.
+                  Still in the development pipeline are features such as Seller/Yard Sale Items, with optional public listing (similar to an auction).
+                </p>
             </Segment>
           </Grid.Column>
         </Grid.Row>
 
         {/* Technology | UI |*/}
         <Grid.Row className="py0 mt16 mb0">
-          <Grid.Column width={16}>
+          <Grid.Column width={8} className="my16">
             <Segment className="borderless" fluid>
               <Header
                 textAlign="center"
@@ -121,7 +104,7 @@ const Home = ({ setTitle }) => {
 
         {/* Cards */}
         <Grid.Row className="py0 mt16 mb0" style={{ minHeight: "30vh" }}>
-          <Grid.Column mobile={8} computer={4}>
+          <Grid.Column mobile={16} computer={8} className="my16">
             <Segment className="rounded" fluid>
               <Header
                 textAlign="left"
@@ -131,17 +114,26 @@ const Home = ({ setTitle }) => {
               />
             </Segment>
           </Grid.Column>
-          <Grid.Column mobile={8} computer={4}>
+          <Grid.Column mobile={16} computer={8} className="my16">
             <Segment className="rounded" fluid>
               <Header
                 textAlign="left"
                 as="h3"
                 content="Functional Components, Hooks and the Context API"
-                subheader=""
               />
+              <p className="small text" >
+              </p>
+                <pre><code>
+                {`export const AppContext = React.createContext([
+  defaultAppContext,
+  () => defaultAppContext
+]);
+
+const [app, setApp] = useState(defaultAppContext);`}
+</code></pre>
             </Segment>
           </Grid.Column>
-          <Grid.Column mobile={8} computer={4}>
+          <Grid.Column mobile={16} computer={8} className="my16">
             <Segment className="rounded" fluid>
               <Header
                 textAlign="left"
@@ -151,13 +143,13 @@ const Home = ({ setTitle }) => {
               />
             </Segment>
           </Grid.Column>
-          <Grid.Column mobile={8} computer={4}>
+          <Grid.Column mobile={16} computer={8} className="my16">
             <Segment className="rounded" fluid>
               <Header
                 textAlign="left"
                 as="h3"
-                content="Parcel Bundler"
-                subheader="Smooth, efficient workflow and leaves room for mistakes"
+                content="SCSS"
+                subheader=""
               />
             </Segment>
           </Grid.Column>
@@ -166,7 +158,7 @@ const Home = ({ setTitle }) => {
 
         {/* Technology | Server & API | */}
         <Grid.Row className="py0 mt16 mb0">
-          <Grid.Column width={16}>
+          <Grid.Column width={16} className="my16">
             <Segment className="borderless" fluid>
               <Header
                 textAlign="center"
@@ -179,7 +171,7 @@ const Home = ({ setTitle }) => {
 
         {/* Cards */}
         <Grid.Row className="py0 mt16 mb0" style={{ minHeight: "30vh" }}>
-          <Grid.Column mobile={8} computer={4}>
+          <Grid.Column mobile={8} computer={4} className="my16">
             <Segment className="rounded" fluid>
               <Header
                 textAlign="left"
@@ -189,17 +181,21 @@ const Home = ({ setTitle }) => {
               />
             </Segment>
           </Grid.Column>
-          <Grid.Column mobile={8} computer={4}>
+          <Grid.Column mobile={8} computer={4} className="my16">
             <Segment className="rounded" fluid>
               <Header
                 textAlign="left"
                 as="h3"
                 content="GraphQL"
-                subheader="They're okay but get complicated quickly and aren't fun to work with"
               />
+
+              <p className="small text">
+                {`using
+                `}
+              </p>
             </Segment>
           </Grid.Column>
-          <Grid.Column mobile={8} computer={4}>
+          <Grid.Column mobile={8} computer={4} className="my16">
             <Segment className="rounded" fluid>
               <Header
                 textAlign="left"
@@ -209,7 +205,7 @@ const Home = ({ setTitle }) => {
               />
             </Segment>
           </Grid.Column>
-          <Grid.Column mobile={8} computer={4}>
+          <Grid.Column mobile={8} computer={4} className="my16">
             <Segment className="rounded" fluid>
               <Header
                 textAlign="left"
@@ -222,9 +218,9 @@ const Home = ({ setTitle }) => {
         </Grid.Row>
 
 
-        {/* Technology | UI |*/}
+        {/* Technology | DB |*/}
         <Grid.Row className="py0 mt16 mb0">
-          <Grid.Column width={16}>
+          <Grid.Column width={16} className="my16">
             <Segment className="borderless" fluid>
               <Header
                 textAlign="center"
@@ -237,7 +233,8 @@ const Home = ({ setTitle }) => {
 
         {/* Cards */}
         <Grid.Row className="py0 mt16 mb0" style={{ minHeight: "30vh" }}>
-          <Grid.Column mobile={8} computer={4}>
+          <Grid.Column mobile={16} computer={16} className="my16">
+            
             <Segment className="rounded" fluid>
               <Header
                 textAlign="left"
@@ -247,7 +244,7 @@ const Home = ({ setTitle }) => {
               />
             </Segment>
           </Grid.Column>
-          <Grid.Column mobile={8} computer={4}>
+          <Grid.Column mobile={16} computer={16} className="my16">
             <Segment className="rounded" fluid>
               <Header
                 textAlign="left"
@@ -257,7 +254,7 @@ const Home = ({ setTitle }) => {
               />
             </Segment>
           </Grid.Column>
-          <Grid.Column mobile={8} computer={4}>
+          <Grid.Column mobile={16} computer={16} className="my16">
             <Segment className="rounded" fluid>
               <Header
                 textAlign="left"
@@ -267,13 +264,117 @@ const Home = ({ setTitle }) => {
               />
             </Segment>
           </Grid.Column>
-          <Grid.Column mobile={8} computer={4}>
+          <Grid.Column mobile={16} computer={16} className="my16">
             <Segment className="rounded" fluid>
               <Header
                 textAlign="left"
                 as="h3"
                 content="Strict Permissions"
                 subheader="room for accounting errors and leaves room for mistakes"
+              />
+            </Segment>
+          </Grid.Column>
+        </Grid.Row>
+
+        {/* Technology | DB |*/}
+        <Grid.Row className="py0 mt16 mb0">
+          <Grid.Column width={16} className="my16">
+            <Segment className="borderless" fluid>
+              <Header
+                textAlign="center"
+                as="h2"
+                content="Tooling"
+              />
+            </Segment>
+          </Grid.Column>
+        </Grid.Row>
+
+        {/* Cards */}
+        <Grid.Row className="py0 mt16 mb0" style={{ minHeight: "30vh" }}>
+          <Grid.Column mobile={16} computer={8} className="my16">
+            <Segment className="rounded" fluid>
+              <Header
+                textAlign="left"
+                as="h3"
+                content="VS Code"
+                subheader=""
+              />
+            </Segment>
+          </Grid.Column>
+          <Grid.Column mobile={16} computer={8} className="my16">
+            <Segment className="rounded" fluid>
+              <Header
+                textAlign="left"
+                as="h3"
+                content="Parcel Bundler"
+                subheader=""
+              />
+            </Segment>
+          </Grid.Column>
+          <Grid.Column mobile={16} computer={8} className="my16">
+            <Segment className="rounded" fluid >
+              <Header
+                textAlign="left"
+                as="h3"
+                content="Github"
+                subheader=""
+              />
+            </Segment>
+          </Grid.Column>
+        </Grid.Row>
+
+        {/* Technology | Deployment |*/}
+        <Grid.Row className="py0 mt16 mb0">
+          <Grid.Column width={16} className="my16">
+            <Segment className="borderless" fluid>
+              <Header
+                textAlign="center"
+                as="h2"
+                content="Deployment"
+              />
+            </Segment>
+          </Grid.Column>
+        </Grid.Row>
+
+        {/* Cards */}
+        <Grid.Row className="py0 mt16 mb0" style={{ minHeight: "30vh" }}>
+          <Grid.Column mobile={16} computer={8} className="my16">
+            <Segment className="rounded" fluid>
+              <Header
+                textAlign="left"
+                as="h3"
+                content="Linode Server"
+                subheader=""
+              />
+            </Segment>
+          </Grid.Column>
+          <Grid.Column mobile={16} computer={8} className="my16">
+            <Segment className="rounded" fluid>
+              <Header
+                textAlign="left"
+                as="h3"
+                content="NGINX"
+                subheader=""
+              />
+            </Segment>
+          </Grid.Column>
+          <Grid.Column mobile={16} computer={8} className="my16">
+            <Segment className="rounded" fluid>
+              <Header
+                textAlign="left"
+                as="h3"
+                content="Certbot"
+                subheader=""
+              />
+            </Segment>
+          </Grid.Column>
+          <Grid.Column mobile={16} computer={8} className="my16">
+            <Segment className="rounded" fluid>
+              <Header
+                textAlign="left"
+                as="h3"
+                content="Supervisor"
+                subheader=""
               />
             </Segment>
           </Grid.Column>

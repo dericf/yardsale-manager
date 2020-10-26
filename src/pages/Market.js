@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState, useContext } from "react";
 import { Link, withRouter } from "react-router-dom";
 import {
   Segment,
@@ -28,15 +28,20 @@ import MarketMap from "../components/MarketMap/MarketMap";
 
 import MarketFilterForm from "../components/MarketFilterForm/MarketFilterForm";
 import Loading from "../components/layout/Loading";
+import { BASE_URL } from "../constants";
+import { AppContext } from "../App";
 const Home = ({ setTitle }) => {
   const [filter, setFilter] = useState({
     searchText: "",
     status: "active"
   });
+  
+  const {app, setApp } = useContext(AppContext)
+
   const useMyLocationFromStorage = JSON.parse(
     localStorage.getItem("useMyLocation")
   );
-  console.log("Localstorage?", useMyLocationFromStorage);
+  // console.log("Localstorage?", useMyLocationFromStorage);
   const [myLocation, setMyLocation] = useState(
     useMyLocationFromStorage === true ? true : false
   );
@@ -73,10 +78,12 @@ const Home = ({ setTitle }) => {
   };
 
   useEffect(() => {
-    setTitle("Yardsale Market");
     if (myLocation === true && myPosition == +{}) {
-      myPosition = navigator.geolocation.getCurrentPosition();
+      setMyPosition(navigator.geolocation.getCurrentPosition());
     }
+
+    fetchFilteredYardsales()
+
   }, []);
 
   useEffect(() => {
@@ -91,9 +98,37 @@ const Home = ({ setTitle }) => {
     }
   }, [myLocation]);
 
+  const fetchFilteredYardsales = () => {
+    //   TODO: Change the url to filtered instead of all
+    window
+      .fetch(
+        `${BASE_URL}/api/market/get-all-public-yardsales/${
+          myPosition ? myPosition.lat : 0
+        }/${myPosition ? myPosition.lng : 0}`,
+        {
+          method: "GET"
+        }
+      )
+      .then(response => response.json())
+      .then(json => {
+        setApp({
+          ...app,
+          market: {
+            publicYardsales: json.yardsales
+          }
+        });
+      })
+      .catch(e => {
+        console.log("Error: 4433", e);
+        setState({ ...state, isFetching: false });
+      });
+  };
+
   return (
-    <Container>
-      <Grid>
+      <Grid centered stackable>
+        <Grid.Row>
+          {JSON.stringify(app.market)}
+        </Grid.Row>
         <Grid.Row className="py0 mt16 mb0">
           <Grid.Column>
             {myLocation}
@@ -113,9 +148,9 @@ const Home = ({ setTitle }) => {
           </Grid.Column>
         </Grid.Row>
         {/* <Divider className="mx0 my16" /> */}
-        <Grid.Row className="my16 py0">
+        <Grid.Row className="my16 py0" centered>
           <Grid.Column
-            style={{ height: "60vh", width: "100vw" }}
+            style={{ height: "60vh", width: "90vw" }}
             textAlign="center"
           >
             {/* {filter.searchText != "" ? (
@@ -148,7 +183,6 @@ const Home = ({ setTitle }) => {
           </Grid.Column>
         </Grid.Row>
       </Grid>
-    </Container>
   );
 };
 

@@ -1,4 +1,29 @@
 import gql from "graphql-tag";
+/*
+  USER
+*/
+//
+// Update User Onbording complete
+//
+export const UPDATE_USER_ONBOARDING = gql`
+  mutation setOnboardingComplete (
+    $UUID: uuid!
+  ) {
+    update_user(
+      where: { uuid: { _eq: $UUID } }
+      _set: {
+        has_completed_onboarding: true
+      }
+    ) {
+      returning {
+        uuid
+        has_completed_onboarding
+      }
+    }
+  }
+`;
+
+
 /* 
   SELLERS 
 */
@@ -172,7 +197,7 @@ export const UPDATE_YARDSALE = gql`
 // Delete Yardsale
 //
 export const DELETE_YARDSALE = gql`
-  mutation updateYardsale($yardsaleUUID: uuid!) {
+  mutation deleteYardsale($yardsaleUUID: uuid!) {
     delete_yardsale(where: { uuid: { _eq: $yardsaleUUID } }) {
       returning {
         uuid

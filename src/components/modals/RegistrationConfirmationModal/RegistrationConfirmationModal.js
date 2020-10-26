@@ -23,7 +23,6 @@ import {
 import { notify } from 'react-notify-toast';
 
 import { BASE_URL } from '../../../constants'
-import { FakeDataContext } from '../../../App'
 
 import { AuthContext } from '../../../App'
 
@@ -55,7 +54,7 @@ const RegistrationConfirmationModal = ({ defaultOpen = false, forcedOpen = false
                 closeOnDimmerClick={false}
                 closeOnDocumentClick={false}
                 closeOnEscape={false}
-                dimmer="inverted"
+                dimmer="blurring"
             >
                 <Modal.Header>Email Confirmed</Modal.Header>
                 <Modal.Content>

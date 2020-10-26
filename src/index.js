@@ -1,7 +1,6 @@
 import React from "react"
 import ReactDOM from "react-dom"
 import { BrowserRouter } from 'react-router-dom'
-import "./index.css"
 import * as serviceWorker from "./serviceWorker"
 import App from './App'
 // 
@@ -29,9 +28,15 @@ const httpLink = new HttpLink({
 
 
 const wsLink = new WebSocketLink({
+
   uri: CONFIG.GRAPHQL_WS_ENDPOINT,
   options: {
-    reconnect: true
+    reconnect: true,
+    connectionParams: {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('accesToken')}`
+      }
+   }
   }
 })
 
@@ -58,7 +63,7 @@ const authLink = setContext((_, { headers }) => {
   // TODO: IMPORTANT: check if token is expired here. If it is -> use refresh token to get another. 
   return {
     headers: {
-      ...headers,
+      
       "Authorization": token ? `Bearer ${token}` : "",
       'X-Hasura-Role': jwt["https://hasura.io/jwt/claims"]["x-hasura-role"],
       'X-Hasura-User-Id': jwt["https://hasura.io/jwt/claims"]["x-hasura-user-id"]

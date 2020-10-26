@@ -21,6 +21,7 @@ import {
   Input,
   ButtonGroup
 } from "semantic-ui-react";
+import MarketSearch from "../MarketMap/MarketSearch";
 
 const SellersFilterForm = ({
   filter,
@@ -29,7 +30,11 @@ const SellersFilterForm = ({
   setMyLocation,
   loadingMyLocation,
   setLoadingMyLocation,
+  myPosition,
+  setMyPosition,
   autofocus,
+  currentMarker,
+  setCurrentMarker,
   ...props
 }) => {
   // console.log('props for sellers filter forms', props)
@@ -40,7 +45,7 @@ const SellersFilterForm = ({
   const searchRef = useRef();
 
   useEffect(() => {
-    if (autofocus) {
+    if (autofocus && searchRef && searchRef.current) {
       searchRef.current.focus();
     }
   }, []);
@@ -81,7 +86,9 @@ const SellersFilterForm = ({
   const disableMyLocation = () => {
     setLoadingMyLocation(true);
     setMyLocation(false);
+    setMyPosition({});
     localStorage.setItem("useMyLocation", false);
+    setMyPosition({});
   };
 
   return (
@@ -91,14 +98,21 @@ const SellersFilterForm = ({
           <Grid.Row className="pt0">
             <Grid.Column mobile={16} tablet={8} computer={8} className="pt16">
               <Form.Field>
-                <Input
+                {/* <Input
                   placeholder="Search Address, City"
                   icon="search"
                   focus
                   value={filter.searchText}
                   onChange={handleSearchInput}
                   ref={searchRef}
-                />
+                /> */}
+
+                {/* <MarketSearch
+                  ref={searchRef}
+                  myPosition={myPosition}
+                  currentMarker={currentMarker}
+                  setCurrentMarker={setCurrentMarker}
+                ></MarketSearch> */}
               </Form.Field>
             </Grid.Column>
 
