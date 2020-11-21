@@ -4,7 +4,7 @@ import React, {
   useState,
   createRef,
   useEffect,
-  useRef
+  useRef,
 } from "react";
 import { Link, withRouter } from "react-router-dom";
 import {
@@ -22,7 +22,7 @@ import {
   Tab,
   Message,
   Item,
-  Popup
+  Popup,
 } from "semantic-ui-react";
 
 // Apollo/GQL
@@ -32,7 +32,7 @@ import { notify } from "react-notify-toast";
 
 import { BASE_URL } from "../../../constants";
 
-import { AuthContext, AppContext } from "../../../App";
+import { AuthContext, checkRefreshInterval } from "../../../AuthContext";
 
 import RegisterModal from "../RegisterModal/RegisterModal";
 
@@ -45,28 +45,31 @@ const LoginModal = ({
   // TODO: (Future) make this more responsive. Add more than just two widths
   // const nameRef = createRef()
   const { auth, setAuth } = React.useContext(AuthContext);
-  const { app, setApp } = React.useContext(AppContext);
   const client = props.client;
   const autoFocusRef = useRef();
   const initialValues = {
     email: "",
-    password: ""
+    password: "",
   };
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(defaultOpen);
   const [values, setValues] = useState(initialValues);
   const [errorMessage, setErrorMessage] = useState(null);
 
-  const closeModal = (withRedirect=true) => {
+  const closeModal = (e, withRedirect = true, override = false) => {
+    console.log("Closing modal...", override, forcedOpen);
+    if (forcedOpen === true && override === true) {
+      return false;
+    }
     setOpen(false);
-    setAuth(auth => ({
+    setAuth((auth) => ({
       ...auth,
-      loading: false
+      loading: false,
     }));
-    setApp({...app, showLoginModal: false})
+
     if (withRedirect === true) {
-      props.history.replace('/')
-    }    
+      props.history.replace("/yardsales");
+    }
   };
   const openModal = () => {
     setOpen(true);
@@ -84,12 +87,20 @@ const LoginModal = ({
     // If the user has been sent here in order to re-authenticate the "session". display a message
     if (auth.reAuthenticateRequired === true) {
       setErrorMessage(
-        errorMessage => "Your session has timed out. Please log in again."
+        (errorMessage) => "Your session has timed out. Please log in again.",
       );
     }
   }, [open, auth, errorMessage]);
 
-  const handleInputChange = event => {
+  useEffect(() => {
+    if (auth.redirectToAfterLogin !== null) {
+      setLoading(false);
+      closeModal(false, true);
+      history.go(auth.redirectToAfterLogin);
+    }
+  }, [auth]);
+
+  const handleInputChange = (event) => {
     // TODO: Move this to a hook
     const target = event.target;
     const val = target.type === "checkbox" ? target.checked : target.value;
@@ -97,18 +108,18 @@ const LoginModal = ({
 
     setValues({
       ...values,
-      [name]: val
+      [name]: val,
     });
   };
 
-  const handleSubmit = e => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     setAuth({ ...auth, loading: true });
     setLoading(true);
     let uri = `${BASE_URL}/auth/login`;
     let data = {
       email: values.email,
-      password: values.password
+      password: values.password,
     };
     // let options =
 
@@ -116,49 +127,67 @@ const LoginModal = ({
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Access-Control-Allow-Credentials": "true"
+        "Access-Control-Allow-Credentials": "true",
       },
-      body: JSON.stringify(data)
+      body: JSON.stringify(data),
     })
-      .then(res => {
+      .then((res) => {
         // console.log("Login Response is: ", res)
         return res.json();
       })
-      .then(json => {
+      .then((json) => {
         // console.log('JSON: ', json)
         if (
           json.STATUS === "OK" &&
           json.token !== "" &&
           json.refreshToken != ""
         ) {
+          //
           // TODO: This should be changed to not use localStorage eventually
+          //
           localStorage.setItem("accessToken", json.token);
           localStorage.setItem("refreshToken", json.refreshToken);
+          localStorage.setItem("user", JSON.stringify(json.user));
           setValues(initialValues);
-          
-          // setTimeout(() => {
-          //   console.log('Refreshing JWT')
-          //   setAuth({...auth, reAuthenticateRequired: true})
-          // }, 2000);
+          //
+          // Update Auth Context
+          //
+          const intervalID = setInterval(() => {
+            checkRefreshInterval(auth, setAuth, history);
+          }, 3000);
 
-          setAuth(auth => ({ ...auth, loading: false, reAuthenticateRequired: false, user:json.user }));
-          setLoading(false);
-          closeModal(false)
+          setAuth((auth) => ({
+            ...auth,
+            loading: false,
+            reAuthenticateRequired: false,
+            refreshTokenIntervalFunction: intervalID,
+            redirectToAfterLogin: "/yardsales",
+            isAuthenticated: true,
+            isLoggedIn: true,
+            user: json.user,
+            token: json.token,
+          }));
+
           // TODO : server should also return some of the user fields so here we can check if the user
           // has completed the onboarding process or not. If not: redirect to the /welcome page. otherwise redirect to yardsales (or sellers... can't decide.)
-          setTimeout(() => {
-            if (json.user.has_completed_onboarding === false) {
-              console.log('ONBOARDING FALSE: ', json.user, json.user.has_completed_onboarding)
-              setApp({ ...app, activePage: 'home' });
-              props.history.push("/welcome");
-  
-            } else {
-              console.log('ONBOARDING TRUE: ', json.user, json.user.has_completed_onboarding)
-              props.history.push("/yardsales");
-              
-            }
-          }, 500);
-          
+          // setTimeout(() => {
+          //   if (json.user.has_completed_onboarding === false) {
+          //     console.log(
+          //       "ONBOARDING FALSE: ",
+          //       json.user,
+          //       json.user.has_completed_onboarding,
+          //     );
+          //     props.history.push("/welcome");
+          //   } else {
+          //     console.log(
+          //       "ONBOARDING TRUE: ",
+          //       json.user,
+          //       json.user.has_completed_onboarding,
+          //     );
+          //     props.history.push("/yardsales");
+          //   }
+          // }, 500);
+
           // window.location.assign('/yardsales')
           // window.location.assign(json.callback)
           //   closeModal();
@@ -166,46 +195,46 @@ const LoginModal = ({
           // console.log('Bad Login Credentials', json)
           if (json.MESSAGE === "User not found") {
             // console.log('User not found', json)
-            setAuth(auth => ({
+            setAuth((auth) => ({
               ...auth,
               loading: false,
-              reAuthenticateRequired: false
+              reAuthenticateRequired: false,
             }));
             setLoading(false);
             // setValues(prev => ({ ...prev, email: "" }))
             autoFocusRef.current.focus();
             setErrorMessage(
-              "No user was found matching that email. Please try again."
+              "No user was found matching that email. Please try again.",
             );
           } else if (json.MESSAGE === "Wrong password") {
             setErrorMessage("Password does not match. Please try again.");
-            setAuth(auth => ({
+            setAuth((auth) => ({
               ...auth,
               loading: false,
-              reAuthenticateRequired: false
+              reAuthenticateRequired: false,
             }));
             setLoading(false);
             // console.log('Bad password', json)
           } else if (json.MESSAGE === "Email not confirmed") {
             setErrorMessage(
-              "The email associated with this account has not been confirmed yet. Please check your email and follow the link provided and then log in again."
+              "The email associated with this account has not been confirmed yet. Please check your email and follow the link provided and then log in again.",
             );
-            setAuth(auth => ({
+            setAuth((auth) => ({
               ...auth,
               loading: false,
-              reAuthenticateRequired: false
+              reAuthenticateRequired: false,
             }));
             setLoading(false);
             // console.log('Email not confirmed', json)
           }
         }
       })
-      .catch(err => {
+      .catch((err) => {
         // console.log('ERROR', err)
         setErrorMessage(
-          "There was a problem on our end. Please try again later."
+          "There was a problem on our end. Please try again later.",
         );
-        setAuth(auth => ({ ...auth, loading: false }));
+        setAuth((auth) => ({ ...auth, loading: false }));
         setLoading(false);
       });
   };
@@ -229,7 +258,7 @@ const LoginModal = ({
       <Modal
         style={{ width: 385 }}
         open={open}
-        closeIcon={<Icon name="close" onClick={closeModal}></Icon>}
+        closeIcon={auth.user && <Icon name="close" onClick={closeModal}></Icon>}
         dimmer={"blurring"}
         onClose={closeModal}
         closeOnDimmerClick={true}
@@ -252,7 +281,7 @@ const LoginModal = ({
                     <Form.Field width={16}>
                       <label>Email</label>
                       <Input
-                        fluid
+                        fluid={true}
                         type="email"
                         name="email"
                         icon="at"
@@ -271,7 +300,7 @@ const LoginModal = ({
                     <Form.Field width={16}>
                       <label>Password</label>
                       <Input
-                        fluid
+                        fluid={true}
                         type="password"
                         name="password"
                         icon="key"
@@ -325,7 +354,7 @@ const LoginModal = ({
                   type="submit"
                   className="save"
                   content="Log In"
-                  fluid
+                  fluid={true}
                   loading={loading}
                   disabled={
                     values.email == "" ||
