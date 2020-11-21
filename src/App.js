@@ -3,27 +3,28 @@ import React, {
   Fragment,
   useState,
   useContext,
-  useEffect
+  useEffect,
+  useMemo,
 } from "react";
 
 import { Router, Route, Switch, Redirect, Link } from "react-router-dom";
 
 // styles
 import "./App.css";
-import {
-  Container,
-  Grid,
-  Header,
-  Divider,
-  Button,
-  Segment,
-  Menu,
-  Icon,
-  Dropdown,
-  Portal,
-  IconGroup,
-  Responsive
-} from "semantic-ui-react";
+// import {
+//   Container,
+//   Grid,
+//   Header,
+//     Divider,
+//   Button,
+//   Segment,
+//   Menu,
+//   Icon,
+//   Dropdown,
+//   Portal,
+//   IconGroup,
+//   Responsive,
+// } from "semantic-ui-react";
 
 import Notifications, { notify } from "react-notify-toast";
 
@@ -37,211 +38,141 @@ import "./App.scss";
 
 import "react-datepicker/dist/react-datepicker.css";
 
-import PrivateRoute from "./components/PrivateRoute";
+// import PrivateRoute from "./components/PrivateRoute";
 
 import Loading from "./components/layout/Loading";
-import Title from "./components/layout/Title";
-import Footer from "./components/layout/Footer";
-import Sellers from "./pages/Sellers";
-import Yardsales from "./pages/Yardsales";
-import Home from "./pages/Home";
-import Onboarding from "./pages/Onboarding";
-import Market from "./pages/Market";
-import ForgotPasswordModal from "./components/modals/ForgotPasswordModal/ForgotModalPassword";
+// import Title from "./components/layout/Title";
+// import Footer from "./components/layout/Footer";
+// import Sellers from "./pages/Sellers";
+// import Yardsales from "./pages/Yardsales";
+// import Home from "./pages/Home";
+// import Onboarding from "./pages/Onboarding";
+// import Market from "./pages/Market";
+// import ForgotPasswordModal from "./components/modals/ForgotPasswordModal/ForgotModalPassword";
 
-import "./utils/prototypes";
+// import "./utils/prototypes";
 
-import { NAVBAR_HEIGHT, FOOTER_HEIGHT, TITLE_HEIGHT } from "./constants";
+// import { NAVBAR_HEIGHT, FOOTER_HEIGHT, TITLE_HEIGHT } from "./constants";
 
-import { auth as defaultAuth } from "./Auth";
-import LoginModal from "./components/modals/LoginModal/LoginModal";
-import RegistrationConfirmationModal from "./components/modals/RegistrationConfirmationModal/RegistrationConfirmationModal";
-import RegisterModal from "./components/modals/RegisterModal/RegisterModal";
-import NotFoundPage from "./pages/NotFoundPage";
-
-import { GET_USER } from "./graphql/queries";
-import { useQuery } from "@apollo/react-hooks";
-
-import TopNotifications from "./utils/Notifications";
-import Login from "./pages/Login";
-import SidebarNav from "./components/layout/SidebarNav";
-import ConfirmNewPasswordModalBody from "./components/modals/ForgotPasswordModal/ConfirmNewPasswordModalBody";
-import BottomNavBar from "./components/layout/Footer";
-
-export const AuthContext = React.createContext([
+import {
+  AuthContext,
   defaultAuth,
-  () => defaultAuth
-]);
+  tokenIsExpired,
+  checkRefreshInterval,
+} from "./AuthContext";
+import LoginModal from "./components/modals/LoginModal/LoginModal";
+// import RegistrationConfirmationModal from "./components/modals/RegistrationConfirmationModal/RegistrationConfirmationModal";
+// import RegisterModal from "./components/modals/RegisterModal/RegisterModal";
+// import NotFoundPage from "./pages/NotFoundPage";
 
-const defaultAppContext = {
-  activePage: "",
-  showLoginModal: false,
-  showFeedbackModal: false,
-  notifications: {
-    show: true,
-    dismiss: false,
-    message: "Testing",
-    level: "error"
-  },
-  sidebar: {
-    settingsPortalOpen: false
-  },
-  market: null,
-  yardsales: {
-    searchQuery: "",
-    selectedYardsale: null
-  }
-};
+// import { GET_USER } from "./graphql/queries";
+// import { useQuery } from "@apollo/react-hooks";
 
-export const AppContext = React.createContext([
-  defaultAppContext,
-  () => defaultAppContext
-]);
+// import TopNotifications from "./utils/Notifications";
+// import Login from "./pages/Login";
+// import SidebarNav from "./components/layout/SidebarNav";
+// import ConfirmNewPasswordModalBody from "./components/modals/ForgotPasswordModal/ConfirmNewPasswordModalBody";
+// import BottomNavBar from "./components/layout/Footer";
+import TestHomePage from "./TestHomePage";
+import { Button } from "semantic-ui-react";
 
 const App = () => {
-  const [title, setTitle] = useState("");
+  // const [title, setTitle] = useState("");
+  // const [app, setApp] = useState(defaultAppContext);
+
   const [auth, setAuth] = useState(defaultAuth);
-  const [app, setApp] = useState(defaultAppContext);
+  const providerValue = useMemo(() => ({ auth, setAuth }), [auth, setAuth]);
 
-  const openLoginModal = () => {
-    setApp({ ...app, showLoginModal: true });
-    console.log("Opened the modal");
-  };
+  useEffect(() => {
+    const token = localStorage.getItem("accessToken");
 
-  // useEffect(() => {
-  //   console.log('APP Context', app)
-  // }, [app])
+    if (token !== null) {
+      setAuth({
+        ...auth,
+        isAuthenticated: true,
+        isLoggedIn: true,
+        token: token,
+        user: JSON.parse(localStorage.getItem("user") || null),
+      });
+    }
+  }, []);
+
+  useEffect(() => {
+    if (
+      auth.isAuthenticated === true &&
+      auth.refreshTokenIntervalFunction === null
+    ) {
+      auth.refreshTokenIntervalFunction = setInterval(
+        () => checkRefreshInterval(auth, setAuth, history),
+        3000,
+      );
+    }
+    return () => {
+      try {
+        clearInterval(auth.refreshTokenIntervalFunction);
+      } catch (e) {}
+    };
+  }, [auth]);
+
   return (
     <Router history={history}>
-      <AuthContext.Provider value={{ auth, setAuth }}>
-        <AppContext.Provider value={{ app, setApp }}>
-          {app && app.showLoginModal === true && (
-            <LoginModal defaultOpen={true} noTrigger={true} />
+      <div>
+        <nav>
+          <ul>
+            <li>
+              <Link to="/">Home</Link>
+            </li>
+            <li>
+              <Link to="/yardsales">Yardsales</Link>
+            </li>
+            <li></li>
+          </ul>
+        </nav>
+
+        <AuthContext.Provider value={providerValue}>
+          {auth && auth.isLoggedIn && (
+            <>
+              <pre>{JSON.stringify(auth.user)}</pre>
+              <Route path="/" exact component={TestHomePage} />
+              <Route path="/yardsales" exact component={TestYardsales} />
+              <Route
+                path="/login"
+                exact
+                component={() => <LoginModal forcedOpen={true} />}
+              />
+            </>
           )}
 
-          
-
-            <TopNotifications />
-          <div className="grid-wrapper">
-            {/* Render the Sidebar (Uses CSS Grid) */}
-            <div
-              className="grid-sidebar"
-              style={{
-                zIndex: app.showLoginModal === true ? "100000" : "initial"
-              }}
-            >
-              <SidebarNav />
-            </div>
-            <div className="grid-content">
-              {history.location.pathname === "/" && auth && !auth.user && (
-                <Button
-                  fluid
-                  className="save"
-                  icon="power off"
-                  content="Log In"
-                  onClick={openLoginModal}
-                  id="HomePageLoginButton"
-                />
+          {!auth.isLoggedIn && (
+            <LoginModal
+              trigger={() => (
+                <Button onClick={() => auth.logout(auth, setAuth, history)}>
+                  Logout
+                </Button>
               )}
-              <Segment basic id="MainContent" textAlign="center">
-                <Switch>
-                  {/* Home (root/index) */}
-                  <Route
-                    exact
-                    path="/"
-                    render={props => <Home {...props} setTitle={setTitle} />}
-                  />
-                  {/* Login */}
-                  <Route
-                    exact
-                    path="/login"
-                    render={props => <Login {...props} />}
-                  />
-
-                  {/* Onboarding */}
-                  <PrivateRoute
-                    exact
-                    path="/welcome"
-                    render={props => <Onboarding {...props} />}
-                  />
-                  {/* Market */}
-                  <Route
-                    exact
-                    path="/market"
-                    render={props => <Market {...props} setTitle={setTitle} />}
-                  />
-
-                  <PrivateRoute
-                    exact
-                    path="/sellers"
-                    render={props => <Sellers {...props} setTitle={setTitle} />}
-                  />
-                  <PrivateRoute
-                    exact
-                    path="/yardsales"
-                    render={props => (
-                      <Yardsales {...props} setTitle={setTitle} />
-                    )}
-                  />
-
-                  <Route
-                    exact
-                    path="/request-change-password"
-                    render={props => <ForgotPasswordModal {...props} />}
-                  />
-
-                  <Route
-                    path="/confirm-change-password/:resetCode/:uuid"
-                    render={props => (
-                      <ConfirmNewPasswordModalBody
-                        defaultOpen={true}
-                        {...props}
-                      />
-                    )}
-                  />
-
-                  <PrivateRoute
-                    exact
-                    path="/register"
-                    render={props => (
-                      <RegisterModal
-                        {...props}
-                        defaultOpen={true}
-                        forcedOpen={true}
-                      />
-                    )}
-                  />
-
-                  <Route
-                    exact
-                    path="/register/confirm-email"
-                    render={props => (
-                      <RegistrationConfirmationModal
-                        {...props}
-                        defaultOpen={true}
-                        forcedOpen={true}
-                      />
-                    )}
-                  />
-                  {/* Handle the 404 Error case */}
-                  <Route
-                    path="/404"
-                    render={props => <NotFoundPage {...props} />}
-                  />
-                  {/* If no matches found: redirect to 404 */}
-                  <Redirect to="/404" />
-                </Switch>
-              </Segment>
-            </div>
-
-            <div className="grid-bottom-bar">
-              <BottomNavBar />
-            </div>
-          </div>
-        </AppContext.Provider>
-      </AuthContext.Provider>
+              forcedOpen={true}
+            />
+          )}
+          {auth.user && (
+            <Button onClick={() => auth.logout(auth, setAuth, history)}>
+              Logout
+            </Button>
+          )}
+        </AuthContext.Provider>
+      </div>
     </Router>
   );
 };
 
 export default App;
+
+const TestYardsales = () => {
+  const { auth, setAuth } = useContext(AuthContext);
+
+  return (
+    <div>
+      <h2>Yardsales</h2>
+      <p>{JSON.stringify(auth)}</p>
+    </div>
+  );
+};
