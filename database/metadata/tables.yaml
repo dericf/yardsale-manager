@@ -1,0 +1,108 @@
+- table:
+    schema: public
+    name: address
+- table:
+    schema: public
+    name: seller
+  object_relationships:
+  - name: user
+    using:
+      foreign_key_constraint_on: user_uuid
+  array_relationships:
+  - name: transactions
+    using:
+      foreign_key_constraint_on:
+        column: seller_uuid
+        table:
+          schema: public
+          name: transaction
+  - name: yardsale_seller_links
+    using:
+      foreign_key_constraint_on:
+        column: seller_uuid
+        table:
+          schema: public
+          name: yardsale_seller_link
+- table:
+    schema: public
+    name: test_table
+- table:
+    schema: public
+    name: transaction
+  object_relationships:
+  - name: seller
+    using:
+      foreign_key_constraint_on: seller_uuid
+  - name: user
+    using:
+      foreign_key_constraint_on: user_uuid
+  - name: yardsale
+    using:
+      foreign_key_constraint_on: yardsale_uuid
+- table:
+    schema: public
+    name: user
+  array_relationships:
+  - name: sellers
+    using:
+      foreign_key_constraint_on:
+        column: user_uuid
+        table:
+          schema: public
+          name: seller
+  - name: transactions
+    using:
+      foreign_key_constraint_on:
+        column: user_uuid
+        table:
+          schema: public
+          name: transaction
+  - name: yardsales
+    using:
+      foreign_key_constraint_on:
+        column: user_uuid
+        table:
+          schema: public
+          name: yardsale
+  - name: yardsale_seller_links
+    using:
+      foreign_key_constraint_on:
+        column: user_uuid
+        table:
+          schema: public
+          name: yardsale_seller_link
+- table:
+    schema: public
+    name: yardsale
+  object_relationships:
+  - name: user
+    using:
+      foreign_key_constraint_on: user_uuid
+  array_relationships:
+  - name: transactions
+    using:
+      foreign_key_constraint_on:
+        column: yardsale_uuid
+        table:
+          schema: public
+          name: transaction
+  - name: yardsale_seller_links
+    using:
+      foreign_key_constraint_on:
+        column: yardsale_uuid
+        table:
+          schema: public
+          name: yardsale_seller_link
+- table:
+    schema: public
+    name: yardsale_seller_link
+  object_relationships:
+  - name: seller
+    using:
+      foreign_key_constraint_on: seller_uuid
+  - name: user
+    using:
+      foreign_key_constraint_on: user_uuid
+  - name: yardsale
+    using:
+      foreign_key_constraint_on: yardsale_uuid
