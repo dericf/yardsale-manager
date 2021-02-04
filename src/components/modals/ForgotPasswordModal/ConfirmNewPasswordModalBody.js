@@ -4,10 +4,10 @@ import React, {
   useState,
   createRef,
   useEffect,
-  useRef
+  useRef,
 } from "react";
 import { Link, withRouter } from "react-router-dom";
-import {useParams} from 'react-router';
+import { useParams } from "react-router";
 import {
   Card,
   Icon,
@@ -23,7 +23,7 @@ import {
   Tab,
   Message,
   Item,
-  Popup
+  Popup,
 } from "semantic-ui-react";
 
 // Apollo/GQL
@@ -40,13 +40,13 @@ const ConfirmNewPasswordModalBody = ({
   forcedOpen = true,
   ...props
 }) => {
-  let { resetCode, uuid } = useParams() //props.match.params
-  console.log('PARAMS: ', resetCode, uuid)
+  let { resetCode, uuid } = useParams(); //props.match.params
+  console.log("PARAMS: ", resetCode, uuid);
   const { auth, setAuth } = React.useContext(AuthContext);
   const autoFocusRef = useRef();
   const initialValues = {
     password: "",
-    confirmPassword: ""
+    confirmPassword: "",
   };
 
   const [open, setOpen] = useState(defaultOpen);
@@ -73,12 +73,12 @@ const ConfirmNewPasswordModalBody = ({
     // If the user has been sent here in order to re-authenticate the "session". display a message
     if (auth.reAuthenticateRequired === true) {
       setErrorMessage(
-        errorMessage => "Your session has timed out. Please log in again."
+        (errorMessage) => "Your session has timed out. Please log in again.",
       );
     }
   }, [open, auth, errorMessage]);
 
-  const handleInputChange = event => {
+  const handleInputChange = (event) => {
     // TODO: Move this to a hook
     const target = event.target;
     const val = target.type === "checkbox" ? target.checked : target.value;
@@ -86,11 +86,11 @@ const ConfirmNewPasswordModalBody = ({
 
     setValues({
       ...values,
-      [name]: val
+      [name]: val,
     });
   };
 
-  const handleSubmit = e => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     setAuth({ ...auth, loading: true });
     let uri = `${BASE_URL}/auth/complete-change-password`;
@@ -98,7 +98,7 @@ const ConfirmNewPasswordModalBody = ({
       new_password: values.password,
       confirm_new_password: values.confirmPassword,
       reset_code: resetCode,
-      uuid: uuid
+      uuid: uuid,
     };
     // let options =
 
@@ -106,59 +106,57 @@ const ConfirmNewPasswordModalBody = ({
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Access-Control-Allow-Credentials": "true"
+        "Access-Control-Allow-Credentials": "true",
       },
-      body: JSON.stringify(data)
+      body: JSON.stringify(data),
     })
-      .then(res => {
+      .then((res) => {
         // console.log("Login Response is: ", res)
         return res.json();
       })
-      .then(json => {
+      .then((json) => {
         // console.log('JSON: ', json)
         if (json.STATUS === "OK") {
-          setShowSuccessMessage(true)
+          setShowSuccessMessage(true);
           setTimeout(() => {
-              props.history.push('/login')
+            props.history.push("/login");
           }, 2500);
         } else if (json.STATUS === "ERROR") {
           setShowSuccessMessage(false);
-          setAuth(auth => ({
+          setAuth((auth) => ({
             ...auth,
-            loading: false
+            loading: false,
           }));
           if (json.MESSAGE === "User not found") {
-            setAuth(auth => ({
+            setAuth((auth) => ({
               ...auth,
-              loading: false
+              loading: false,
             }));
             autoFocusRef.current.focus();
             setErrorMessage(
-              "No user was found matching that email. Please try again."
+              "No user was found matching that email. Please try again.",
             );
           } else if (json.MESSAGE === "Reset code does not match") {
             setErrorMessage("Password does not match. Please try again.");
-            setAuth(auth => ({
+            setAuth((auth) => ({
               ...auth,
-              loading: false
+              loading: false,
             }));
           } else if (json.MESSAGE === "Passwords do not match") {
-            setErrorMessage(
-              "Passwords do not match. Please try again."
-            );
-            setAuth(auth => ({
+            setErrorMessage("Passwords do not match. Please try again.");
+            setAuth((auth) => ({
               ...auth,
-              loading: false
+              loading: false,
             }));
           }
         }
       })
-      .catch(err => {
+      .catch((err) => {
         // console.log('ERROR', err)
         setErrorMessage(
-          "There was a problem on our end. Please try again later."
+          "There was a problem on our end. Please try again later.",
         );
-        setAuth(auth => ({ ...auth, loading: false }));
+        setAuth((auth) => ({ ...auth, loading: false }));
       });
   };
   return (
@@ -187,7 +185,6 @@ const ConfirmNewPasswordModalBody = ({
                   <Form.Group className="mb0">
                     <Form.Field width={16}>
                       <Popup
-                        
                         inverted
                         position="top left"
                         content={
@@ -195,10 +192,14 @@ const ConfirmNewPasswordModalBody = ({
                             values.password.length < 6) &&
                           "Password needs to be at least 6 characters (preferably greater than 10)"
                         }
-                        trigger={<label className="info-popup-icon">Password <Icon name="help circle" /></label>}
+                        trigger={
+                          <label className="info-popup-icon">
+                            Password <Icon name="help circle" />
+                          </label>
+                        }
                       />
                       <Input
-                        fluid
+                        fluid="true"
                         type="password"
                         name="password"
                         icon="key"
@@ -212,7 +213,7 @@ const ConfirmNewPasswordModalBody = ({
                     <Form.Field width={16}>
                       <label>ConfirmPassword</label>
                       <Input
-                        fluid
+                        fluid="true"
                         type="password"
                         name="confirmPassword"
                         icon="key"
@@ -284,7 +285,7 @@ const ConfirmNewPasswordModalBody = ({
                   type="submit"
                   className="save"
                   content="Confirm"
-                  fluid
+                  fluid="true"
                   loading={auth.loading}
                   disabled={
                     values.password !== values.confirmPassword ||

@@ -7,7 +7,14 @@ import React, {
   useMemo,
 } from "react";
 
-import { Router, Route, Switch, Redirect, Link } from "react-router-dom";
+import {
+  Router,
+  Route,
+  Switch,
+  Redirect,
+  Link,
+  BrowserRouter,
+} from "react-router-dom";
 
 // styles
 import "./App.css";
@@ -38,21 +45,20 @@ import "./App.scss";
 
 import "react-datepicker/dist/react-datepicker.css";
 
-// import PrivateRoute from "./components/PrivateRoute";
+import PrivateRoute from "./components/PrivateRoute";
 
 import Loading from "./components/layout/Loading";
 // import Title from "./components/layout/Title";
 // import Footer from "./components/layout/Footer";
 // import Sellers from "./pages/Sellers";
-// import Yardsales from "./pages/Yardsales";
-// import Home from "./pages/Home";
+import Yardsales from "./pages/Yardsales";
+import Home from "./pages/Home";
 // import Onboarding from "./pages/Onboarding";
 // import Market from "./pages/Market";
-// import ForgotPasswordModal from "./components/modals/ForgotPasswordModal/ForgotModalPassword";
 
 // import "./utils/prototypes";
 
-// import { NAVBAR_HEIGHT, FOOTER_HEIGHT, TITLE_HEIGHT } from "./constants";
+import { NAVBAR_HEIGHT, FOOTER_HEIGHT, TITLE_HEIGHT } from "./constants";
 
 import {
   AuthContext,
@@ -61,29 +67,44 @@ import {
   checkRefreshInterval,
 } from "./AuthContext";
 import LoginModal from "./components/modals/LoginModal/LoginModal";
-// import RegistrationConfirmationModal from "./components/modals/RegistrationConfirmationModal/RegistrationConfirmationModal";
-// import RegisterModal from "./components/modals/RegisterModal/RegisterModal";
-// import NotFoundPage from "./pages/NotFoundPage";
+import RegisterModal from "./components/modals/RegisterModal/RegisterModal";
+import ForgotPasswordModal from "./components/modals/ForgotPasswordModal/ForgotModalPassword";
+import RegistrationConfirmationModal from "./components/modals/RegistrationConfirmationModal/RegistrationConfirmationModal";
+import ConfirmNewPasswordModalBody from "./components/modals/ForgotPasswordModal/ConfirmNewPasswordModalBody";
+import NotFoundPage from "./pages/NotFoundPage";
 
 // import { GET_USER } from "./graphql/queries";
 // import { useQuery } from "@apollo/react-hooks";
 
 // import TopNotifications from "./utils/Notifications";
-// import Login from "./pages/Login";
-// import SidebarNav from "./components/layout/SidebarNav";
-// import ConfirmNewPasswordModalBody from "./components/modals/ForgotPasswordModal/ConfirmNewPasswordModalBody";
-// import BottomNavBar from "./components/layout/Footer";
+
+import SidebarNav from "./components/layout/SidebarNav";
+import BottomNavBar from "./components/layout/Footer";
 import TestHomePage from "./TestHomePage";
-import { Button } from "semantic-ui-react";
+import { Button, Segment } from "semantic-ui-react";
+
+import { defaultAppContext, AppContext } from "./AppContext";
 
 const App = () => {
-  // const [title, setTitle] = useState("");
-  // const [app, setApp] = useState(defaultAppContext);
-
+  const [htmlTitle, setHTMLTitle] = useState("");
+  const [title, setTitle] = useState("");
+  //
+  // Auth Context
+  //
   const [auth, setAuth] = useState(defaultAuth);
-  const providerValue = useMemo(() => ({ auth, setAuth }), [auth, setAuth]);
+  const authProviderValue = useMemo(() => ({ auth, setAuth }), [auth, setAuth]);
+  //
+  // App Context
+  //
+  const [app, setApp] = useState(defaultAppContext);
+  const appProviderValue = useMemo(() => ({ app, setApp }), [app, setApp]);
 
   useEffect(() => {
+    /*
+    On initial app load (e.g. any reloads) check if there is a token 
+      ? null 
+      : set the authContext State to match the currently logged in user.
+    */
     const token = localStorage.getItem("accessToken");
 
     if (token !== null) {
@@ -97,70 +118,102 @@ const App = () => {
     }
   }, []);
 
-  useEffect(() => {
-    if (
-      auth.isAuthenticated === true &&
-      auth.refreshTokenIntervalFunction === null
-    ) {
-      auth.refreshTokenIntervalFunction = setInterval(
-        () => checkRefreshInterval(auth, setAuth, history),
-        3000,
-      );
-    }
-    return () => {
-      try {
-        clearInterval(auth.refreshTokenIntervalFunction);
-      } catch (e) {}
-    };
-  }, [auth]);
+  // useEffect(() => {
+  //   /*
+  //   On any auth change
+
+  //   */
+  //   if (auth.isAuthenticated === true && auth.refreshTokenIntervalId === null) {
+  //     auth.refreshTokenIntervalId = setInterval(
+  //       () => checkRefreshInterval(auth, setAuth, history),
+  //       3000,
+  //     );
+  //   }
+  //   return () => {
+  //     /*
+  //     When App Component unmounts - clear the refresh interval
+  //     */
+  //     try {
+  //       clearInterval(auth.refreshTokenIntervalId);
+  //     } catch (e) {}
+  //   };
+  // }, [auth]);
 
   return (
-    <Router history={history}>
+    <BrowserRouter history={history}>
       <div>
-        <nav>
-          <ul>
-            <li>
-              <Link to="/">Home</Link>
-            </li>
-            <li>
-              <Link to="/yardsales">Yardsales</Link>
-            </li>
-            <li></li>
-          </ul>
-        </nav>
+        <AppContext.Provider value={appProviderValue}>
+          <AuthContext.Provider value={authProviderValue}>
+            <div
+              className="grid-sidebar"
+              style={{
+                zIndex: app.showLoginModal === true ? "50" : "initial",
+              }}
+            >
+              <SidebarNav />
+            </div>
 
-        <AuthContext.Provider value={providerValue}>
-          {auth && auth.isLoggedIn && (
-            <>
-              <pre>{JSON.stringify(auth.user)}</pre>
-              <Route path="/" exact component={TestHomePage} />
-              <Route path="/yardsales" exact component={TestYardsales} />
-              <Route
-                path="/login"
-                exact
-                component={() => <LoginModal forcedOpen={true} />}
-              />
-            </>
-          )}
+            <Segment basic id="MainContent" textAlign="center">
+              <Switch>
+                <Route path="/home" exact render={(props) => <h1>Home</h1>} />
 
-          {!auth.isLoggedIn && (
-            <LoginModal
-              trigger={() => (
-                <Button onClick={() => auth.logout(auth, setAuth, history)}>
-                  Logout
-                </Button>
-              )}
-              forcedOpen={true}
-            />
-          )}
-          {auth.user && (
-            <Button onClick={() => auth.logout(auth, setAuth, history)}>
-              Logout
-            </Button>
-          )}
-        </AuthContext.Provider>
+                <PrivateRoute
+                  exact
+                  path="/yardsales"
+                  component={<Yardsales setTitle={setTitle} />}
+                />
+                <Route
+                  path="/login"
+                  exact
+                  render={(props) => (
+                    <LoginModal forcedOpen={true} {...props} />
+                  )}
+                />
+
+                <Route
+                  exact
+                  path="/request-change-password"
+                  render={(props) => <ForgotPasswordModal {...props} />}
+                />
+
+                <Route
+                  path="/register"
+                  render={(props) => (
+                    <RegisterModal defaultOpen={true} {...props} />
+                  )}
+                />
+
+                <Route
+                  path="/confirm-change-password/:resetCode/:uuid"
+                  render={(props) => (
+                    <ConfirmNewPasswordModalBody
+                      defaultOpen={true}
+                      {...props}
+                    />
+                  )}
+                />
+                <Route
+                  exact
+                  path="/register/confirm-email"
+                  render={(props) => (
+                    <RegistrationConfirmationModal
+                      {...props}
+                      defaultOpen={true}
+                      forcedOpen={true}
+                    />
+                  )}
+                />
+                <Route
+                  path="/404"
+                  render={(props) => <NotFoundPage {...props} />}
+                />
+                {/* <Redirect to="/404" /> */}
+              </Switch>
+            </Segment>
+          </AuthContext.Provider>
+        </AppContext.Provider>
       </div>
-    </Router>
+    </BrowserRouter>
   );
 };
 

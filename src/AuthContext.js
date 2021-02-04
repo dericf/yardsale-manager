@@ -12,7 +12,7 @@ const defaultAuth = {
   isLoggedIn: false,
   loading: false,
   enableRefreshTokenCheck: false,
-  refreshTokenIntervalFunction: null,
+  refreshTokenIntervalId: null,
   reAuthenticateRequired: false,
   redirectToAfterLogin: null,
   token: null,
@@ -25,6 +25,8 @@ const defaultAuth = {
   logout: (auth, setAuth, history) => {
     // console.log('Logout User Here')
     localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
+    localStorage.removeItem("user");
     try {
       clearInterval(auth.refreshTokenIntervalFunction);
     } catch (e) {}
@@ -226,7 +228,7 @@ const checkRefreshInterval = (auth, setAuth, history) => {
   }
   // console.log("Checking Token Expiry");
   // console.log("Token: ", token);
-  console.log("Is the token expired ? ", tokenIsExpired(token));
+  // console.log("Is the token expired ? ", tokenIsExpired(token));
   if (tokenIsExpired(token)) {
     localStorage.setItem("accessToken", null); // Prevent a potential infinite loop with the setInterval
     console.log("Token is expired... refreshing token...");
@@ -234,4 +236,10 @@ const checkRefreshInterval = (auth, setAuth, history) => {
   }
 };
 
-export { defaultAuth, login, tokenIsExpired, checkRefreshInterval };
+export {
+  defaultAuth,
+  login,
+  tokenIsExpired,
+  checkRefreshInterval,
+  refreshAccessToken,
+};

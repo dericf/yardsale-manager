@@ -4,7 +4,7 @@ import {
   withScriptjs,
   withGoogleMap,
   Marker,
-  InfoWindow
+  InfoWindow,
 } from "react-google-maps";
 
 import { GET_YARDSALES } from "../../graphql/queries";
@@ -21,7 +21,7 @@ const Map = ({ currentMarker, setCurrentMarker, ...props }) => {
   // const { loading, error, publicYardsales } = useQuery(GET_YARDSALES, {
   //   onError: () => console.log("ERROR WITH QUERY")
   // });
-  const {app, setAp} = useContext(AppContext)
+  const { app, setAp } = useContext(AppContext);
   const [loading, setLoading] = useState(true);
   const [selectedYardsale, setSelectedYardsale] = useState(null);
   const myPosition = JSON.parse(localStorage.getItem("myPosition"));
@@ -31,14 +31,14 @@ const Map = ({ currentMarker, setCurrentMarker, ...props }) => {
   useEffect(() => {
     window
       .fetch(`${BASE_URL}/api/market/get-all-public-yardsales/0/1`, {
-        method: "GET"
+        method: "GET",
       })
-      .then(response => response.json())
-      .then(json => {
+      .then((response) => response.json())
+      .then((json) => {
         setLoading(false);
         console.log("All Public Yardsales: ", json);
       })
-      .catch(e => {
+      .catch((e) => {
         console.log("Error: 4411", e);
         setLoading(false);
       });
@@ -51,23 +51,24 @@ const Map = ({ currentMarker, setCurrentMarker, ...props }) => {
         defaultZoom={10}
         defaultCenter={{
           lat: myPosition.lat || 45.421532,
-          lng: myPosition.lng || -75.697189
+          lng: myPosition.lng || -75.697189,
         }}
-        onClick={e => {
+        onClick={(e) => {
           console.log("Current Marker: ", e.latLng);
           setCurrentMarker(e.latLng);
         }}
       >
-        {app.market && app.market.yardsales && app.market.yardsales.map(yardsale => (
+        {app.market &&
+          app.market.yardsales &&
+          app.market.yardsales.map((yardsale) => (
             <Marker
               key={yardsale.uuid}
               position={{ lat: yardsale.pos_lat, lng: yardsale.pos_lng }}
             />
-          )
-        )}
+          ))}
         {publicYardsales &&
           publicYardsales.yardsale &&
-          publicYardsales.yardsale.map(ys => {
+          publicYardsales.yardsale.map((ys) => {
             if (ys.pos_lat !== "" && ys.pos_lng !== null && ys.is_public) {
               return (
                 <Marker
@@ -84,19 +85,17 @@ const Map = ({ currentMarker, setCurrentMarker, ...props }) => {
           <InfoWindow
             position={{
               lat: Number(currentMarker.lat()),
-              lng: Number(currentMarker.lng())
+              lng: Number(currentMarker.lng()),
             }}
             children={currentMarker.infoWindow}
-          >
-            
-          </InfoWindow>
+          ></InfoWindow>
         )}
 
         {selectedYardsale && (
           <InfoWindow
             position={{
               lat: Number(selectedYardsale.pos_lat),
-              lng: selectedYardsale.pos_lng
+              lng: selectedYardsale.pos_lng,
             }}
             onCloseClick={() => setSelectedYardsale(null)}
           >
@@ -107,15 +106,15 @@ const Map = ({ currentMarker, setCurrentMarker, ...props }) => {
       {/* {!loading && (
                 
             )} */}
-      {loading && <Segment loading fluid></Segment>}
+      {loading && <Segment loading fluid="true"></Segment>}
     </Fragment>
   );
 };
 
 const WrappedMap = withScriptjs(
-  withGoogleMap(props => {
+  withGoogleMap((props) => {
     return <Map {...props} />;
-  })
+  }),
 );
 
 export default function MarketMap({
@@ -124,7 +123,7 @@ export default function MarketMap({
   children,
   events,
   currentMarker,
-  setCurrentMarker
+  setCurrentMarker,
 }) {
   //   const { maps, map, mapRef, loading } = useGoogleMap({ zoom, center, events });
 

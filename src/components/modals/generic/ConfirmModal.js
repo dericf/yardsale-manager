@@ -7,7 +7,7 @@ import {
   Modal,
   Popup,
   Message,
-  Divider
+  Divider,
 } from "semantic-ui-react";
 
 const ConfirmModal = ({
@@ -23,7 +23,7 @@ const ConfirmModal = ({
   popupEnabled = false,
   popupMessage = null,
   popupPosition = "top center",
-  circular = false
+  circular = false,
 }) => {
   const [open, setOpen] = React.useState(false);
   const showModal = () => {
@@ -117,7 +117,7 @@ const ConfirmModal = ({
           <Grid>
             <Grid.Row>
               <Grid.Column width={8}>
-                <Button onClick={cancel} fluid className="cancel">
+                <Button onClick={cancel} fluid="true" className="cancel">
                   No
                 </Button>
               </Grid.Column>
@@ -126,7 +126,7 @@ const ConfirmModal = ({
                   className="save"
                   onClick={confirm}
                   content="Yes"
-                  fluid
+                  fluid="true"
                 />
               </Grid.Column>
             </Grid.Row>

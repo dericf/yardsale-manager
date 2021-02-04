@@ -14,7 +14,7 @@ import {
   Menu,
   Segment,
   Card,
-  Icon
+  Icon,
 } from "semantic-ui-react";
 import { AppContext } from "../../App";
 import { withRouter } from "react-router-dom";
@@ -32,11 +32,9 @@ const BottomNavBar = ({ history, ...props }) => {
     console.log("Pathname at Sidebar Mount is: ", pathname, props.history);
     let path = pathname === "/" ? "home" : pathname.substr(1);
     // setApp({ ...app, activePage: path });
-
-    console.log("APP CONTEXT SIDEBAR MOUNT: ", app);
   }, []);
 
-  const setActivePage = page => {
+  const setActivePage = (page) => {
     setApp({ ...app, activePage: page });
   };
 
@@ -53,21 +51,9 @@ const BottomNavBar = ({ history, ...props }) => {
         >
           <Icon name="home" fitted />
         </Button>
+
         <Button
-        className={app.activePage === "market" && "active"}
-          icon
-          onClick={() => {
-            setActivePage("market");
-            history.push("/market");
-          }}
-        >
-          <Icon.Group>
-            <Icon name="map marker alternate" fitted />
-            {/* <Icon corner name='location arrow' circular /> */}
-          </Icon.Group>
-        </Button>
-        <Button
-        className={app.activePage === "sellers" && "active"}
+          className={app.activePage === "sellers" && "active"}
           icon
           onClick={() => {
             setActivePage("sellers");
@@ -77,7 +63,7 @@ const BottomNavBar = ({ history, ...props }) => {
           <Icon name="users" fitted />
         </Button>
         <Button
-        className={app.activePage === "yardsales" && "active"}
+          className={app.activePage === "yardsales" && "active"}
           icon
           onClick={() => {
             setActivePage("yardsales");

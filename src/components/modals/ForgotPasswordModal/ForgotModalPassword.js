@@ -4,7 +4,7 @@ import React, {
   useState,
   createRef,
   useEffect,
-  useRef
+  useRef,
 } from "react";
 import { Link, withRouter } from "react-router-dom";
 import {
@@ -22,7 +22,7 @@ import {
   Tab,
   Message,
   Item,
-  Popup
+  Popup,
 } from "semantic-ui-react";
 
 // Apollo/GQL
@@ -32,12 +32,12 @@ import { notify } from "react-notify-toast";
 
 import { BASE_URL } from "../../../constants";
 
-import { AuthContext } from "../../../App";
+import { AuthContext } from "../../../AuthContext";
 
 const ForgotPasswordModal = ({
   defaultOpen = true,
   forcedOpen = true,
-  step="request",
+  step = "request",
   ...props
 }) => {
   const { auth, setAuth } = React.useContext(AuthContext);
@@ -45,7 +45,7 @@ const ForgotPasswordModal = ({
   const autoFocusRef = useRef();
   const initialValues = {
     email: "",
-    password: ""
+    password: "",
   };
 
   const [open, setOpen] = useState(defaultOpen);
@@ -55,7 +55,7 @@ const ForgotPasswordModal = ({
 
   const closeModal = () => {
     setOpen(false);
-    props.history.replace('/')
+    props.history.replace("/");
   };
   const openModal = () => {
     setOpen(true);
@@ -73,12 +73,12 @@ const ForgotPasswordModal = ({
     // If the user has been sent here in order to re-authenticate the "session". display a message
     if (auth.reAuthenticateRequired === true) {
       setErrorMessage(
-        errorMessage => "Your session has timed out. Please log in again."
+        (errorMessage) => "Your session has timed out. Please log in again.",
       );
     }
   }, [open, auth, errorMessage]);
 
-  const handleInputChange = event => {
+  const handleInputChange = (event) => {
     // TODO: Move this to a hook
     const target = event.target;
     const val = target.type === "checkbox" ? target.checked : target.value;
@@ -86,16 +86,16 @@ const ForgotPasswordModal = ({
 
     setValues({
       ...values,
-      [name]: val
+      [name]: val,
     });
   };
 
-  const handleSubmit = e => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     setAuth({ ...auth, loading: true });
     let uri = `${BASE_URL}/auth/request-change-password`;
     let data = {
-      email: values.email
+      email: values.email,
     };
     // let options =
 
@@ -103,64 +103,64 @@ const ForgotPasswordModal = ({
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Access-Control-Allow-Credentials": "true"
+        "Access-Control-Allow-Credentials": "true",
       },
-      body: JSON.stringify(data)
+      body: JSON.stringify(data),
     })
-      .then(res => {
+      .then((res) => {
         // console.log("Login Response is: ", res)
         return res.json();
       })
-      .then(json => {
+      .then((json) => {
         // console.log('JSON: ', json)
         if (json.STATUS === "OK") {
-            setShowSuccessMessage(true)
-            setAuth({
-                ...auth,
-                loading: false
-            })
+          setShowSuccessMessage(true);
+          setAuth({
+            ...auth,
+            loading: false,
+          });
         } else if (json.STATUS === "ERROR") {
           // console.log('Bad Login Credentials', json)
-          setShowSuccessMessage(false)
+          setShowSuccessMessage(false);
           if (json.MESSAGE === "User not found") {
             // console.log('User not found', json)
-            setAuth(auth => ({
+            setAuth((auth) => ({
               ...auth,
               loading: false,
-              reAuthenticateRequired: false
+              reAuthenticateRequired: false,
             }));
             // setValues(prev => ({ ...prev, email: "" }))
             autoFocusRef.current.focus();
             setErrorMessage(
-              "No user was found matching that email. Please try again."
+              "No user was found matching that email. Please try again.",
             );
           } else if (json.MESSAGE === "Wrong password") {
             setErrorMessage("Password does not match. Please try again.");
-            setAuth(auth => ({
+            setAuth((auth) => ({
               ...auth,
               loading: false,
-              reAuthenticateRequired: false
+              reAuthenticateRequired: false,
             }));
             // console.log('Bad password', json)
           } else if (json.MESSAGE === "Email not confirmed") {
             setErrorMessage(
-              "The email associated with this account has not been confirmed yet. Please check your email and follow the link provided and then log in again."
+              "The email associated with this account has not been confirmed yet. Please check your email and follow the link provided and then log in again.",
             );
-            setAuth(auth => ({
+            setAuth((auth) => ({
               ...auth,
               loading: false,
-              reAuthenticateRequired: false
+              reAuthenticateRequired: false,
             }));
             // console.log('Email not confirmed', json)
           }
         }
       })
-      .catch(err => {
+      .catch((err) => {
         // console.log('ERROR', err)
         setErrorMessage(
-          "There was a problem on our end. Please try again later."
+          "There was a problem on our end. Please try again later.",
         );
-        setAuth(auth => ({ ...auth, loading: false }));
+        setAuth((auth) => ({ ...auth, loading: false }));
       });
   };
   return (
@@ -190,7 +190,7 @@ const ForgotPasswordModal = ({
                     <Form.Field width={16}>
                       <label>Email</label>
                       <Input
-                        fluid
+                        fluid="true"
                         type="email"
                         name="email"
                         icon="at"
@@ -219,18 +219,25 @@ const ForgotPasswordModal = ({
                   <Grid.Column width={16}>
                     <Message header="Success" positive>
                       <Message.Header>Success!</Message.Header>
-                      <Message.Content>An email was sent out. <br /> Use the verification link provided in the email.</Message.Content>
+                      <Message.Content>
+                        An email was sent out. <br /> Use the verification link
+                        provided in the email.
+                      </Message.Content>
                     </Message>
                   </Grid.Column>
                 </Grid.Row>
               )}
-              <Grid.Row className="pt16 pb8" divided centered textAlign="center">
+              <Grid.Row
+                className="pt16 pb8"
+                divided
+                centered
+                textAlign="center"
+              >
                 <Grid.Column width={8} textAlign="center">
                   <Item
                     as={Link}
                     to="/register"
                     content="Create a New Account"
-                    
                   />
                 </Grid.Column>
 
@@ -257,7 +264,7 @@ const ForgotPasswordModal = ({
                   type="submit"
                   className="save"
                   content="Confirm"
-                  fluid
+                  fluid="true"
                   loading={auth.loading}
                   disabled={values.email == "" || showSuccessMessage}
                 />

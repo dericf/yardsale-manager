@@ -6,7 +6,12 @@ import SellerCard from "../SellerCard/SellerCard";
 
 import YardsaleActionCard from "../../YardsaleActionCard/YardsaleActionCard";
 
-const YardsaleCard = ({ yardsale, handleClick, setCashierActive, ...props }) => {
+const YardsaleCard = ({
+  yardsale,
+  handleClick,
+  setCashierActive,
+  ...props
+}) => {
   // TODO: (Future) make this more responsive. Add more than just two widths
   const [expandSellers, setExpandSellers] = useState(false);
   if (yardsale)
@@ -14,7 +19,7 @@ const YardsaleCard = ({ yardsale, handleClick, setCashierActive, ...props }) => 
       <Fragment>
         <Segment
           textAlign="left"
-          fluid
+          fluid="true"
           compact
           style={{ border: "0px !important", width: "100%" }}
           className={`yardsale-card yardsale-list-segment ${
@@ -23,10 +28,14 @@ const YardsaleCard = ({ yardsale, handleClick, setCashierActive, ...props }) => 
         >
           <Grid>
             <Grid.Row>
-              <Grid.Column mobile={8} tablet={8} computer={10} onClick={(e) => handleClick(yardsale)}>
+              <Grid.Column
+                mobile={8}
+                tablet={8}
+                computer={10}
+                onClick={(e) => handleClick(yardsale)}
+              >
                 <Grid.Row verticalAlign="top" className="pb0">
-                  <Grid.Column computer={6} mobile={16} verticalAlign="top" >
-          
+                  <Grid.Column computer={6} mobile={16} verticalAlign="top">
                     <Card.Content>
                       <Card.Header as="h3" className="mb0">
                         {yardsale.name}
@@ -84,12 +93,21 @@ const YardsaleCard = ({ yardsale, handleClick, setCashierActive, ...props }) => 
                   </Grid.Column>
                 </Grid.Row>
               </Grid.Column>
-              <Grid.Column mobile={8} tablet={8} computer={6} textAlign="right" verticalAlign="middle">
-                <YardsaleActionCard yardsale={yardsale} setCashierActive={setCashierActive} />
+              <Grid.Column
+                mobile={8}
+                tablet={8}
+                computer={6}
+                textAlign="right"
+                verticalAlign="middle"
+              >
+                <YardsaleActionCard
+                  yardsale={yardsale}
+                  setCashierActive={setCashierActive}
+                />
               </Grid.Column>
             </Grid.Row>
           </Grid>
-          </Segment>
+        </Segment>
       </Fragment>
     );
 };

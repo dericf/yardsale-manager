@@ -92,13 +92,13 @@ const LoginModal = ({
     }
   }, [open, auth, errorMessage]);
 
-  useEffect(() => {
-    if (auth.redirectToAfterLogin !== null) {
-      setLoading(false);
-      closeModal(false, true);
-      history.go(auth.redirectToAfterLogin);
-    }
-  }, [auth]);
+  // useEffect(() => {
+  //   if (auth.redirectToAfterLogin !== null) {
+  //     setLoading(false);
+  //     closeModal(false, true);
+  //     history.go(auth.redirectToAfterLogin);
+  //   }
+  // }, [auth]);
 
   const handleInputChange = (event) => {
     // TODO: Move this to a hook

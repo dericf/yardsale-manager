@@ -4,7 +4,7 @@ import React, {
   useState,
   useEffect,
   useRef,
-  useContext
+  useContext,
 } from "react";
 import { Link, withRouter } from "react-router-dom";
 import {
@@ -21,7 +21,7 @@ import {
   Checkbox,
   Message,
   Popup,
-  Segment
+  Segment,
 } from "semantic-ui-react";
 import { notify } from "react-notify-toast";
 import { useMutation } from "@apollo/react-hooks";
@@ -45,19 +45,11 @@ const YardsaleDetailsModal = ({
   const defaultYardsaleLocation = {
     lat: null,
     lng: null,
-    address: {}
+    address: {},
   };
   const [yardsaleLocation, setYardsaleLocation] = useState(
-    defaultYardsaleLocation
+    defaultYardsaleLocation,
   );
-
-  useEffect(() => {
-    console.log("YARDSALE LOCATION HAS CHANGED : ", yardsaleLocation);
-    setApp({
-      ...app,
-      yardsales: { ...app.yardsales, selectedYardsale: yardsale }
-    });
-  }, [yardsaleLocation]);
 
   const { app, setApp } = useContext(AppContext);
   const [
@@ -65,16 +57,16 @@ const YardsaleDetailsModal = ({
     {
       data: updateYardsaleMutationData,
       loading: updateYardsaleMutationLoading,
-      error: updateYardsaleMutationError
-    }
+      error: updateYardsaleMutationError,
+    },
   ] = useMutation(UPDATE_YARDSALE);
   const [
     createYardsaleMutation,
     {
       data: createYardsaleMutationData,
       loading: createYardsaleMutationLoading,
-      error: createYardsaleMutationError
-    }
+      error: createYardsaleMutationError,
+    },
   ] = useMutation(CREATE_YARDSALE);
 
   const yardsaleNameRef = useRef();
@@ -105,20 +97,20 @@ const YardsaleDetailsModal = ({
       ? {
           lat: yardsale.pos_lat,
           lng: yardsale.pos_lng,
-          address_text: yardsale.address_text
+          address_text: yardsale.address_text,
         }
       : {
           lat: null,
           lng: null,
-          address_text: null
-        }
+          address_text: null,
+        },
   };
 
   const [formValues, setFormValues] = useState(initialFormValues);
 
   const timeOpenRef = useRef();
 
-  const handleInputChange = event => {
+  const handleInputChange = (event) => {
     // TODO: Move this to a hook
     const target = event.target;
     const value = target.type === "checkbox" ? target.checked : target.value;
@@ -126,7 +118,7 @@ const YardsaleDetailsModal = ({
 
     setFormValues({
       ...formValues,
-      [name]: value
+      [name]: value,
     });
   };
 
@@ -152,13 +144,13 @@ const YardsaleDetailsModal = ({
           company: formValues.yardsaleCompany,
           is_public: formValues.isPublic,
           pos_lat: formValues.addressObj.lat || 0,
-          pos_lng: formValues.addressObj.lng || 0
+          pos_lng: formValues.addressObj.lng || 0,
         },
         refetchQueries: [
           {
-            query: GET_YARDSALES
-          }
-        ]
+            query: GET_YARDSALES,
+          },
+        ],
       });
 
       // notify.show("Yardsale Created successfully ", "success");
@@ -168,8 +160,8 @@ const YardsaleDetailsModal = ({
           show: true,
           dismiss: true,
           message: "Yard Sale Created Successfully",
-          level: "success"
-        }
+          level: "success",
+        },
       });
     } else {
       updateYardsaleMutation({
@@ -183,17 +175,17 @@ const YardsaleDetailsModal = ({
           company: formValues.yardsaleCompany,
           is_public: formValues.isPublic,
           pos_lat: formValues.addressObj.lat || 0,
-          pos_lng: formValues.addressObj.lng || 0
+          pos_lng: formValues.addressObj.lng || 0,
         },
         refetchQueries: [
           {
-            query: GET_YARDSALES
+            query: GET_YARDSALES,
           },
           {
             query: GET_YARDSALE,
-            variables: { yardsaleUUID: yardsale.uuid }
-          }
-        ]
+            variables: { yardsaleUUID: yardsale.uuid },
+          },
+        ],
       });
       notify.show("Yard Sale Updated successfully ", "success");
     }
@@ -220,7 +212,7 @@ const YardsaleDetailsModal = ({
       {props.children && props.children !== null ? (
         <Fragment>
           {props.children({
-            openModal: openModal
+            openModal: openModal,
           })}
         </Fragment>
       ) : (
@@ -439,11 +431,11 @@ const YardsaleDetailsModal = ({
                       label={<label>Public</label>}
                       name="isPublic"
                       checked={formValues.isPublic}
-                      onChange={e =>
-                        setFormValues(prevState => {
+                      onChange={(e) =>
+                        setFormValues((prevState) => {
                           return {
                             ...formValues,
-                            isPublic: !prevState.isPublic
+                            isPublic: !prevState.isPublic,
                           };
                         })
                       }
@@ -462,7 +454,7 @@ const YardsaleDetailsModal = ({
                         <label>Date/Time Open</label>
                         <TimePicker
                           value={formValues.timeOpen}
-                          handleChange={val =>
+                          handleChange={(val) =>
                             setFormValues({ ...formValues, timeOpen: val })
                           }
                           name={"timeOpen"}
@@ -476,7 +468,7 @@ const YardsaleDetailsModal = ({
                         <label>Date/Time Closed</label>
                         <TimePicker
                           value={formValues.timeClosed}
-                          handleChange={val =>
+                          handleChange={(val) =>
                             setFormValues({ ...formValues, timeClosed: val })
                           }
                           name={"timeClosed"}
@@ -494,7 +486,6 @@ const YardsaleDetailsModal = ({
                       style={{ height: 400, width: "100%" }}
                     >
                       <Message content="This yard Sale will now be visible to the public on the Yard Sale Market" />
-                      
                     </Segment>
                   </Grid.Column>
                 </Grid.Row>

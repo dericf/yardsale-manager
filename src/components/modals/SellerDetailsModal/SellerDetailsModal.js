@@ -1,4 +1,11 @@
-import React, { Component, Fragment, useState, useEffect, useRef, useContext } from "react";
+import React, {
+  Component,
+  Fragment,
+  useState,
+  useEffect,
+  useRef,
+  useContext,
+} from "react";
 import { Link, withRouter } from "react-router-dom";
 import {
   Card,
@@ -10,7 +17,7 @@ import {
   Form,
   Input,
   TextArea,
-  Header
+  Header,
 } from "semantic-ui-react";
 
 // import MaskedInput from 'react-input-mask'
@@ -33,22 +40,22 @@ const SellerDetailsModal = ({
   ...props
 }) => {
   const [open, setOpen] = useState(autoOpen);
-  const {app, setApp} = useContext(AppContext)
+  const { app, setApp } = useContext(AppContext);
   const [
     updateSellerMutation,
     {
       data: sellerMutationData,
       loading: sellerMutationLoading,
-      error: sellerMutationError
-    }
+      error: sellerMutationError,
+    },
   ] = useMutation(UPDATE_SELLER);
   const [
     createSellerMutation,
     {
       data: createSellerMutationData,
       loading: createSellerMutationLoading,
-      error: createSellerMutationError
-    }
+      error: createSellerMutationError,
+    },
   ] = useMutation(CREATE_SELLER);
 
   const sellerNameRef = useRef();
@@ -69,12 +76,12 @@ const SellerDetailsModal = ({
     sellerPhone: seller ? seller.phone : "",
     sellerEmail: seller ? seller.email : userAsSeller ? userAsSeller.email : "",
     sellerAddress: seller ? seller.address_text : "",
-    sellerNotes: seller ? seller.notes : ""
+    sellerNotes: seller ? seller.notes : "",
   };
 
   const [formValues, setFormValues] = useState(initialFormValues);
 
-  const handleInputChange = event => {
+  const handleInputChange = (event) => {
     // TODO: Move this to a hook
     const target = event.target;
     const value = target.type === "checkbox" ? target.checked : target.value;
@@ -86,14 +93,14 @@ const SellerDetailsModal = ({
       computedInitials = String(
         String(value)
           .split(" ")
-          .map(name => name[0])
+          .map((name) => name[0]),
       ).replace(",", "");
     }
 
     setFormValues({
       ...formValues,
       [name]: value,
-      sellerInitials: setInitials ? computedInitials : value
+      sellerInitials: setInitials ? computedInitials : value,
     });
   };
 
@@ -117,14 +124,14 @@ const SellerDetailsModal = ({
           phone: formValues.sellerPhone,
           email: formValues.sellerEmail,
           address: formValues.sellerAddress,
-          notes: formValues.sellerNotes
+          notes: formValues.sellerNotes,
         },
-        onError: err => console.log("Error Updating Seller", err),
+        onError: (err) => console.log("Error Updating Seller", err),
         refetchQueries: [
           {
-            query: GET_SELLERS
-          }
-        ]
+            query: GET_SELLERS,
+          },
+        ],
       });
       setApp({
         ...app,
@@ -132,8 +139,8 @@ const SellerDetailsModal = ({
           show: true,
           dismiss: true,
           message: `${formValues.sellerName} has been created`,
-          level: "success"
-        }
+          level: "success",
+        },
       });
     } else {
       // console.log('Editing Existing seller: ', seller.uuid);
@@ -146,14 +153,14 @@ const SellerDetailsModal = ({
           phone: formValues.sellerPhone,
           email: formValues.sellerEmail,
           address: formValues.sellerAddress,
-          notes: formValues.sellerNotes
+          notes: formValues.sellerNotes,
         },
-        onError: err => console.log("Error Updating Seller", err),
+        onError: (err) => console.log("Error Updating Seller", err),
         refetchQueries: [
           {
-            query: GET_SELLERS
-          }
-        ]
+            query: GET_SELLERS,
+          },
+        ],
       });
       setApp({
         ...app,
@@ -161,8 +168,8 @@ const SellerDetailsModal = ({
           show: true,
           dismiss: true,
           message: `${seller.name} was updated`,
-          level: "info"
-        }
+          level: "info",
+        },
       });
       // console.log(formValues)
     }
@@ -190,7 +197,7 @@ const SellerDetailsModal = ({
       {props.children && props.children !== null ? (
         <Fragment>
           {props.children({
-            openModal: openModal
+            openModal: openModal,
           })}
         </Fragment>
       ) : (
@@ -350,7 +357,7 @@ const SellerDetailsModal = ({
           <Grid>
             <Grid.Row>
               <Grid.Column width={8}>
-                <Button fluid onClick={cancel} className="cancel">
+                <Button fluid="true" onClick={cancel} className="cancel">
                   Cancel
                 </Button>
               </Grid.Column>

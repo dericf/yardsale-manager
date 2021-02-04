@@ -11,7 +11,7 @@ const SellerCard = ({ seller, ...props }) => {
       <Fragment>
         <Segment
           textAlign="left"
-          fluid
+          fluid="true"
           compact
           style={{ border: "0px !important", width: "100%" }}
           className={`yardsale-card yardsale-list-segment ${
@@ -63,7 +63,7 @@ const SellerCard = ({ seller, ...props }) => {
                           <strong>Notes: </strong>
                           {String(seller.notes)
                             .split("\n")
-                            .map(line => (
+                            .map((line) => (
                               <Fragment>
                                 {line} <br />
                               </Fragment>

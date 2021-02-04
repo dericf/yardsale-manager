@@ -5,37 +5,38 @@ import {
   Header,
   Button,
   Card,
-  Segment
+  Segment,
 } from "semantic-ui-react";
 import { BASE_URL } from "../../constants";
 
-const MarketSearch = ({ myPosition, currentMarker, setCurrentMarker, ...props }) => {
+const MarketSearch = ({
+  myPosition,
+  currentMarker,
+  setCurrentMarker,
+  ...props
+}) => {
   const [state, setState] = useState({
     isFetching: false,
     multiple: true,
     search: true,
     searchQuery: null,
     value: null,
-    publicYardsales: []
+    publicYardsales: [],
   });
   const searchFunction = (options, query) => {
     // const re = new RegExp(_.escapeRegExp(query))
     // return options.filter((opt) => re.test(opt.text))
     return options;
   };
-  
 
   const handleChange = (e, { value }) => {
     // TODO: this should set a market for the selected Yardsale and open up the info window.
     setState({ ...state, value });
     setCurrentMarker({
-        lat: () => Number(value.pos_lat),
-        lng: () => Number(value.pos_lng),
-        infoWindow:
-            <Segment>
-                This is just a test window
-            </Segment>
-    })
+      lat: () => Number(value.pos_lat),
+      lng: () => Number(value.pos_lng),
+      infoWindow: <Segment>This is just a test window</Segment>,
+    });
   };
   const handleSearchChange = (e, { searchQuery }) => {
     fetchOptions();
@@ -53,7 +54,7 @@ const MarketSearch = ({ myPosition, currentMarker, setCurrentMarker, ...props })
   return (
     <Fragment>
       <Dropdown
-        fluid
+        fluid="true"
         selection
         search={searchFunction}
         options={state.options}

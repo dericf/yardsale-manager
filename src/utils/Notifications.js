@@ -13,7 +13,7 @@ import {
   Icon,
   IconGroup,
   Popup,
-  Transition
+  Transition,
 } from "semantic-ui-react";
 
 import Loading from "../components/layout/Loading";
@@ -24,17 +24,16 @@ const Notifications = () => {
   const { app, setApp } = useContext(AppContext);
   const { show, message, level, dismiss } = app.notifications;
 
-  const setShow = newVal => {
+  const setShow = (newVal) => {
     setApp({ ...app, notifications: { ...app.notifications, show: newVal } });
   };
   useEffect(() => {
     const notifications = document.getElementById("TopNotificationBar");
     if (notifications && show === true) {
-      
       // setApp({...app, notifications: null})
       if (dismiss === true) {
         setTimeout(() => {
-          setShow(false)
+          setShow(false);
         }, 3000);
       }
     } else {
@@ -48,29 +47,37 @@ const Notifications = () => {
   }
 
   return (
-    <Transition visible={show} animation="slide left" duration={750} transitionOnMount={true} >
-      <div className="grid-notifications" id="TopNotificationBar" >
+    <Transition
+      visible={show}
+      animation="slide left"
+      duration={750}
+      transitionOnMount={true}
+    >
+      <div className="grid-notifications" id="TopNotificationBar">
         <Segment
-          fluid
-          
+          fluid="true"
           textAlign="center"
           raised
           style={{
             padding: 0,
             borderRadius: 0,
-            border: "none"
+            border: "none",
           }}
         >
           <Message
             id="NotificationMessage"
-            className={ [level === 'success' && "success", level === 'info' && "info", level === 'error' && 'error']}
+            className={
+              (level === "success" && "success",
+              level === "info" && "info",
+              level === "error" && "error")
+            }
             size="large"
-            fluid
+            fluid="true"
             style={{
               border: "0px",
               borderRadius: 0,
               paddingTop: 2,
-              paddingBottom: 2
+              paddingBottom: 2,
             }}
           >
             <Message.Content>

@@ -1,108 +1,54 @@
 import React, { useEffect } from "react";
-import { Route, withRouter } from "react-router-dom";
+import { Route, withRouter, Redirect } from "react-router-dom";
 // import { useAuth0 } from "../react-auth0-spa";
 
 import LoginModal from "./modals/LoginModal/LoginModal";
 
 import { BASE_URL } from "../constants";
-import { AuthContext, AppContext } from "../App";
+import { AuthContext, defaultAuth } from "../AuthContext";
+import { AppContext } from "../AppContext";
 
-const jwtDecode = require("jwt-decode");
+import { refreshAccessToken, tokenIsExpired } from "../AuthContext";
 
-const refreshAccessToken = (auth, setAuth, history) => {
-  let uri = `${BASE_URL}/auth/refresh`;
-  let data = {
-    refreshToken: localStorage.getItem("refreshToken")
-  };
-  let options = {
-    method: "POST",
-    cache: "no-cache",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify(data)
-  };
-
-  fetch(uri, options)
-    .then(res => res.json())
-    .then(json => {
-      if (json.STATUS === "OK" && json.newToken && json.newToken !== "") {
-        localStorage.setItem("accessToken", json.newToken);
-      } else if (
-        json.STATUS == "ERROR" &&
-        json.MESSAGE == "refresh token expired"
-      ) {
-        setAuth(auth => ({ ...auth, reAuthenticateRequired: true }));
-        localStorage.removeItem("accessToken");
-        localStorage.removeItem("refreshToken");
-        history.push("/login");
-        setAuth({...auth, loading: false})
-        setApp({...app, showLoginModal: true})
-      }
-    });
-};
-
-const PrivateRoute = ({ component: Component, path, ...rest }) => {
+const PrivateRoute = ({ component: Component, ...rest }) => {
   let { auth, setAuth } = React.useContext(AuthContext);
   let { app, setApp } = React.useContext(AppContext);
 
   const loading = false;
-  const isAuthenticated = false;
-  
-  useEffect(() => {
-    setAuth({ ...auth, loading: false });
-    if (localStorage.getItem("accessToken") == "undefined") {
-      // rest.history.push("/login");
-      setAuth({ ...auth, loading: false });
-      setApp({...app, showLoginModal: true})
-    }
-    //
-    // Don't do any auth checks if user is already on the login page.
-    //
-    if (path === "/login" || path === "/register") {
-      setAuth({ ...auth, loading: false });
-      return;
-    }
-    let token = localStorage.getItem("accessToken");
-    if (!token || typeof token === "undefined") {
-      // rest.history.push("/login");
-      setApp({...app, showLoginModal: true})
-    } else {
-      let jwt = jwtDecode(token);
-      if (typeof jwt.exp === "undefined") {
-        // console.log('ERROR! TOKEN NEVER EXPIRES! ')
-      }
 
-      //
-      // Check if token is expired
-      //
-      let current_time = Date.now().valueOf() / 1000;
-      if (jwt.exp < current_time) {
-        // Expired
-        // console.log('TOKEN IS EXPIRED!')
-        refreshAccessToken(auth, setAuth, rest.history);
-      }
-      //
-      // Token is valid (TODO: do other checks here)
-      //
-      setAuth({ ...auth, isAuthenticated: true, loading: false });
-    }
-    const fn = async () => {
-      // await loginWithRedirect({
-      //   appState: { targetUrl: path }
-      // });
-    };
-    fn();
-  }, [loading, auth.isAuthenticated, path]);
+  // useEffect(() => {
+  //   // if (!auth.isAuthenticated) {
+  //   //   return <Redirect to="/login" />;
+  //   // }
+  //   setAuth({ ...auth, loading: false });
 
-  const render = props =>
-    auth.isAuthenticated === true ? (
-      <Component {...props} />
-    ) : (
-      {/* <LoginModal defaultOpen={true} forcedOpen={true} /> */}
-    );
+  //   const token = localStorage.getItem("accessToken");
+  //   if (token && tokenIsExpired(token)) {
+  //     //
+  //     // Token is valid (TODO: do other checks here)
+  //     //
+  //     refreshAccessToken(token);
+  //   }
 
-  return <Route path={path} render={render} {...rest} />;
+  //   const fn = async () => {
+  //     // await loginWithRedirect({
+  //     //   appState: { targetUrl: path }
+  //     // });
+  //   };
+  //   fn();
+  // }, [loading, auth.isAuthenticated, path]);
+  return (
+    <Route
+      {...rest}
+      render={(props) => {
+        !!auth.isAuthenticated ? (
+          <Component {...props} />
+        ) : (
+          <Redirect to={"/login"} />
+        );
+      }}
+    />
+  );
 };
 
 export default withRouter(PrivateRoute);

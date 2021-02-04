@@ -5,7 +5,7 @@ import React, {
   useEffect,
   useRef,
   createRef,
-  useContext
+  useContext,
 } from "react";
 import { Link, withRouter } from "react-router-dom";
 import {
@@ -24,7 +24,7 @@ import {
   Segment,
   ButtonGroup,
   Popup,
-  Label
+  Label,
 } from "semantic-ui-react";
 
 import { notify } from "react-notify-toast";
@@ -34,7 +34,7 @@ import { toMoney, fromMoney } from "../../../utils/formating";
 import ConfirmModal from "../generic/ConfirmModal";
 import {
   GET_TRANSACTION_ITEMS_FOR_YARDSALE,
-  GET_SELLER_LINKS_FOR_YARDSALE
+  GET_SELLER_LINKS_FOR_YARDSALE,
 } from "../../../graphql/queries";
 import { CREATE_TRANSACTION_ITEM } from "../../../graphql/mutations";
 import { useQuery, useMutation } from "@apollo/react-hooks";
@@ -51,8 +51,7 @@ const CashierModal = ({
   setCashierActive,
   ...props
 }) => {
-
-  const {app, setApp} = useContext(AppContext)
+  const { app, setApp } = useContext(AppContext);
   const modalRef = createRef();
   const [open, setOpen] = useState(autoOpen ? true : false);
 
@@ -65,8 +64,8 @@ const CashierModal = ({
     {
       data: createTransactionItemMutationData,
       loading: createTransactionItemMutationLoading,
-      error: createTransactionItemMutationError
-    }
+      error: createTransactionItemMutationError,
+    },
   ] = useMutation(CREATE_TRANSACTION_ITEM);
 
   const focusRef = useRef();
@@ -80,10 +79,10 @@ const CashierModal = ({
   const initialFormValues = {
     seller: {
       uuid: null,
-      name: null
+      name: null,
     },
     price: null,
-    description: ""
+    description: "",
   };
 
   const [formValues, setFormValues] = useState(initialFormValues);
@@ -91,15 +90,15 @@ const CashierModal = ({
   const {
     loading: sellersLoading,
     error: sellersError,
-    data: sellersData
+    data: sellersData,
   } = useQuery(GET_SELLER_LINKS_FOR_YARDSALE, {
     variables: {
-      yardsaleUUID: yardsale.uuid
+      yardsaleUUID: yardsale.uuid,
     },
     onError: () => console.log("ERROR WITH QUERY"),
-    onCompleted: data => {
+    onCompleted: (data) => {
       console.log("LINKS: ", data);
-    }
+    },
   });
 
   const handleInputChange = (event, { value }) => {
@@ -115,7 +114,7 @@ const CashierModal = ({
 
     setFormValues({
       ...formValues,
-      [name]: val
+      [name]: val,
     });
   };
 
@@ -132,25 +131,25 @@ const CashierModal = ({
   };
 
   const postTransaction = () => {
-    transactionItems.forEach(item => {
+    transactionItems.forEach((item) => {
       createTransactionItemMutation({
         variables: {
           sellerUUID: item.seller.uuid,
           yardsaleUUID: yardsale.uuid,
           price: String(item.price),
-          description: item.description
+          description: item.description,
         },
         refetchQueries: [
           {
             query: GET_TRANSACTION_ITEMS_FOR_YARDSALE,
-            variables: { yardsaleUUID: yardsale.uuid }
+            variables: { yardsaleUUID: yardsale.uuid },
           },
           {
             query: GET_SELLER_LINKS_FOR_YARDSALE,
-            variables: { yardsaleUUID: yardsale.uuid }
-          }
+            variables: { yardsaleUUID: yardsale.uuid },
+          },
         ],
-        awaitRefetchQueries: true
+        awaitRefetchQueries: true,
       });
     });
   };
@@ -189,31 +188,34 @@ const CashierModal = ({
   //[{ id: 1, text: "", value: "" }]
 
   const addItem = () => {
-    setApp({...app, notifications: {
-      show: true,
-      message: "Item Added",
-      level: "success",
-      dismiss: true
-    }})
+    setApp({
+      ...app,
+      notifications: {
+        show: true,
+        message: "Item Added",
+        level: "success",
+        dismiss: true,
+      },
+    });
     setTransactionItems(
       transactionItems.concat([
         {
           seller: {
             uuid: formValues.seller.uuid,
-            name: formValues.seller.name
+            name: formValues.seller.name,
           },
           price: fromMoney(formValues.price),
-          description: formValues.description
-        }
-      ])
+          description: formValues.description,
+        },
+      ]),
     );
     setFormValues({
       description: "",
       price: "",
       seller: {
         uuid: formValues.seller.uuid,
-        name: formValues.seller.name
-      }
+        name: formValues.seller.name,
+      },
     });
     focusRef.current.focus();
     focusRef.current.select();
@@ -223,8 +225,8 @@ const CashierModal = ({
     return toMoney(
       transactionItems.reduce(
         (accum, currentItem) => Number(accum) + Number(currentItem.price),
-        0
-      )
+        0,
+      ),
     );
   };
 
@@ -232,24 +234,25 @@ const CashierModal = ({
     if (Number(fromMoney(tender)) !== null && Number(fromMoney(tender)) > 0) {
       setChangeDue(
         toMoney(
-          Number(fromMoney(tender)) - Number(fromMoney(calculateRunningTotal()))
-        )
+          Number(fromMoney(tender)) -
+            Number(fromMoney(calculateRunningTotal())),
+        ),
       );
     } else {
       setChangeDue(toMoney(0));
     }
   };
 
-  const handleTenderChange = e => {
+  const handleTenderChange = (e) => {
     setTender(fromMoney(e.target.value));
   };
 
-  const removeTransactionItem = id => {
-    setTransactionItems(transactionItems.filter(item => item.id != id));
+  const removeTransactionItem = (id) => {
+    setTransactionItems(transactionItems.filter((item) => item.id != id));
     setTender(0);
   };
 
-  const duplicateTransactionItem = item => {
+  const duplicateTransactionItem = (item) => {
     let newItem = { ...item };
     newItem.id = transactionItems.length + 1;
     setTransactionItems(transactionItems.concat([newItem]));
@@ -295,10 +298,10 @@ const CashierModal = ({
                             size="huge"
                             icon="dollar"
                             iconPosition="left"
-                            onBlur={e =>
+                            onBlur={(e) =>
                               setFormValues({
                                 ...formValues,
-                                price: toMoney(e.target.value)
+                                price: toMoney(e.target.value),
                               })
                             }
                           />
@@ -321,7 +324,7 @@ const CashierModal = ({
                                     placeholder="Select a Seller"
                                     openOnFocus={true}
                                     name="sellerID"
-                                    fluid
+                                    fluid="true"
                                     selection
                                     icon="user outline"
                                     labeled
@@ -331,16 +334,16 @@ const CashierModal = ({
                                     selectOnNavigation={true}
                                     options={sellersData.yardsale_seller_link
                                       .filter(
-                                        link =>
+                                        (link) =>
                                           link.seller.is_active === true &&
-                                          link.seller.is_deleted === false
+                                          link.seller.is_deleted === false,
                                       )
                                       .map((link, index) => {
                                         return {
                                           key: index,
                                           text: `${link.seller.initials} (${link.seller.name})`,
                                           content: `${link.seller.initials} (${link.seller.name})`,
-                                          value: `${link.seller.uuid}|${link.seller.initials} (${link.seller.name})`
+                                          value: `${link.seller.uuid}|${link.seller.initials} (${link.seller.name})`,
                                         };
                                       })}
                                     onChange={(e, { value }) => {
@@ -350,8 +353,8 @@ const CashierModal = ({
                                         ...formValues,
                                         seller: {
                                           uuid: value.split("|")[0],
-                                          name: value.split("|")[1]
-                                        }
+                                          name: value.split("|")[1],
+                                        },
                                       });
                                     }}
                                     className="icon"
@@ -398,7 +401,7 @@ const CashierModal = ({
                   <Grid.Row className="py16">
                     <Grid.Column>
                       <Button
-                        fluid
+                        fluid="true"
                         icon="check"
                         content="Add"
                         className="save"
@@ -532,7 +535,12 @@ const CashierModal = ({
                 >
                   <Grid.Row>
                     <Grid centered stackable columns="3">
-                      <Grid.Column mobile={12} tablet={12} computer={5} textAlign="center" >
+                      <Grid.Column
+                        mobile={12}
+                        tablet={12}
+                        computer={5}
+                        textAlign="center"
+                      >
                         <Form>
                           <Form.Group widths="equal">
                             <Form.Field>
@@ -554,21 +562,22 @@ const CashierModal = ({
                           </Form.Group>
                         </Form>
                       </Grid.Column>
-                      <Grid.Column mobile={12} tablet={12} computer={5} textAlign="center">
+                      <Grid.Column
+                        mobile={12}
+                        tablet={12}
+                        computer={5}
+                        textAlign="center"
+                      >
                         <Form>
                           <Form.Group widths="equal">
-                            <Form.Field style={{textAlign: "center"}} >
-                              <Label
-                                size="huge"
-                                basic                                
-                              >
+                            <Form.Field style={{ textAlign: "center" }}>
+                              <Label size="huge" basic>
                                 Collected: &nbsp;
                                 <Input
-                                
                                   name="tender"
                                   labelPosition="left"
                                   value={tender}
-                                  onBlur={e => {
+                                  onBlur={(e) => {
                                     setTender(toMoney(e.target.value));
                                   }}
                                   icon={<Icon name="dollar" />}
@@ -577,7 +586,10 @@ const CashierModal = ({
                                   input={
                                     <input
                                       type="text"
-                                      style={{ textAlign: "right", maxWidth: 165 }}
+                                      style={{
+                                        textAlign: "right",
+                                        maxWidth: 165,
+                                      }}
                                       autoComplete={false}
                                     />
                                   }
@@ -588,7 +600,12 @@ const CashierModal = ({
                         </Form>
                       </Grid.Column>
 
-                      <Grid.Column mobile={12} tablet={12} computer={5} textAlign="center">
+                      <Grid.Column
+                        mobile={12}
+                        tablet={12}
+                        computer={5}
+                        textAlign="center"
+                      >
                         <Form>
                           <Form.Group widths="equal">
                             <Form.Field>
@@ -632,7 +649,7 @@ const CashierModal = ({
                   buttonProps={{
                     content: "Cancel",
                     fluid: true,
-                    className: "cancel"
+                    className: "cancel",
                   }}
                   header={"Confirm"}
                   content={"Are you sure you want to cancel this transaction?"}
@@ -647,12 +664,12 @@ const CashierModal = ({
                 tablet={8}
                 computer={8}
               >
-                <ButtonGroup style={{ paddingRight: 38 }} fluid>
+                <ButtonGroup style={{ paddingRight: 38 }} fluid="true">
                   <Button
                     onClick={save}
                     content="Save Transaction"
                     disabled={transactionItems.length == 0}
-                    fluid
+                    fluid="true"
                     className="save"
                   />
                   <Popup
@@ -671,7 +688,7 @@ const CashierModal = ({
                       />
                     }
                   ></Popup>
-                {/* <Notifications show={true} message="Testing Messages"  /> */}
+                  {/* <Notifications show={true} message="Testing Messages"  /> */}
                 </ButtonGroup>
               </Grid.Column>
             </Grid.Row>

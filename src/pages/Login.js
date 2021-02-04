@@ -11,29 +11,29 @@ import {
   Header,
   Image,
   Icon,
-  IconGroup
+  IconGroup,
 } from "semantic-ui-react";
 
 import Loading from "../components/layout/Loading";
 import LoadImage from "../assets/logo2.jpg";
 import LoginModal from "../components/modals/LoginModal/LoginModal";
 import { AppContext } from "../App";
-import { auth } from "../Auth";
+import { auth } from "../AuthContext";
 import Home from "./Home";
 
 const Login = ({ ...props }) => {
   let { app, setApp } = React.useContext(AppContext);
-  
+
   useEffect(() => {
-    console.log('Login PATH: ', props.match.path)
-    console.log('Login mounted')
-  }, [])
-  
-  if (props.match.path == '/login') {
+    console.log("Login PATH: ", props.match.path);
+    console.log("Login mounted");
+  }, []);
+
+  if (props.match.path == "/login") {
     if (app.showLoginModal !== true) {
-      setApp({...app, showLoginModal: true})
+      setApp({ ...app, showLoginModal: true });
     }
-    return <Home {...props} />
+    return <Home {...props} />;
   }
 };
 

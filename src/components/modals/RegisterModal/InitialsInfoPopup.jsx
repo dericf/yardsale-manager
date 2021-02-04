@@ -19,7 +19,7 @@ const InitialsInfoPopup = ({ ...props }) => {
       <Grid.Row>
         <Grid.Column width={8}>
           <Button
-            fluid
+            fluid="true"
             className="cancel"
             onClick={() => setUserAsSeller(false)}
           >
@@ -28,7 +28,11 @@ const InitialsInfoPopup = ({ ...props }) => {
           </Button>
         </Grid.Column>
         <Grid.Column width={8}>
-          <Button fluid className="save" onClick={() => setUserAsSeller(true)}>
+          <Button
+            fluid="true"
+            className="save"
+            onClick={() => setUserAsSeller(true)}
+          >
             <Icon name="check" />
             Yes
           </Button>
@@ -50,8 +54,9 @@ const InitialsInfoPopup = ({ ...props }) => {
         <Grid.Row>
           <Grid.Column textAlign="left">
             <p className="ui text">
-              This field is used as a unique ID for a seller. <br/> <br/> Typically it is a
-              person's initials but it can be a number or any combination.
+              This field is used as a unique ID for a seller. <br /> <br />{" "}
+              Typically it is a person's initials but it can be a number or any
+              combination.
             </p>
           </Grid.Column>
         </Grid.Row>

@@ -11,21 +11,30 @@ import {
   Header,
   Image,
   Icon,
-  IconGroup
+  IconGroup,
 } from "semantic-ui-react";
 
 import Loading from "../components/layout/Loading";
 import LoadImage from "../assets/logo2.jpg";
 
 const Home = ({ setTitle }) => {
-
-  const minRowHeight = "30vh"
+  const minRowHeight = "30vh";
   return (
     <Segment style={{ border: "0" }}>
       <Grid centered as={Container} stackable>
-        <Grid.Row className="py0 mt16 mb0" centered style={{minHeight: "40vh"}}>
+        <Grid.Row
+          className="py0 mt16 mb0"
+          centered
+          style={{ minHeight: "40vh" }}
+        >
           <Grid.Column verticalAlign="middle" width={10} style={{ zIndex: 10 }}>
-            <Container as={Segment} raised text textAlign="center" style={{ width: "100%" }}>
+            <Container
+              as={Segment}
+              raised
+              text
+              textAlign="center"
+              style={{ width: "100%" }}
+            >
               <Header
                 textAlign="center"
                 as="h1"
@@ -57,7 +66,7 @@ const Home = ({ setTitle }) => {
 
         <Grid.Row className="py0 mt16 mb0">
           <Grid.Column width={8}>
-            <Segment className="borderless mb0" fluid>
+            <Segment className="borderless mb0" fluid="true">
               <Header textAlign="center" as="h2" content="Motivation" />
             </Segment>
           </Grid.Column>
@@ -66,25 +75,25 @@ const Home = ({ setTitle }) => {
         {/* Cards */}
         <Grid.Row className="py16 mt16 mb0" style={{ minHeight: "30vh" }}>
           <Grid.Column mobile={8} computer={8} className="my16">
-            <Segment className="rounded" fluid raised>
+            <Segment className="rounded" fluid="true" raised>
               <Header textAlign="left" as="h3" content="The Goal" />
-              <p  className="small text">
-                The original goal of Yardsale Manager was to build a web application that could track users, yardsales, sellers and transactions, while displaying totals for each seller and each yard sale.
-
+              <p className="small text">
+                The original goal of Yardsale Manager was to build a web
+                application that could track users, yardsales, sellers and
+                transactions, while displaying totals for each seller and each
+                yard sale.
               </p>
             </Segment>
           </Grid.Column>
           <Grid.Column mobile={8} computer={8} className="my16">
-            <Segment className="rounded" fluid raised>
-              <Header
-                textAlign="left"
-                as="h3"
-                content="The Result"
-              />
-                <p  className="small text">
-                  Build a simple application to track Users, Sellers, Yard Sales and all Transactions.
-                  Still in the development pipeline are features such as Seller/Yard Sale Items, with optional public listing (similar to an auction).
-                </p>
+            <Segment className="rounded" fluid="true" raised>
+              <Header textAlign="left" as="h3" content="The Result" />
+              <p className="small text">
+                Build a simple application to track Users, Sellers, Yard Sales
+                and all Transactions. Still in the development pipeline are
+                features such as Seller/Yard Sale Items, with optional public
+                listing (similar to an auction).
+              </p>
             </Segment>
           </Grid.Column>
         </Grid.Row>
@@ -92,7 +101,7 @@ const Home = ({ setTitle }) => {
         {/* Technology | UI |*/}
         <Grid.Row className="py0 mt16 mb0">
           <Grid.Column width={8} className="my16">
-            <Segment className="borderless" fluid>
+            <Segment className="borderless" fluid="true">
               <Header
                 textAlign="center"
                 as="h2"
@@ -105,7 +114,7 @@ const Home = ({ setTitle }) => {
         {/* Cards */}
         <Grid.Row className="py0 mt16 mb0" style={{ minHeight: "30vh" }}>
           <Grid.Column mobile={16} computer={8} className="my16">
-            <Segment className="rounded" fluid>
+            <Segment className="rounded" fluid="true">
               <Header
                 textAlign="left"
                 as="h3"
@@ -115,26 +124,27 @@ const Home = ({ setTitle }) => {
             </Segment>
           </Grid.Column>
           <Grid.Column mobile={16} computer={8} className="my16">
-            <Segment className="rounded" fluid>
+            <Segment className="rounded" fluid="true">
               <Header
                 textAlign="left"
                 as="h3"
                 content="Functional Components, Hooks and the Context API"
               />
-              <p className="small text" >
-              </p>
-                <pre><code>
-                {`export const AppContext = React.createContext([
+              <p className="small text"></p>
+              <pre>
+                <code>
+                  {`export const AppContext = React.createContext([
   defaultAppContext,
   () => defaultAppContext
 ]);
 
 const [app, setApp] = useState(defaultAppContext);`}
-</code></pre>
+                </code>
+              </pre>
             </Segment>
           </Grid.Column>
           <Grid.Column mobile={16} computer={8} className="my16">
-            <Segment className="rounded" fluid>
+            <Segment className="rounded" fluid="true">
               <Header
                 textAlign="left"
                 as="h3"
@@ -144,27 +154,17 @@ const [app, setApp] = useState(defaultAppContext);`}
             </Segment>
           </Grid.Column>
           <Grid.Column mobile={16} computer={8} className="my16">
-            <Segment className="rounded" fluid>
-              <Header
-                textAlign="left"
-                as="h3"
-                content="SCSS"
-                subheader=""
-              />
+            <Segment className="rounded" fluid="true">
+              <Header textAlign="left" as="h3" content="SCSS" subheader="" />
             </Segment>
           </Grid.Column>
-          
         </Grid.Row>
 
         {/* Technology | Server & API | */}
         <Grid.Row className="py0 mt16 mb0">
           <Grid.Column width={16} className="my16">
-            <Segment className="borderless" fluid>
-              <Header
-                textAlign="center"
-                as="h2"
-                content="Server & API"
-              />
+            <Segment className="borderless" fluid="true">
+              <Header textAlign="center" as="h2" content="Server & API" />
             </Segment>
           </Grid.Column>
         </Grid.Row>
@@ -172,7 +172,7 @@ const [app, setApp] = useState(defaultAppContext);`}
         {/* Cards */}
         <Grid.Row className="py0 mt16 mb0" style={{ minHeight: "30vh" }}>
           <Grid.Column mobile={8} computer={4} className="my16">
-            <Segment className="rounded" fluid>
+            <Segment className="rounded" fluid="true">
               <Header
                 textAlign="left"
                 as="h3"
@@ -182,12 +182,8 @@ const [app, setApp] = useState(defaultAppContext);`}
             </Segment>
           </Grid.Column>
           <Grid.Column mobile={8} computer={4} className="my16">
-            <Segment className="rounded" fluid>
-              <Header
-                textAlign="left"
-                as="h3"
-                content="GraphQL"
-              />
+            <Segment className="rounded" fluid="true">
+              <Header textAlign="left" as="h3" content="GraphQL" />
 
               <p className="small text">
                 {`using
@@ -196,7 +192,7 @@ const [app, setApp] = useState(defaultAppContext);`}
             </Segment>
           </Grid.Column>
           <Grid.Column mobile={8} computer={4} className="my16">
-            <Segment className="rounded" fluid>
+            <Segment className="rounded" fluid="true">
               <Header
                 textAlign="left"
                 as="h3"
@@ -206,7 +202,7 @@ const [app, setApp] = useState(defaultAppContext);`}
             </Segment>
           </Grid.Column>
           <Grid.Column mobile={8} computer={4} className="my16">
-            <Segment className="rounded" fluid>
+            <Segment className="rounded" fluid="true">
               <Header
                 textAlign="left"
                 as="h3"
@@ -217,16 +213,11 @@ const [app, setApp] = useState(defaultAppContext);`}
           </Grid.Column>
         </Grid.Row>
 
-
         {/* Technology | DB |*/}
         <Grid.Row className="py0 mt16 mb0">
           <Grid.Column width={16} className="my16">
-            <Segment className="borderless" fluid>
-              <Header
-                textAlign="center"
-                as="h2"
-                content="Database"
-              />
+            <Segment className="borderless" fluid="true">
+              <Header textAlign="center" as="h2" content="Database" />
             </Segment>
           </Grid.Column>
         </Grid.Row>
@@ -234,8 +225,7 @@ const [app, setApp] = useState(defaultAppContext);`}
         {/* Cards */}
         <Grid.Row className="py0 mt16 mb0" style={{ minHeight: "30vh" }}>
           <Grid.Column mobile={16} computer={16} className="my16">
-            
-            <Segment className="rounded" fluid>
+            <Segment className="rounded" fluid="true">
               <Header
                 textAlign="left"
                 as="h3"
@@ -245,7 +235,7 @@ const [app, setApp] = useState(defaultAppContext);`}
             </Segment>
           </Grid.Column>
           <Grid.Column mobile={16} computer={16} className="my16">
-            <Segment className="rounded" fluid>
+            <Segment className="rounded" fluid="true">
               <Header
                 textAlign="left"
                 as="h3"
@@ -255,7 +245,7 @@ const [app, setApp] = useState(defaultAppContext);`}
             </Segment>
           </Grid.Column>
           <Grid.Column mobile={16} computer={16} className="my16">
-            <Segment className="rounded" fluid>
+            <Segment className="rounded" fluid="true">
               <Header
                 textAlign="left"
                 as="h3"
@@ -265,7 +255,7 @@ const [app, setApp] = useState(defaultAppContext);`}
             </Segment>
           </Grid.Column>
           <Grid.Column mobile={16} computer={16} className="my16">
-            <Segment className="rounded" fluid>
+            <Segment className="rounded" fluid="true">
               <Header
                 textAlign="left"
                 as="h3"
@@ -279,12 +269,8 @@ const [app, setApp] = useState(defaultAppContext);`}
         {/* Technology | DB |*/}
         <Grid.Row className="py0 mt16 mb0">
           <Grid.Column width={16} className="my16">
-            <Segment className="borderless" fluid>
-              <Header
-                textAlign="center"
-                as="h2"
-                content="Tooling"
-              />
+            <Segment className="borderless" fluid="true">
+              <Header textAlign="center" as="h2" content="Tooling" />
             </Segment>
           </Grid.Column>
         </Grid.Row>
@@ -292,17 +278,12 @@ const [app, setApp] = useState(defaultAppContext);`}
         {/* Cards */}
         <Grid.Row className="py0 mt16 mb0" style={{ minHeight: "30vh" }}>
           <Grid.Column mobile={16} computer={8} className="my16">
-            <Segment className="rounded" fluid>
-              <Header
-                textAlign="left"
-                as="h3"
-                content="VS Code"
-                subheader=""
-              />
+            <Segment className="rounded" fluid="true">
+              <Header textAlign="left" as="h3" content="VS Code" subheader="" />
             </Segment>
           </Grid.Column>
           <Grid.Column mobile={16} computer={8} className="my16">
-            <Segment className="rounded" fluid>
+            <Segment className="rounded" fluid="true">
               <Header
                 textAlign="left"
                 as="h3"
@@ -312,13 +293,8 @@ const [app, setApp] = useState(defaultAppContext);`}
             </Segment>
           </Grid.Column>
           <Grid.Column mobile={16} computer={8} className="my16">
-            <Segment className="rounded" fluid >
-              <Header
-                textAlign="left"
-                as="h3"
-                content="Github"
-                subheader=""
-              />
+            <Segment className="rounded" fluid="true">
+              <Header textAlign="left" as="h3" content="Github" subheader="" />
             </Segment>
           </Grid.Column>
         </Grid.Row>
@@ -326,12 +302,8 @@ const [app, setApp] = useState(defaultAppContext);`}
         {/* Technology | Deployment |*/}
         <Grid.Row className="py0 mt16 mb0">
           <Grid.Column width={16} className="my16">
-            <Segment className="borderless" fluid>
-              <Header
-                textAlign="center"
-                as="h2"
-                content="Deployment"
-              />
+            <Segment className="borderless" fluid="true">
+              <Header textAlign="center" as="h2" content="Deployment" />
             </Segment>
           </Grid.Column>
         </Grid.Row>
@@ -339,7 +311,7 @@ const [app, setApp] = useState(defaultAppContext);`}
         {/* Cards */}
         <Grid.Row className="py0 mt16 mb0" style={{ minHeight: "30vh" }}>
           <Grid.Column mobile={16} computer={8} className="my16">
-            <Segment className="rounded" fluid>
+            <Segment className="rounded" fluid="true">
               <Header
                 textAlign="left"
                 as="h3"
@@ -349,27 +321,17 @@ const [app, setApp] = useState(defaultAppContext);`}
             </Segment>
           </Grid.Column>
           <Grid.Column mobile={16} computer={8} className="my16">
-            <Segment className="rounded" fluid>
-              <Header
-                textAlign="left"
-                as="h3"
-                content="NGINX"
-                subheader=""
-              />
+            <Segment className="rounded" fluid="true">
+              <Header textAlign="left" as="h3" content="NGINX" subheader="" />
             </Segment>
           </Grid.Column>
           <Grid.Column mobile={16} computer={8} className="my16">
-            <Segment className="rounded" fluid>
-              <Header
-                textAlign="left"
-                as="h3"
-                content="Certbot"
-                subheader=""
-              />
+            <Segment className="rounded" fluid="true">
+              <Header textAlign="left" as="h3" content="Certbot" subheader="" />
             </Segment>
           </Grid.Column>
           <Grid.Column mobile={16} computer={8} className="my16">
-            <Segment className="rounded" fluid>
+            <Segment className="rounded" fluid="true">
               <Header
                 textAlign="left"
                 as="h3"
