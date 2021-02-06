@@ -1,0 +1,11 @@
+.hover-shadow-lg:hover {
+	box-shadow: 0 2px 8px #bbb;
+}
+
+.hover-pointer:hover {
+	cursor: pointer;
+}
+
+.hover-opacity-75:hover {
+	opacity: 0.75;
+}
