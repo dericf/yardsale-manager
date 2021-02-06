@@ -1,18 +1,14 @@
 import jwtDecode from "jwt-decode";
 import React, { useState, useContext, createContext } from "react";
-import { LoginResponse } from "../types/RequestResponse";
+import { LoginResponse, RegisterResponse } from "../types/RequestResponse";
 import { useAlert } from "./useAlert";
 import { useIsLoading } from "./useIsLoading";
+import { AuthContextInterface } from "../types/Context";
 
-interface LoginForm {
-  email: string;
-  password: string;
-}
-
-const initialLoginFormValues: LoginForm = {
+const initialLoginFormValues = {
   email: "",
   password: "",
-};
+} as LoginForm;
 
 const initialRegistrationFormValues = {
   name: "",
@@ -20,7 +16,7 @@ const initialRegistrationFormValues = {
   email: "",
   password: "",
   confirmPassword: "",
-};
+} as RegisterForm;
 
 export const initialAuthContextValue = {
   isAuthenticated: null,
@@ -28,15 +24,16 @@ export const initialAuthContextValue = {
   refreshToken: null,
   user: null,
   loginForm: initialLoginFormValues,
-  registrationForm: initialRegistrationFormValues,
+  registerForm: initialRegistrationFormValues,
   formErrorMessage: null,
   tryAuthenticateWithEmailPassword: (_, __) => {},
   handleLoginFormChange: (_, __) => {},
-  refreshAuthToken: () => {},
   logout: () => {},
-};
+} as AuthContextInterface;
 
-export const AuthContext = createContext(initialAuthContextValue);
+export const AuthContext = createContext<AuthContextInterface>(
+  initialAuthContextValue,
+);
 
 export default function AuthProvider({ children }) {
   const { loadingState, setLoadingState, clearLoadingState } = useIsLoading();
@@ -47,8 +44,8 @@ export default function AuthProvider({ children }) {
   const [token, setToken] = useState(null);
   const [refreshToken, setRefreshToken] = useState(null);
 
-  const [loginForm, setLoginForm] = useState(initialLoginFormValues);
-  const [registerForm, setRegisterForm] = useState(
+  const [loginForm, setLoginForm] = useState<LoginForm>(initialLoginFormValues);
+  const [registerForm, setRegisterForm] = useState<RegisterForm>(
     initialRegistrationFormValues,
   );
 
@@ -56,11 +53,23 @@ export default function AuthProvider({ children }) {
 
   const handleRegisterFormChange = (e: React.FormEvent<HTMLInputElement>) => {
     const target: HTMLInputElement = e.currentTarget;
-    const val = target.type === "checkbox" ? target.checked : target.value;
+    let val = target.type === "checkbox" ? target.checked : target.value;
     const name = target.name;
+
+    // Set the initials if the name is being changed
+    let computedInitials = null;
+    if (name === "name") {
+      computedInitials = String(
+        String(val)
+          .split(" ")
+          .map((name) => name[0]),
+      ).replace(",", "");
+    }
+
     setRegisterForm({
       ...registerForm,
       [name]: val,
+      initials: computedInitials ? computedInitials : registerForm.initials,
     });
   };
 
@@ -158,10 +167,54 @@ export default function AuthProvider({ children }) {
 
   const logout = () => {
     // TODO:  Remove all auth tokens
+    try {
+      localStorage?.removeItem("accessToken");
+      localStorage?.removeItem("refreshToken");
+      localStorage?.removeItem("user");
+    } catch (error) {
+      console.log("Error", error);
+    }
+
     setIsAuthenticated(false);
     setToken(null);
     setRefreshToken(null);
     setUser(null);
+  };
+
+  const tryRegisterUser = async (): Promise<boolean> => {
+    let uri = `${process.env.NEXT_PUBLIC_API_SERVER_URL}/auth/register`;
+    let data = {
+      name: registerForm.name,
+      initials: registerForm.initials,
+      email: registerForm.email,
+      password: registerForm.password,
+      confirmPassword: registerForm.confirmPassword,
+    } as RegisterForm;
+    let options = {
+      method: "POST",
+      cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    } as RequestInit;
+
+    try {
+      const resp = await fetch(uri, options);
+      const json: RegisterResponse = await resp.json();
+      if (json.STATUS === "OK") {
+        sendAlert(
+          "Success! Your account has been registered. Check your email for a confirmation link.",
+        );
+        return true;
+      } else if (json.STATUS === "ERROR") {
+        sendError(json.MESSAGE);
+        return false;
+      }
+    } catch (error) {
+      sendError("There was a problem on our end. Please try again later.");
+      return false;
+    }
   };
 
   const loadAuthStateFromLocalStorage = async (): Promise<boolean> => {
@@ -220,7 +273,7 @@ export default function AuthProvider({ children }) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ refreshToken: refreshToken }),
-    };
+    } as RequestInit;
 
     fetch(uri, options)
       .then((res) => res.json())
@@ -262,17 +315,23 @@ export default function AuthProvider({ children }) {
 
   return (
     <AuthContext.Provider
-      value={{
-        user,
-        isAuthenticated,
-        loginForm,
-        formErrorMessage,
-        handleLoginFormChange,
-        tryAuthenticateWithEmailPassword,
-        logout,
-        loadAuthStateFromLocalStorage,
-        handleRegisterFormChange,
-      }}
+      value={
+        {
+          user,
+          token,
+          refreshToken,
+          isAuthenticated,
+          loginForm,
+          registerForm,
+          formErrorMessage,
+          handleLoginFormChange,
+          handleRegisterFormChange,
+          tryAuthenticateWithEmailPassword,
+          tryRegisterUser,
+          loadAuthStateFromLocalStorage,
+          logout,
+        } as AuthContextInterface
+      }
     >
       {children}
     </AuthContext.Provider>
@@ -280,26 +339,6 @@ export default function AuthProvider({ children }) {
 }
 
 export const useAuth = () => {
-  const {
-    user,
-    isAuthenticated,
-    loginForm,
-    handleLoginFormChange,
-    tryAuthenticateWithEmailPassword,
-    logout,
-    loadAuthStateFromLocalStorage,
-    formErrorMessage,
-    handleRegisterFormChange,
-  } = useContext(AuthContext);
-  return {
-    user,
-    isAuthenticated,
-    loginForm,
-    formErrorMessage,
-    handleLoginFormChange,
-    tryAuthenticateWithEmailPassword,
-    logout,
-    loadAuthStateFromLocalStorage,
-    handleRegisterFormChange,
-  };
+  const ctx = useContext<AuthContextInterface>(AuthContext);
+  return ctx;
 };
