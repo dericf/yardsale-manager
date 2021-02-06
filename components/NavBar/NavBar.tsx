@@ -15,42 +15,44 @@ export const NavBar: NextPage = ({ activePage }: PropsWithChildren<Props>) => {
 
   return (
     <div className="flex row justify-between align-center">
-      <Menu pointing secondary>
-        <Menu.Item
-          name="yard sales"
-          onClick={async (e) => {
-            e.preventDefault;
-            router.push("/yardsales");
-          }}
-					active={activePage === 'yard sales'}
-        />
-        <Menu.Item
-          name="sellers"
-          onClick={async (e) => {
-            e.preventDefault;
-            router.push("/sellers");
-          }}
-					active={activePage === 'sellers'}
-        />
-        <Menu.Item
-          name="account"
-          onClick={async (e) => {
-            e.preventDefault;
-            router.push("/account");
-          }}
-					active={activePage === 'account'}
-        />
-        <Menu.Menu position="right">
+      {isAuthenticated === true && (
+        <Menu pointing secondary>
           <Menu.Item
-            name="logout"
+            name="yard sales"
             onClick={async (e) => {
               e.preventDefault;
-              await logout();
-              router.push("/");
+              router.push("/yardsales");
             }}
+            active={activePage === "yard sales"}
           />
-        </Menu.Menu>
-      </Menu>
+          <Menu.Item
+            name="sellers"
+            onClick={async (e) => {
+              e.preventDefault;
+              router.push("/sellers");
+            }}
+            active={activePage === "sellers"}
+          />
+          <Menu.Item
+            name="account"
+            onClick={async (e) => {
+              e.preventDefault;
+              router.push("/account");
+            }}
+            active={activePage === "account"}
+          />
+          <Menu.Menu position="right">
+            <Menu.Item
+              name="logout"
+              onClick={async (e) => {
+                e.preventDefault;
+                await logout();
+                router.push("/");
+              }}
+            />
+          </Menu.Menu>
+        </Menu>
+      )}
     </div>
   );
 };
