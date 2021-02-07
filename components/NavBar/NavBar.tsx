@@ -9,7 +9,7 @@ interface Props {
   activePage: ActivePage;
 }
 
-export const NavBar: NextPage = ({ activePage }: PropsWithChildren<Props>) => {
+export const NavBar = ({ activePage }: PropsWithChildren<Props>) => {
   const router = useRouter();
   const { isAuthenticated, logout } = useAuth();
 
