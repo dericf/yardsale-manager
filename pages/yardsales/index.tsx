@@ -67,46 +67,6 @@ export default function index() {
           )} */}
 
         <Grid columns={2} centered className="m0 p0">
-          <Grid.Row className="py0">
-            {/* First Grid.Row (Filters/Buttons) */}
-            <Grid.Column
-              verticalAlign="middle"
-              mobile={8}
-              tablet={8}
-              computer={10}
-              className="pl0"
-            >
-              {/* Radio Buttons + Search Field */}
-              {/* <YardsalesFilterForm
-                  filter={filter}
-                  setFilter={setFilter}
-                  autofocus={true}
-                /> */}
-                <Link href='/yardsales/new' as="/yardsales/new"><Button>New</Button></Link>
-            </Grid.Column>
-            <Grid.Column
-              mobile={8}
-              tablet={8}
-              computer={6}
-              textAlign="right"
-              className="mobile-my8 pr0"
-            >
-              {/* <YardsaleDetailsM`odal /> */}
-            </Grid.Column>
-          </Grid.Row>
-
-          <Grid.Row className="pb0 pt0">
-            {/* Second Grid.Row (Dividers with headings) */}
-            <Grid.Column computer={16}>
-              <Divider>{`My Yard Sales`}</Divider>
-              {/* {JSON.stringify(error || "error")} */}
-              {/* {JSON.stringify(loading || "loading")} */}
-              {/* {JSON.stringify(data || "data")} */}
-            </Grid.Column>
-            {/* <Grid.Column mobile={8} tablet={7} computer={6}>
-                            <Divider horizontal={true} content="Actions"></Divider>
-                        </Grid.Column> */}
-          </Grid.Row>
 
           {/* Yardsales List */}
           {/* {loading && <Loading />} */}
