@@ -24,7 +24,7 @@ import { useIsLoading } from "../../hooks/useIsLoading";
 
 export const LoginForm: React.FC = (props) => {
   const router = useRouter();
-  const autoFocusRef = useRef();
+  const autoFocusRef = useRef<Input>();
   const { loadingState } = useIsLoading();
   const {
     loginForm,

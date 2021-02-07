@@ -16,6 +16,7 @@ import jwtDecode from "jwt-decode";
 import { getMainDefinition } from "@apollo/client/utilities";
 import { setContext } from "apollo-link-context";
 import { RequestOptions } from "https";
+import { FormValues } from "./useForm";
 
 export const HasuraContext = createContext<HasuraContextInterface>(
   {} as HasuraContextInterface,
@@ -66,7 +67,7 @@ export default function HasuraProvider({ children }) {
     let jwt = jwtDecode(token);
     let requestBody = {
       mutation: m,
-    };
+    } as FormValues;
     if (variables) requestBody.variables = variables;
     let fetchOptions = {
       method: "POST",
@@ -78,13 +79,18 @@ export default function HasuraProvider({ children }) {
       },
       body: JSON.stringify(requestBody),
     };
-    let response = await fetch(
-      process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT,
-      fetchOptions,
-    );
-    let data = await response.json();
-    console.log("Data: ", data);
-    return data;
+    try {
+      let response = await fetch(
+        process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT,
+        fetchOptions,
+      );
+      let data = await response.json();
+      console.log("Data: ", data);
+      return data;
+    } catch (error) {
+      console.log("Error with query");
+      console.log(error);
+    }
   };
 
   return (

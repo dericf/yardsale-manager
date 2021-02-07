@@ -28,7 +28,7 @@ export interface AuthContextInterface {
     confirmPassword: string,
     resetCode: string,
     uuid: string,
-  ) => Promise<boolean>
+  ) => Promise<boolean>;
 }
 
 export interface LoadingContextInterface {
@@ -43,23 +43,24 @@ export interface LoadingState {
   overlay: boolean;
 }
 
-
 export interface Filter {
-	searchText: string
+  searchText: string;
 }
 export interface HasuraContextInterface {
-  context: any,
-  query: (q: string, variables?: any) => any,
-  mutation: (q: string, variables?: any) => any
+  context: any;
+  query: (q: string, variables?: any) => any;
+  mutation: (q: string, variables?: any) => any;
 }
 
 export interface YardSalesContextInterFace {
   // TODO hook this array type up to graphql types
   yardSales: Array<YardSalesInterface>;
   setYardSales;
-  selectedYardSale: string;
-  createNewYardsale: (yardsale: FormValues) => any
+  selectedYardSale: YardSalesInterface;
+  setSelectedYardSale: (_: YardSalesInterface) => void;
+  createNewYardsale: (yardsale: FormValues) => any;
+  updateYardsale: (yardsale: FormValues) => any;
   updateYardSales: () => Promise<UseQueryResponse>;
-	updateFilterText: (text: string) => void;
-	filter: Filter;
+  updateFilterText: (text: string) => void;
+  filter: Filter;
 }
