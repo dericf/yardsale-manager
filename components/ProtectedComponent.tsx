@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useAuth } from "../hooks/useAuth";
 import { useRouter } from "next/router";
 import { Segment } from "semantic-ui-react";
-import { Layout } from "./layout/Layout";
+import { Layout } from "./Layout/Layout";
 
 export const ProtectedComponent = (props) => {
   const { isAuthenticated, loadAuthStateFromLocalStorage } = useAuth();
