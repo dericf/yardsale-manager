@@ -1,7 +1,7 @@
 // https://hasura.io/learn/graphql/nextjs-fullstack-serverless/queries/2-create-query/
 import { useState, useContext, useEffect, createContext } from "react";
 import { GET_YARDSALES } from "../graphql/queries";
-import { CREATE_YARDSALE } from "../graphql/mutations";
+import { CREATE_YARDSALE, UPDATE_YARDSALE } from "../graphql/mutations";
 import React from "react";
 import { useQuery } from "@apollo/client";
 import HasuraProvider, { useHasura } from "./useHasura";
@@ -33,7 +33,7 @@ export default function YardSalesProvider({ children }) {
   const [yardSales, setYardSales] = useState(
     new Array<YardSalesInterface>(),
   );
-  const [selectedYardSale, setSelectedYardSale] = useState(null);
+  const [selectedYardSale, setSelectedYardSale] = useState<YardSalesInterface>(null);
   // const { client } = useHasura();
 
   const [filter, setFilter] = useState({
@@ -64,16 +64,24 @@ export default function YardSalesProvider({ children }) {
     return responseData;
   };
 
+  const updateYardsale = async (yardsale) => {
+    // post to graphql -> mutation insertYardsale
+    const responseData = await query(UPDATE_YARDSALE, yardsale);
+    return responseData;
+  };
+
   return (
     <YardSalesContext.Provider
       value={{
         yardSales,
         selectedYardSale,
+        setSelectedYardSale,
         updateYardSales,
         setYardSales,
         updateFilterText,
         filter,
         createNewYardsale,
+        updateYardsale,
       }}
     >
       {children}
