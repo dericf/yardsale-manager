@@ -1,9 +1,9 @@
-import gql from "graphql-tag";
+// import  from "graphql-tag";
 
 //
 // GET ONE USER
 // by email
-export const GET_USER = gql`
+export const GET_USER = `
   query GetUser {
     user {
       uuid
@@ -23,7 +23,7 @@ export const GET_USER = gql`
 //
 // GET ALL SELLERS
 // (permission: for the current user)
-export const GET_SELLERS = gql`
+export const GET_SELLERS = `
   query GetSellers {
     seller(where: { is_deleted: { _eq: false } }, order_by: { name: asc }) {
       address_text
@@ -47,7 +47,7 @@ export const GET_SELLERS = gql`
 //
 // GET ALL SELLER LINKS FOR YARDSALE
 //
-export const GET_SELLER_LINKS_FOR_YARDSALE = gql`
+export const GET_SELLER_LINKS_FOR_YARDSALE = `
   query GetSellerLinksForYardsale($yardsaleUUID: uuid!) {
     yardsale_seller_link(where: { yardsale_uuid: { _eq: $yardsaleUUID } }) {
       uuid
@@ -72,7 +72,7 @@ export const GET_SELLER_LINKS_FOR_YARDSALE = gql`
 //
 // GET ALL SELLER LINKS FOR SELLER
 //
-export const GET_SELLER_LINKS_FOR_SELLER = gql`
+export const GET_SELLER_LINKS_FOR_SELLER = `
   query GetSellerLinksForYardsale($sellerUUID: uuid!) {
     yardsale_seller_link(where: { seller_uuid: { _eq: $sellerUUID } }) {
       uuid
@@ -94,7 +94,7 @@ export const GET_SELLER_LINKS_FOR_SELLER = gql`
 //
 // GET ONE SELLER
 // by id
-export const GET_SELLER_BY_UUID = gql`
+export const GET_SELLER_BY_UUID = `
   query GetSeller($uuid: uuid!) {
     seller(where: { uuid: { _eq: $uuid } }) {
       address_text
@@ -117,13 +117,12 @@ export const GET_SELLER_BY_UUID = gql`
 //
 // GET ALL YARDSALES
 // (permission: for the current user)
-export const GET_YARDSALES = gql`
+export const GET_YARDSALES = `
   query GetYardsales {
     yardsale(order_by: { created_at: desc }) {
       uuid
       created_at
       updated_at
-      address_text
       days_of_week
       end_date
       end_time
@@ -160,7 +159,7 @@ export const GET_YARDSALES = gql`
 //
 // PREVIEW: GET ALL YARDSALES
 // (permission: for the current user)
-export const GET_YARDSALES_PREVIEW = gql`
+export const GET_YARDSALES_PREVIEW = `
   query GetYardsales {
     yardsale(order_by: { updated_at: desc }) {
       uuid
@@ -179,7 +178,7 @@ export const GET_YARDSALES_PREVIEW = gql`
 //
 // GET ONE YARDSALE
 // by id
-export const GET_YARDSALE = gql`
+export const GET_YARDSALE = `
   query GetYardsale($yardsaleUUID: uuid) {
     yardsale(where: { uuid: { _eq: $yardsaleUUID } }) {
       address_text
@@ -221,7 +220,7 @@ export const GET_YARDSALE = gql`
 //
 // GET ALL SALE ITEMS
 // by seller.id
-export const GET_TRANSACTION_ITEM = gql`
+export const GET_TRANSACTION_ITEM = `
   query GetTransactionItem($UUID: uuid!) {
     transaction(where: { _eq: { uuid: $UUID } }) {
       seller_uuid
@@ -245,7 +244,7 @@ export const GET_TRANSACTION_ITEM = gql`
 //
 // GET ALL SALE ITEMS FOR YARDSALE
 // by yardsale.id
-export const GET_TRANSACTION_ITEMS_FOR_YARDSALE = gql`
+export const GET_TRANSACTION_ITEMS_FOR_YARDSALE = `
   query GetTransactionItem($yardsaleUUID: uuid!) {
     transaction(where: { yardsale_uuid: { _eq: $yardsaleUUID } }) {
       seller_uuid
@@ -273,7 +272,7 @@ export const GET_TRANSACTION_ITEMS_FOR_YARDSALE = gql`
 //
 // GET ALL SALE ITEMS FOR SELLER
 // by yardsale.id
-export const GET_TRANSACTION_ITEMS_FOR_SELLER = gql`
+export const GET_TRANSACTION_ITEMS_FOR_SELLER = `
   query GetTransactionItem($sellerUUID: uuid!) {
     transaction(where: { seller_uuid: { _eq: $sellerUUID } }) {
       uuid

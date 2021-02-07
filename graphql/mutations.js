@@ -1,11 +1,10 @@
-import gql from "graphql-tag";
 /*
   USER
 */
 //
 // Update User Onbording complete
 //
-export const UPDATE_USER_ONBOARDING = gql`
+export const UPDATE_USER_ONBOARDING = `
   mutation setOnboardingComplete (
     $UUID: uuid!
   ) {
@@ -31,7 +30,7 @@ export const UPDATE_USER_ONBOARDING = gql`
 //
 // Insert Seller
 //
-export const CREATE_SELLER = gql`
+export const CREATE_SELLER = `
   mutation CreateSeller(
     $email: String
     $initials: String
@@ -67,7 +66,7 @@ export const CREATE_SELLER = gql`
 //
 // Update Seller
 //
-export const UPDATE_SELLER = gql`
+export const UPDATE_SELLER = `
   mutation updateSeller(
     $sellerUUID: uuid!
     $phone: String
@@ -102,7 +101,7 @@ export const UPDATE_SELLER = gql`
 //
 // Delete Seller
 //
-export const DELETE_SELLER = gql`
+export const DELETE_SELLER = `
   mutation updateSeller($sellerUUID: uuid!) {
     update_seller(
       where: { uuid: { _eq: $sellerUUID } }
@@ -123,7 +122,7 @@ export const DELETE_SELLER = gql`
 //
 // Insert Yardsale
 //
-export const CREATE_YARDSALE = gql`
+export const CREATE_YARDSALE = `
   mutation CreateYardsale(
     $email: String
     $name: String
@@ -131,9 +130,6 @@ export const CREATE_YARDSALE = gql`
     $address_text: String
     $notes: String
     $company: String
-    $is_public: Boolean
-    $pos_lat: float8
-    $pos_lng: float8
   ) {
     insert_yardsale(
       objects: {
@@ -142,10 +138,7 @@ export const CREATE_YARDSALE = gql`
         address_text: $address_text
         notes: $notes
         phone: $phone
-        company: $company,
-        is_public: $is_public
-        pos_lat: $pos_lat
-        pos_lng: $pos_lng  
+        company: $company
       }
     ) {
       returning {
@@ -158,7 +151,7 @@ export const CREATE_YARDSALE = gql`
 //
 // Update Yardsale
 //
-export const UPDATE_YARDSALE = gql`
+export const UPDATE_YARDSALE = `
   mutation updateYardsale(
     $yardsaleUUID: uuid!
     $phone: String
@@ -196,7 +189,7 @@ export const UPDATE_YARDSALE = gql`
 //
 // Delete Yardsale
 //
-export const DELETE_YARDSALE = gql`
+export const DELETE_YARDSALE = `
   mutation deleteYardsale($yardsaleUUID: uuid!) {
     delete_yardsale(where: { uuid: { _eq: $yardsaleUUID } }) {
       returning {
@@ -209,7 +202,7 @@ export const DELETE_YARDSALE = gql`
 //
 // Transaction Item
 //
-export const CREATE_TRANSACTION_ITEM = gql`
+export const CREATE_TRANSACTION_ITEM = `
   mutation CreateTransactionItem(
     $sellerUUID: uuid
     $description: String
@@ -234,7 +227,7 @@ export const CREATE_TRANSACTION_ITEM = gql`
 //
 // Create Yardsale Seller Link
 //
-export const CREATE_YARDSALE_SELLER_LINK = gql`
+export const CREATE_YARDSALE_SELLER_LINK = `
   mutation CreateYardsaleSellerLink($sellerUUID: uuid!, $yardsaleUUID: uuid!) {
     insert_yardsale_seller_link(
       objects: { seller_uuid: $sellerUUID, yardsale_uuid: $yardsaleUUID }
@@ -249,7 +242,7 @@ export const CREATE_YARDSALE_SELLER_LINK = gql`
 //
 // Delete Yardsale Seller Link
 //
-export const DELETE_YARDSALE_SELLER_LINK = gql`
+export const DELETE_YARDSALE_SELLER_LINK = `
   mutation DeleteYardsaleSellerLink($UUID: uuid!) {
     delete_yardsale_seller_link(where: { uuid: { _eq: $UUID } }) {
       returning {
