@@ -49,8 +49,8 @@ const useForm = ({ initialValues, onSubmit, validate }: UseFormParams) => {
     const { name, value } = target;
     // event.persist();
     setValues({ ...values, [name]: value });
-    console.log("Changing...");
-    console.log(name, value);
+    // console.log("Changing...");
+    // console.log(name, value);
   };
 
   const handleBlur = (event: React.ChangeEvent<HTMLInputElement>) => {
