@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { PropsWithChildren, useEffect } from "react";
+import { FC, PropsWithChildren, useEffect } from "react";
 import {
   Button,
   Container,
@@ -14,12 +14,11 @@ import { useIsLoading } from "../../hooks/useIsLoading";
 import { ActivePage } from "../../types/General";
 import { NavBar } from "../NavBar/NavBar";
 
-
-interface Props  {
-  activePage: ActivePage
+interface Props {
+  activePage: ActivePage;
 }
 
-export const Layout = (props: PropsWithChildren<Props>) => {
+export const Layout: FC<PropsWithChildren<Props>> = (props) => {
   const { loadingState } = useIsLoading();
   const { isAuthenticated, user, loadAuthStateFromLocalStorage } = useAuth();
 
@@ -35,21 +34,21 @@ export const Layout = (props: PropsWithChildren<Props>) => {
     }
   }, []);
   return (
-    <Container>
+    <Container >
       <Segment
         raised
         loading={loadingState && loadingState.isLoading}
-        style={{ height: "100vh" }}
+        style={{ height: "100vh", overflowY: "auto" }}
         padded
+        
       >
         <div className="flex row justify-between align-center wrap">
           <div className="flex col">
-            <Link href="/" as="/">
-              <Header as="h1" textAlign="center" className="hover-pointer">
-                {" "}
+            <Header as="h1" textAlign="center" className="hover-pointer">
+              <Link href="/" as="/">
                 Yard Sale Manager
-              </Header>
-            </Link>
+              </Link>
+            </Header>
           </div>
           <div className="flex col">
             <NavBar activePage={props.activePage} />
