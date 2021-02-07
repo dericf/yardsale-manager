@@ -1,6 +1,11 @@
 import jwtDecode from "jwt-decode";
 import React, { useState, useContext, createContext } from "react";
-import { LoginResponse, RegisterResponse } from "../types/RequestResponse";
+import {
+  ConfirmResetPassword,
+  GenericResponse,
+  LoginResponse,
+  RegisterResponse,
+} from "../types/RequestResponse";
 import { useAlert } from "./useAlert";
 import { useIsLoading } from "./useIsLoading";
 import { AuthContextInterface } from "../types/Context";
@@ -18,22 +23,25 @@ const initialRegistrationFormValues = {
   confirmPassword: "",
 } as RegisterForm;
 
-export const initialAuthContextValue = {
-  isAuthenticated: null,
-  token: null,
-  refreshToken: null,
-  user: null,
-  loginForm: initialLoginFormValues,
-  registerForm: initialRegistrationFormValues,
-  formErrorMessage: null,
-  tryAuthenticateWithEmailPassword: (_, __) => {},
-  handleLoginFormChange: (_, __) => {},
-  logout: () => {},
-} as AuthContextInterface;
+const initialResetPasswordFormValues = {
+  password: "",
+  confirmPassword: "",
+} as ResetPasswordForm;
 
-export const AuthContext = createContext<AuthContextInterface>(
-  initialAuthContextValue,
-);
+// export const initialAuthContextValue = {
+//   isAuthenticated: null,
+//   token: null,
+//   refreshToken: null,
+//   user: null,
+//   loginForm: initialLoginFormValues,
+//   registerForm: initialRegistrationFormValues,
+//   formErrorMessage: null,
+//   tryAuthenticateWithEmailPassword: (_, __) => {},
+//   handleLoginFormChange: (_, __) => {},
+//   logout: () => {},
+// } as AuthContextInterface;
+
+export const AuthContext = createContext<AuthContextInterface>({} as AuthContextInterface);
 
 export default function AuthProvider({ children }) {
   const { loadingState, setLoadingState, clearLoadingState } = useIsLoading();
@@ -47,6 +55,10 @@ export default function AuthProvider({ children }) {
   const [loginForm, setLoginForm] = useState<LoginForm>(initialLoginFormValues);
   const [registerForm, setRegisterForm] = useState<RegisterForm>(
     initialRegistrationFormValues,
+  );
+
+  const [resetPasswordForm, setResetPasswordForm] = useState<ResetPasswordForm>(
+    initialResetPasswordFormValues,
   );
 
   const [formErrorMessage, setFormErrorMessage] = useState(null);
@@ -311,6 +323,56 @@ export default function AuthProvider({ children }) {
       });
 
     return returnValue;
+  };
+
+  const requestNewPassword = async () => {};
+
+  const resetUserPassword = async (
+    password,
+    confirmPassword,
+    resetCode,
+    uuid,
+  ): Promise<boolean> => {
+    let uri = `${process.env.NEXT_PUBLIC_API_SERVER_URL}/auth/complete-change-password`;
+    let data = {
+      new_password: resetPasswordForm.password,
+      confirm_new_password: resetPasswordForm.confirmPassword,
+      reset_code: resetCode,
+      uuid: uuid,
+    };
+    // let options =
+
+    try {
+      const resp = await fetch(uri, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Credentials": "true",
+        },
+        body: JSON.stringify(data),
+      });
+
+      // console.log("Login Response is: ", res)
+      const json: ConfirmResetPassword = await resp.json();
+
+      // console.log('JSON: ', json)
+      if (json.STATUS === "OK") {
+        return true;
+      } else if (json.STATUS === "ERROR") {
+        if (json.MESSAGE === "User not found") {
+          sendError("No user was found matching that email. Please try again.");
+        } else if (json.MESSAGE === "Reset code does not match") {
+          sendError("Password does not match. Please try again.");
+        } else if (json.MESSAGE === "Passwords do not match") {
+          sendError("Passwords do not match. Please try again.");
+        }
+        return false;
+      }
+    } catch (err) {
+      // console.log('ERROR', err)
+      sendError("There was a problem on our end. Please try again later.");
+      return false;
+    }
   };
 
   return (
