@@ -1,3 +1,4 @@
+import { useRouter } from "next/router";
 import React, {
   Component,
   Fragment,
@@ -13,7 +14,8 @@ interface Props {}
 
 export const YardSaleList = () => {
   // TODO: (Future) make this more responsive. Add more than just two widths
-  const { yardSales, updateYardSales } = useYardsales();
+  const { yardSales, updateYardSales, setSelectedYardSale } = useYardsales();
+  const router = useRouter()
   useEffect(() => {
     console.log("YARDSALES: ");
     console.log(yardSales);
@@ -28,16 +30,12 @@ export const YardSaleList = () => {
             fluid="true"
             compact
             style={{ border: "0px !important", width: "100%" }}
+            onClick={(e)=> {
+              setSelectedYardSale(yardSale)
+              router.push('/yardsales/edit')
+            }}
           >
-            <Card>
-              <Card.Content>
-                <Card.Header as="h3" className="mb0">
-                  {yardSale.uuid}
-                </Card.Header>
-                <Card.Meta as="h6">{yardSale.company}</Card.Meta>
-                {/* <Card.Header as="h5" className="m0"><strong>Status:</strong> {(yardSale.is_active === true) && (<Icon name="genderless" title="Active" className="active-icon" color="green"></Icon>)}{(yardSale.is_active === false) && (<Icon name="genderless" color="red" title="Inactive" className="deactivated-icon"></Icon>)}</Card.Header> */}
-              </Card.Content>
-            </Card>
+            
             <Grid>
               <Grid.Row>
                 <Grid.Column mobile={8} tablet={8} computer={10}>
