@@ -1,18 +1,13 @@
 import React, { useState, useContext, createContext } from "react";
-
-interface LoadingState {
-  isLoading: boolean;
-  text: string;
-  overlay: boolean;
-}
+import { LoadingContextInterface, LoadingState } from "../types/Context";
 
 export const initialLoadingState: LoadingState = {
   isLoading: false,
   text: "Loading",
   overlay: false,
-};
+} as LoadingState;
 
-export const LoadingContext = createContext(initialLoadingState);
+export const LoadingContext = createContext<LoadingContextInterface>(null);
 
 export default function LoadingProvider({ children }) {
   const [loadingState, setLoadingState] = useState(initialLoadingState);
@@ -23,12 +18,13 @@ export default function LoadingProvider({ children }) {
 
   return (
     <LoadingContext.Provider
-      value={{
-        loadingState,
-        setLoadingState,
-        initialLoadingState,
-        clearLoadingState,
-      }}
+      value={
+        {
+          loadingState,
+          setLoadingState,
+          clearLoadingState,
+        } as LoadingContextInterface
+      }
     >
       {children}
     </LoadingContext.Provider>
@@ -36,16 +32,6 @@ export default function LoadingProvider({ children }) {
 }
 
 export const useIsLoading = () => {
-  const {
-    loadingState,
-    setLoadingState,
-    initialLoadingState,
-    clearLoadingState,
-  } = useContext(LoadingContext);
-  return {
-    loadingState,
-    setLoadingState,
-    initialLoadingState,
-    clearLoadingState,
-  };
+  const ctx = useContext<LoadingContextInterface>(LoadingContext);
+  return ctx;
 };
