@@ -41,7 +41,7 @@ import { YardSalesInterface } from "../../types/YardSales";
 const YardsaleForm = () => {
   const { user, token } = useAuth();
   const { sendError, sendAlert } = useAlert();
-  const { createNewYardsale, selectedYardSale: yardSale, updateYardsale } = useYardsales();
+  const { createNewYardsale, selectedYardSale: yardSale, setSelectedYardSale, updateYardsale } = useYardsales();
   const router = useRouter();
   const yardsaleNameRef = useRef();
   const initialValues: FormValues = {
@@ -60,7 +60,6 @@ const YardsaleForm = () => {
   };
   const onSubmit = async (values: FormValues, errors: FormErrors) => {
     console.log("Submitting... Form..", values);
-    sendAlert("Success ! Your Yard Sale has been created.");
     let yardSaleVars = {
       name: values.name,
       phone: values.phone,
@@ -73,9 +72,12 @@ const YardsaleForm = () => {
       // Update Yard Sale by uuid
       yardSaleVars.yardsaleUUID = yardSale.uuid
       await updateYardsale(yardSaleVars);
+      sendAlert("Success ! Yard Sale was updated.");
+      setSelectedYardSale(null)
     } else {
       // Insert new Yard Sale
       await createNewYardsale(yardSaleVars);
+      sendAlert("Success ! Yard Sale was created.");
     }
 
     router.push("/yardsales");
@@ -97,6 +99,10 @@ const YardsaleForm = () => {
     initialValues,
     onSubmit,
   });
+
+  useEffect(() => {
+    if (yardsaleNameRef) yardsaleNameRef.current.focus()
+  }, [])
 
   return (
     <>
@@ -285,7 +291,7 @@ const YardsaleForm = () => {
       <Grid centered stackable>
         <Grid.Row centered>
           <Grid.Column mobile={10} tablet={8} computer={8}>
-            <Button className="cancel" fluid onClick={() => router.back()}>
+            <Button className="cancel" fluid onClick={() => router.push("/yardsales")}>
               Cancel
             </Button>
           </Grid.Column>
