@@ -1,18 +1,20 @@
+// https://hasura.io/learn/graphql/nextjs-fullstack-serverless/queries/2-create-query/
 import { useState, useContext, useEffect, createContext } from "react";
-import {GET_YARDSALES} from '../graphql/queries'
-
-
-interface YardSalesContextInterFace {
-	// TODO hook this array type up to graphql types
-  yardSales: Array;
-  selectedYardSale: string;
-  updateYardSales: () => boolean;
-}
+import { GET_YARDSALES } from "../graphql/queries";
+import { CREATE_YARDSALE } from "../graphql/mutations";
+import React from "react";
+import { useQuery } from "@apollo/client";
+import HasuraProvider, { useHasura } from "./useHasura";
+import { UseQueryResponse } from "../types/GraphQL";
+import { YardSalesContextInterFace } from "../types/Context";
+import { YardSalesInterface } from "../types/YardSales";
+import { useAuth } from "./useAuth";
+import { FormValues } from "./useForm";
 
 interface ApolloQueryReturn {
-	loading: boolean, 
-	error: any, 
-	data: [],
+  loading: boolean;
+  error: any;
+  data: [];
 }
 
 /*
@@ -20,53 +22,66 @@ gq https://localhost:8080/v1/graphql  -H "X-Hasura-Admin-Secret: D091hnLASK-1shf
 gq https://localhost:8080/v1/graphql -H "X-Hasura-Admin-Secret: D091hnLASK-1shf-1OSIHF92!1ilksdfh01" --introspect --format json > schema.json
 */
 
-export const initialYardSalesValue: YardSalesContextInterFace = {
-  yardSales: null,
-  selectedYardSale: "",
-  updateYardSales: () => true,
-};
-
 export const YardSalesContext = createContext<YardSalesContextInterFace>(
   {} as YardSalesContextInterFace,
 );
 
-import React from "react";
-import { useQuery } from "@apollo/client";
-
 export default function YardSalesProvider({ children }) {
-	const [yardSales, setYardSales] = useState(['testing', 'testing'])
-	const [selectedYardSale, setSelectedYardSale] = useState(null)
+  const { user } = useAuth();
+  const { query } = useHasura();
 
-	useEffect(() => {
-		updateYardSales()
-	}, [])
+  const [yardSales, setYardSales] = useState(
+    new Array<YardSalesInterface>(),
+  );
+  const [selectedYardSale, setSelectedYardSale] = useState(null);
+  // const { client } = useHasura();
 
-  const updateYardSales = () => {
-		// Make query to update all yardsales for this user
-		const { loading, error, data } = useQuery(GET_YARDSALES, {
-			onError: () => {
-			console.log("ERROR WITH QUERY")
-		},
-			// onCompleted: (data) => {
-			//     console.log('Sub Data: ', data)
-			// }
-			onCompleted: (d) => {
-				setYardSales(d)
-			}
-		});
-		console.log("Query...")
-		console.log(loading);
-		console.log(data);
-		console.log(error);
-		return { loading, error, data }
-	};
+  const [filter, setFilter] = useState({
+    searchText: "",
+  });
+
+  // useEffect(() => {
+  //   updateYardSales();
+  // }, []);
+
+  const updateFilterText = (newText: string) => {
+    setFilter({ ...filter, searchText: newText });
+  };
+
+  const updateYardSales = async (): Promise<UseQueryResponse> => {
+    // Make query to update all yardsales for this user
+    const data = await query(GET_YARDSALES);
+    console.log("Query...");
+    setYardSales(data.yardsale)
+    console.log(data);
+    return { data: data.yardsale, loading: false, error: false } as UseQueryResponse;
+  };
+
+  const createNewYardsale = async (yardsale) => {
+    // post to graphql -> mutation insertYardsale
+    console.log(user?.initials);
+    const responseData = await query(CREATE_YARDSALE, yardsale);
+    return responseData;
+  };
 
   return (
-    <YardSalesContext.Provider value={{yardSales, selectedYardSale, updateYardSales}}>{children}</YardSalesContext.Provider>
+    <YardSalesContext.Provider
+      value={{
+        yardSales,
+        selectedYardSale,
+        updateYardSales,
+        setYardSales,
+        updateFilterText,
+        filter,
+        createNewYardsale,
+      }}
+    >
+      {children}
+    </YardSalesContext.Provider>
   );
 }
 
 export const useYardsales = () => {
-  const {yardSales, selectedYardSale, updateYardSales} = useContext<YardSalesContextInterFace>(YardSalesContext);
-  return {yardSales, selectedYardSale, updateYardSales};
+  const ctx = useContext<YardSalesContextInterFace>(YardSalesContext);
+  return ctx;
 };
