@@ -11,6 +11,7 @@ export interface FormErrors {
 
 export interface UseFormReturn {
   values: FormValues;
+  setValues: (values: FormValues) => void,
   errors: FormErrors;
   handleChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   handleSubmit: (event: any) => void;
@@ -79,6 +80,7 @@ const useForm = ({ initialValues, onSubmit, validate }: UseFormParams) => {
 
   return {
     values,
+    setValues,
     errors,
     handleChange,
     handleSubmit,
