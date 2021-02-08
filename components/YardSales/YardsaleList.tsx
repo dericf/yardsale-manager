@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { useRouter } from "next/router";
 import React, {
   Component,
@@ -6,7 +7,7 @@ import React, {
   useEffect,
   useState,
 } from "react";
-import { Card, Icon, Divider, Grid, Header, Segment } from "semantic-ui-react";
+import { Card, Icon, Divider, Grid, Header, Segment, Button } from "semantic-ui-react";
 import { useYardsales } from "../../hooks/useYardsales";
 import { YardSalesInterface } from "../../types/YardSales";
 import { YardSaleFilterForm } from "./YardSaleFilterForm";
@@ -53,10 +54,10 @@ export const YardSaleList = () => {
             fluid="true"
             compact
             style={{ border: "0px !important", width: "100%" }}
-            onClick={(e)=> {
-              setSelectedYardSale(yardSale)
-              router.push('/yardsales/edit')
-            }}
+            // onClick={(e)=> {
+            //   setSelectedYardSale(yardSale)
+            //   router.push('/yardsales/edit')
+            // }}
           >
             
             <Grid>
@@ -127,6 +128,7 @@ export const YardSaleList = () => {
                   yardSale={yardSale}
                   setCashierActive={setCashierActive}
                 /> */}
+                <Link href="/cashier" as="/cashier"><Button primary onClick={() => {setSelectedYardSale(yardSale)}}>Cashier</Button></Link>
                 </Grid.Column>
               </Grid.Row>
             </Grid>
