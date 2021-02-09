@@ -127,6 +127,7 @@ export const ConfirmModal = ({
                   onClick={confirm}
                   content="Yes"
                   fluid
+                  primary
                 />
               </Grid.Column>
             </Grid.Row>
