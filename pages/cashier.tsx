@@ -29,11 +29,11 @@ const index = () => {
   return (
     <ProtectedComponent>
       <Head>
-        <title>Edit Yard Sale | Yard Sale Manager</title>
+        <title>Cashier | Yard Sale Manager</title>
       </Head>
       <Layout activePage="yard sales">
         <Header textAlign="center" as="h2">
-          Edit Yard Sale
+          New Transaction
         </Header>
         <CashierForm />
       </Layout>
