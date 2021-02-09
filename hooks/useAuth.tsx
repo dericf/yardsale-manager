@@ -9,6 +9,7 @@ import {
 import { useAlert } from "./useAlert";
 import { useIsLoading } from "./useIsLoading";
 import { AuthContextInterface } from "../types/Context";
+import { LoginForm, RegisterForm, ResetPasswordForm } from "../types/Forms";
 
 const initialLoginFormValues = {
   email: "",
@@ -286,7 +287,7 @@ export default function AuthProvider({ children }) {
       },
       body: JSON.stringify({ refreshToken: refreshToken }),
     } as RequestInit;
-
+    console.log("Getting a new access token");
     fetch(uri, options)
       .then((res) => res.json())
       .then((json) => {
@@ -297,9 +298,10 @@ export default function AuthProvider({ children }) {
 
           setIsAuthenticated(true);
           localStorage.setItem("accessToken", json.newToken);
-          localStorage.setItem("refreshToken", json.newRefreshToken);
           setToken(json.newToken);
-          setRefreshToken(json.newRefreshToken);
+          // Keep the same refresh token, don't reset the refresh token every time
+          // localStorage.setItem("refreshToken", json.newRefreshToken);
+          // setRefreshToken(json.newRefreshToken);
           returnValue = true;
         } else if (
           json.STATUS == "ERROR" &&
@@ -392,6 +394,8 @@ export default function AuthProvider({ children }) {
           tryRegisterUser,
           loadAuthStateFromLocalStorage,
           logout,
+          isTokenExpired,
+          refreshNewAccessToken,
         } as AuthContextInterface
       }
     >
