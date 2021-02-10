@@ -21,6 +21,7 @@ import jwtDecode from "jwt-decode";
 import { setContext } from "@apollo/client/link/context";
 import { getMainDefinition } from "@apollo/client/utilities";
 import HasuraProvider from "../hooks/useHasura";
+import SellersProvider from "../hooks/useSeller";
 
 function MyApp({ Component, pageProps }) {
   // const httpLink = createHttpLink({
@@ -81,7 +82,9 @@ function MyApp({ Component, pageProps }) {
           <AuthProvider>
             <HasuraProvider>
               <YardSalesProvider>
-                <Component {...pageProps} />
+                <SellersProvider>
+                  <Component {...pageProps} />
+                </SellersProvider>
               </YardSalesProvider>
             </HasuraProvider>
           </AuthProvider>
