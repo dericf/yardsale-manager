@@ -3,6 +3,7 @@ import { useState, useContext, useEffect, createContext } from "react";
 import {
   GET_SELLER_LINKS_FOR_YARDSALE,
   GET_TRANSACTION_ITEMS_FOR_YARDSALE,
+  GET_YARDSALE,
   GET_YARDSALES,
 } from "../graphql/queries";
 import {
@@ -50,7 +51,9 @@ export default function YardSalesProvider({ children }) {
   );
   // const { client } = useHasura();
   const [sellerLinks, setSellerLinks] = useState(new Array<YardSaleLinks>());
-  const [transactionItems, setTransactionItems] = useState(new Array<Transaction>());
+  const [transactionItems, setTransactionItems] = useState(
+    new Array<Transaction>(),
+  );
 
   const [filter, setFilter] = useState({
     searchText: "",
@@ -64,12 +67,30 @@ export default function YardSalesProvider({ children }) {
     setFilter({ ...filter, searchText: newText });
   };
 
+  const getYardSaleById = async (
+    yardSaleId: UUID,
+  ): Promise<UseQueryResponse> => {
+    if (!yardSaleId) {
+      return { data: null, loading: false, error: true };
+    }
+    const data = await query(GET_YARDSALE, {
+      yardsaleUUID: yardSaleId,
+    });
+    return {
+      data: data.yardsale,
+      loading: false,
+      error: false,
+    } as UseQueryResponse;
+  };
+
   const updateYardSales = async (): Promise<UseQueryResponse> => {
     // Make query to update all yardsales for this user
     const data = await query(GET_YARDSALES);
-    console.log("Query...");
-    setYardSales(data.yardsale);
+    console.log("Getting all yardsales...");
     console.log(data);
+    if (data.yardsale) {
+      setYardSales(data?.yardsale);
+    }
     return {
       data: data.yardsale,
       loading: false,
@@ -105,18 +126,18 @@ export default function YardSalesProvider({ children }) {
     const { data } = await query(DELETE_YARDSALE_SELLER_LINK, {
       UUID: linkId,
     });
-    
+
     return data;
   };
 
-  const getAllYardSaleSellerLinks = async (yardSaleId: UUID) => {
-    const {yardsale_seller_link: data} = await query(GET_SELLER_LINKS_FOR_YARDSALE, {
+  const getAllYardSaleSellerLinks = async (yardSaleId: UUID): Promise<any> => {
+    const data = await query(GET_SELLER_LINKS_FOR_YARDSALE, {
       yardsaleUUID: yardSaleId,
     });
     console.log("Seller Links");
     console.log(data);
-    setSellerLinks(data);
-    return data;
+    setSellerLinks(data.yardsale_seller_link);
+    return data.yardsale_seller_link;
   };
 
   const createYardSaleSellerLink = async (sellerId: UUID, yardSaleId: UUID) => {
@@ -146,28 +167,41 @@ export default function YardSalesProvider({ children }) {
    * Transactions
    */
 
-  const getAllYardSaleTransactions = async (yardSaleId: UUID) => {
-    const {yardsale_transaction: data} = await query(GET_TRANSACTION_ITEMS_FOR_YARDSALE, {
+  const getAllYardSaleTransactions = async (yardSaleId: UUID): Promise<any> => {
+    const data = await query(GET_TRANSACTION_ITEMS_FOR_YARDSALE, {
       yardsaleUUID: yardSaleId,
     });
+    console.log("\nTransactions after running query: ");
+    console.log(data);
+    setTransactionItems(data?.transaction);
+    return data?.transaction;
+  };
+
+  const createYardSaleTransaction = async (
+    yardSaleId: UUID,
+    transactionItem: Transaction,
+  ): Promise<any> => {
+    const { yardsale_transaction: data } = await query(
+      CREATE_TRANSACTION_ITEM,
+      {
+        sellerUUID: transactionItem.seller.uuid,
+        yardsaleUUID: yardSaleId,
+        price: String(transactionItem.price),
+        description: transactionItem.description,
+      },
+    );
     console.log("\nTransactions: ");
     console.log(data);
     setTransactionItems(data);
     return data;
   };
 
-  const createYardSaleTransaction = async (yardSaleId: UUID, transactionItem: Transaction) => {
-    const {yardsale_transaction: data} = await query(CREATE_TRANSACTION_ITEM, {
-      sellerUUID: transactionItem.seller.uuid,
-      yardsaleUUID: yardSaleId,
-      price: String(transactionItem.price),
-      description: transactionItem.description,
-    });
-    console.log("\nTransactions: ");
-    console.log(data);
-    setTransactionItems(data);
-    return data;
-  }
+  const clearSelectedYardSale = () => {
+    setSelectedYardSale(null);
+    setTransactionItems([]);
+    setSellerLinks([]);
+  };
+
   return (
     <YardSalesContext.Provider
       value={{
@@ -176,7 +210,9 @@ export default function YardSalesProvider({ children }) {
         sellerLinks,
         transactionItems,
         setSelectedYardSale,
+        clearSelectedYardSale,
         updateYardSales,
+        getYardSaleById,
         setYardSales,
         updateFilterText,
         filter,
@@ -187,8 +223,8 @@ export default function YardSalesProvider({ children }) {
         getAllYardSaleSellerLinks,
         createYardSaleSellerLink,
         getSellersCanBeAdded,
-        getAllYardSaleTransactions,   
-        createYardSaleTransaction,     
+        getAllYardSaleTransactions,
+        createYardSaleTransaction,
       }}
     >
       {children}
