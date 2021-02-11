@@ -1,0 +1,227 @@
+import { useRouter } from "next/router";
+import React, { Fragment, useEffect, useState } from "react";
+import {
+  Button,
+  Container,
+  Divider,
+  Grid,
+  Icon,
+  Label,
+  Modal,
+  Popup,
+  Table,
+} from "semantic-ui-react";
+import { useSellers } from "../../hooks/useSeller";
+import { useYardsales } from "../../hooks/useYardsales";
+import { SellersInterface } from "../../types/Sellers";
+import { YardSalesInterface } from "../../types/YardSales";
+import { fromMoney, toMoney } from "../../utilities/money_helpers";
+
+interface Props {
+  yardSale: YardSalesInterface;
+}
+
+export const YardSaleSellerLinksModal = ({ yardSale }) => {
+  const [open, setOpen] = useState(false);
+
+  const { sellers, updateSellers } = useSellers();
+  const router = useRouter();
+
+  const {
+    sellerLinks,
+    transactionItems,
+    getAllYardSaleTransactions,
+    getAllYardSaleSellerLinks,
+    createYardSaleSellerLink,
+    clearSelectedYardSale,
+    deleteYardSaleSellerLink,
+    getSellersCanBeAdded,
+  } = useYardsales();
+
+  const cancel = () => {
+    closeModal();
+  };
+
+  const save = () => {};
+
+  const closeModal = () => {
+    clearSelectedYardSale();
+    setOpen(false);
+  };
+
+  const openModal = () => {
+    setOpen(true);
+  };
+
+  useEffect(() => {
+    console.log("YardSale Seller Links Modal Loaded");
+    (async () => {
+      console.log("Async");
+      if (open === true && yardSale !== null) await updateSellers();
+      await getAllYardSaleSellerLinks(yardSale?.uuid);
+    })();
+  }, [open]);
+
+  return (
+    <>
+      <Popup
+        inverted
+        content="View Transactions"
+        position="top center"
+        trigger={
+          <Button
+            onClick={openModal}
+            icon="user"
+            secondary
+						basic
+            tabIndex="-1"
+            className="icon"
+          ></Button>
+        }
+      />
+      <Modal
+        open={open}
+        closeIcon={<Icon name="close" onClick={closeModal}></Icon>}
+        onClose={closeModal}
+        closeOnDimmerClick={true}
+        closeOnEscape={true}
+        dimmer="none"
+        style={{ height: "90vh", width: 500 }}
+      >
+        <Modal.Header>{`Transactions for ${yardSale.name}`}</Modal.Header>
+        <Modal.Content scrolling>
+          <Divider horizontal content="Sellers Linked to this Yardsale" />
+          <Table className="mt0" striped compact basic="very" unstackable>
+            <Table.Header>
+              <Table.Row>
+                <Table.HeaderCell width={8} textAlign="left">
+                  Seller
+                </Table.HeaderCell>
+                <Table.HeaderCell width={8} textAlign="right">
+                  Actions
+                </Table.HeaderCell>
+              </Table.Row>
+            </Table.Header>
+
+            <Table.Body>
+              <>
+                {sellerLinks?.length === 0 && (
+                  <Table.Row textAlign="center">
+                    <Table.Cell textAlign="center" colSpan="2">
+                      No Sellers for this Yardsale
+                    </Table.Cell>
+                  </Table.Row>
+                )}
+
+                {sellerLinks?.map((link, index) => (
+                  <Table.Row key={index + 10000}>
+                    <Table.Cell textAlign="left">
+                      {link.seller.name} ({link.seller.initials}){" "}
+                      {link.seller.is_deleted === true && (
+                        <strong> - *Seller Was Removed From System*</strong>
+                      )}
+                    </Table.Cell>
+                    <Table.Cell textAlign="right">
+                      <Popup
+                        inverted
+                        position="top right"
+                        content={`Remove ${link.seller.initials} From this Yardsale`}
+                        trigger={
+                          <Button
+                            icon="trash"
+                            negative
+                            basic
+                            circular
+                            onClick={async (e) => {
+                              await deleteYardSaleSellerLink(link.uuid);
+                              router.push("/yardsales/seller-links");
+                            }}
+                          />
+                        }
+                      />
+                    </Table.Cell>
+                  </Table.Row>
+                ))}
+              </>
+            </Table.Body>
+          </Table>
+          <Divider></Divider>
+          <Divider horizontal content="All Other Sellers" />
+          <Table
+            className="mt0"
+            color="orange"
+            striped
+            compact
+            basic="very"
+            unstackable
+          >
+            <Table.Header>
+              <Table.Row>
+                <Table.HeaderCell width={8} textAlign="left">
+                  Seller
+                </Table.HeaderCell>
+                <Table.HeaderCell width={8} textAlign="right">
+                  Actions
+                </Table.HeaderCell>
+              </Table.Row>
+            </Table.Header>
+
+            <Table.Body>
+              <>
+                {sellerLinks?.length === sellers?.length && (
+                  <Table.Row textAlign="center">
+                    <Table.Cell textAlign="center" colSpan="2">
+                      All sellers have been accounted for.
+                    </Table.Cell>
+                  </Table.Row>
+                )}
+
+                {sellers?.length === 0 && (
+                  <Table.Row textAlign="center">
+                    <Table.Cell textAlign="center" colSpan="2">
+                      No sellers in the system.
+                    </Table.Cell>
+                  </Table.Row>
+                )}
+
+                {getSellersCanBeAdded(sellers, sellerLinks)
+                  .filter((seller) => seller.is_deleted === false)
+                  .map((seller: SellersInterface, index) => {
+                    return (
+                      <Table.Row key={index + 1000}>
+                        <Table.Cell width={8} textAlign="left">
+                          {seller.name} ({seller.initials})
+                        </Table.Cell>
+                        <Table.Cell width={8} textAlign="right">
+                          <Popup
+                            inverted
+                            position="top right"
+                            content={`Add ${seller.initials} to this Yardsale`}
+                            trigger={
+                              <Button
+                                icon="add"
+                                basic
+                                circular
+                                primary
+                                onClick={async (e) => {
+                                  await createYardSaleSellerLink(
+                                    seller.uuid,
+                                    yardSale?.uuid,
+                                  );
+                                  router.push("/yardsales/seller-links");
+                                }}
+                              />
+                            }
+                          />
+                        </Table.Cell>
+                      </Table.Row>
+                    );
+                  })}
+              </>
+            </Table.Body>
+          </Table>
+        </Modal.Content>
+      </Modal>
+    </>
+  );
+};
