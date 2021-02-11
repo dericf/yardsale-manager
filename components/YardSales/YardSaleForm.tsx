@@ -41,9 +41,14 @@ import { YardSalesInterface } from "../../types/YardSales";
 const YardsaleForm = () => {
   const { user, token } = useAuth();
   const { sendError, sendAlert } = useAlert();
-  const { createNewYardsale, selectedYardSale: yardSale, setSelectedYardSale, updateYardsale } = useYardsales();
+  const {
+    createNewYardsale,
+    selectedYardSale: yardSale,
+    setSelectedYardSale,
+    updateYardsale,
+  } = useYardsales();
   const router = useRouter();
-  const yardsaleNameRef = useRef();
+  const yardsaleNameRef = useRef<HTMLInputElement>();
   const initialValues: FormValues = {
     name: yardSale ? yardSale.name : "",
     company: yardSale ? yardSale.company : "",
@@ -70,10 +75,10 @@ const YardsaleForm = () => {
     } as FormValues;
     if (yardSale) {
       // Update Yard Sale by uuid
-      yardSaleVars.yardsaleUUID = yardSale.uuid
+      yardSaleVars.yardsaleUUID = yardSale.uuid;
       await updateYardsale(yardSaleVars);
       sendAlert("Success ! Yard Sale was updated.");
-      setSelectedYardSale(null)
+      setSelectedYardSale(null);
     } else {
       // Insert new Yard Sale
       await createNewYardsale(yardSaleVars);
@@ -95,14 +100,25 @@ const YardsaleForm = () => {
   //   return errors;
   // };
 
+  const validate = () => {
+    let errors = {} as FormErrors;
+    if (values.name.length === 0) {
+      errors.name = "Please enter a name for this Yard Sale";
+    }
+
+    return errors;
+  }
+
   const { values, handleChange, handleSubmit } = useForm({
     initialValues,
     onSubmit,
+    validate
   });
 
   useEffect(() => {
-    if (yardsaleNameRef) yardsaleNameRef.current.focus()
-  }, [])
+    // Auto focus the first form input on first page load
+    if (yardsaleNameRef) yardsaleNameRef.current.focus();
+  }, []);
 
   return (
     <>
@@ -110,176 +126,186 @@ const YardsaleForm = () => {
         <Grid.Row className="py0">
           {/* First Grid.Row (Filters/Buttons) */}
           <Grid.Column>
-            <Form as={Grid} stackable className="p0 m0">
-              <Grid.Row className="pb0">
-                <Grid.Column>
-                  <Form.Group>
-                    <Form.Field width="8" className="mt16">
-                      <label>Yard Sale Name</label>
-                      <Input
-                        icon="tag"
-                        required
-                        iconPosition="left"
-                        ref={yardsaleNameRef}
-                        placeholder="Yard Sale Name"
-                        name="name"
-                        value={values.name}
-                        onChange={handleChange}
-                      />
-                    </Form.Field>
+            <Form
+              name="YardSaleForm"
+              className="p0 m0"
+              onSubmit={(e)=> {console.log("Submitting...")}}
+              action="POST"
+            >
+              <Grid>
+                <Grid.Row className="pb0">
+                  <Grid.Column>
+                    <Form.Group>
+                      <Form.Field width="8" className="mt16">
+                        <label>Yard Sale Name</label>
+                        <Input
+                          icon="tag"
+                          required
+                          iconPosition="left"
+                          ref={yardsaleNameRef}
+                          placeholder="Yard Sale Name"
+                          name="name"
+                          id="name"
+                          value={values.name}
+                          form="YardSaleForm"
+                          onChange={handleChange}
+                        />
+                      </Form.Field>
 
-                    <Form.Field width="8" className="mt16">
-                      <label>Company</label>
-                      <Input
-                        icon="building"
-                        iconPosition="left"
-                        placeholder="Company"
-                        name="company"
-                        value={values.company}
-                        onChange={handleChange}
-                      />
-                    </Form.Field>
-                  </Form.Group>
-                </Grid.Column>
-              </Grid.Row>
+                      <Form.Field width="8" className="mt16">
+                        <label>Company</label>
+                        <Input
+                          icon="building"
+                          iconPosition="left"
+                          placeholder="Company"
+                          name="company"
+                          id="company"
+                          value={values.company}
+                          onChange={handleChange}
+                        />
+                      </Form.Field>
+                    </Form.Group>
+                  </Grid.Column>
+                </Grid.Row>
 
-              <Grid.Row className="pt0 pb0">
-                <Grid.Column>
-                  <Form.Group widths="equal">
-                    <Form.Field className="mt16">
-                      <label>Phone</label>
-                      <Input
-                        icon="phone"
-                        iconPosition="left"
-                        placeholder="Phone"
-                        type="tel"
-                        name="phone"
-                        value={values.phone}
-                        onChange={handleChange}
-                      />
-                    </Form.Field>
+                <Grid.Row className="pt0 pb0">
+                  <Grid.Column>
+                    <Form.Group widths="equal">
+                      <Form.Field className="mt16">
+                        <label>Phone</label>
+                        <Input
+                          icon="phone"
+                          iconPosition="left"
+                          placeholder="Phone"
+                          type="tel"
+                          name="phone"
+                          value={values.phone}
+                          onChange={handleChange}
+                        />
+                      </Form.Field>
 
-                    <Form.Field className="mt16">
-                      <label>Email</label>
-                      <Input
-                        icon="envelope"
-                        iconPosition="left"
-                        placeholder="Email"
-                        type="email"
-                        name="email"
-                        value={values.email}
-                        onChange={handleChange}
-                      />
-                    </Form.Field>
-                  </Form.Group>
-                </Grid.Column>
-              </Grid.Row>
+                      <Form.Field className="mt16">
+                        <label>Email</label>
+                        <Input
+                          icon="envelope"
+                          iconPosition="left"
+                          placeholder="Email"
+                          type="email"
+                          name="email"
+                          value={values.email}
+                          onChange={handleChange}
+                        />
+                      </Form.Field>
+                    </Form.Group>
+                  </Grid.Column>
+                </Grid.Row>
 
-              {/* Address Form */}
-              <Grid.Row className="pb0">
-                <Grid.Column>
-                  <Form.Group>
-                    <Form.Field width="8" className="mt16">
-                      <label>Street Address</label>
-                      <Input
-                        icon="address card"
-                        iconPosition="left"
-                        placeholder="Street 1"
-                        name="street1"
-                        type="text"
-                        fluid
-                        value={values.street1 || ""}
-                        onChange={handleChange}
-                      />
-                    </Form.Field>
+                {/* Address Form */}
+                <Grid.Row className="pb0">
+                  <Grid.Column>
+                    <Form.Group>
+                      <Form.Field width="8" className="mt16">
+                        <label>Street Address</label>
+                        <Input
+                          icon="address card"
+                          iconPosition="left"
+                          placeholder="Street 1"
+                          name="street1"
+                          type="text"
+                          fluid
+                          value={values.street1 || ""}
+                          onChange={handleChange}
+                        />
+                      </Form.Field>
 
-                    <Form.Field width="8" className="mt16">
-                      <label>Street Address Line 2</label>
-                      <Input
-                        icon="address card"
-                        iconPosition="left"
-                        fluid
-                        type="text"
-                        placeholder="Street 2"
-                        name="street2"
-                        value={values.street2 || ""}
-                        onChange={handleChange}
-                      />
-                    </Form.Field>
-                  </Form.Group>
-                </Grid.Column>
-              </Grid.Row>
+                      <Form.Field width="8" className="mt16">
+                        <label>Street Address Line 2</label>
+                        <Input
+                          icon="address card"
+                          iconPosition="left"
+                          fluid
+                          type="text"
+                          placeholder="Street 2"
+                          name="street2"
+                          value={values.street2 || ""}
+                          onChange={handleChange}
+                        />
+                      </Form.Field>
+                    </Form.Group>
+                  </Grid.Column>
+                </Grid.Row>
 
-              <Grid.Row className="pb0">
-                <Grid.Column>
-                  <Form.Group>
-                    <Form.Field width="8" className="mt16">
-                      <label>Country</label>
-                      <Input
-                        icon="address card"
-                        iconPosition="left"
-                        placeholder="Country"
-                        name="country"
-                        type="text"
-                        fluid
-                        value={values.country || ""}
-                        onChange={handleChange}
-                      />
-                    </Form.Field>
+                <Grid.Row className="pb0">
+                  <Grid.Column>
+                    <Form.Group>
+                      <Form.Field width="8" className="mt16">
+                        <label>Country</label>
+                        <Input
+                          icon="address card"
+                          iconPosition="left"
+                          placeholder="Country"
+                          name="country"
+                          type="text"
+                          fluid
+                          value={values.country || ""}
+                          onChange={handleChange}
+                        />
+                      </Form.Field>
 
-                    <Form.Field width="8" className="mt16">
-                      <label>Province/State</label>
-                      <Input
-                        icon="address card"
-                        iconPosition="left"
-                        fluid
-                        type="text"
-                        placeholder="Province/State"
-                        name="province"
-                        value={values.province || ""}
-                        onChange={handleChange}
-                      />
-                    </Form.Field>
-                  </Form.Group>
-                </Grid.Column>
-              </Grid.Row>
+                      <Form.Field width="8" className="mt16">
+                        <label>Province/State</label>
+                        <Input
+                          icon="address card"
+                          iconPosition="left"
+                          fluid
+                          type="text"
+                          placeholder="Province/State"
+                          name="province"
+                          value={values.province || ""}
+                          onChange={handleChange}
+                        />
+                      </Form.Field>
+                    </Form.Group>
+                  </Grid.Column>
+                </Grid.Row>
 
-              <Grid.Row className="pb0">
-                <Grid.Column>
-                  <Form.Group>
-                    <Form.Field width="8" className="mt16">
-                      <label>City</label>
-                      <Input
-                        icon="address card"
-                        iconPosition="left"
-                        placeholder="City"
-                        name="city"
-                        type="text"
-                        fluid
-                        value={values.city || ""}
-                        onChange={handleChange}
-                      />
-                    </Form.Field>
+                <Grid.Row className="pb0">
+                  <Grid.Column>
+                    <Form.Group>
+                      <Form.Field width="8" className="mt16">
+                        <label>City</label>
+                        <Input
+                          icon="address card"
+                          iconPosition="left"
+                          placeholder="City"
+                          name="city"
+                          type="text"
+                          fluid
+                          value={values.city || ""}
+                          onChange={handleChange}
+                        />
+                      </Form.Field>
 
-                    <Form.Field width="8" className="mt16">
-                      <label>Postal/Zip Code</label>
-                      <Input
-                        icon="address card"
-                        iconPosition="left"
-                        fluid
-                        type="text"
-                        placeholder="Postal/Zip"
-                        name="postal"
-                        value={values.postal || ""}
-                        onChange={handleChange}
-                      />
-                    </Form.Field>
-                  </Form.Group>
-                </Grid.Column>
-              </Grid.Row>
-              {/* End Address Form */}
+                      <Form.Field width="8" className="mt16">
+                        <label>Postal/Zip Code</label>
+                        <Input
+                          icon="address card"
+                          iconPosition="left"
+                          fluid
+                          type="text"
+                          placeholder="Postal/Zip"
+                          name="postal"
+                          value={values.postal || ""}
+                          onChange={handleChange}
+                        />
+                      </Form.Field>
+                    </Form.Group>
+                  </Grid.Column>
+                </Grid.Row>
+                {/* End Address Form */}
 
-              <Grid.Row></Grid.Row>
+                <Grid.Row></Grid.Row>
+              </Grid>
             </Form>
           </Grid.Column>
         </Grid.Row>
@@ -288,16 +314,22 @@ const YardsaleForm = () => {
         {/* {loading && <Loading />} */}
       </Grid>
 
-      <Grid centered stackable>
+      <Grid centered>
         <Grid.Row centered>
           <Grid.Column mobile={10} tablet={8} computer={8}>
-            <Button className="cancel" fluid onClick={() => router.push("/yardsales")}>
+            <Button
+              className="cancel"
+              basic
+              fluid
+              onClick={() => router.push("/yardsales")}
+            >
               Cancel
             </Button>
           </Grid.Column>
           <Grid.Column mobile={10} tablet={8} computer={8}>
             <Button
               fluid
+              primary
               className="save"
               onClick={handleSubmit}
               content={yardSale ? "Save Changes" : "Create Yard Sale"}
