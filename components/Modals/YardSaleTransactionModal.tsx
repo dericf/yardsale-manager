@@ -12,18 +12,20 @@ import {
 import { useYardsales } from "../../hooks/useYardsales";
 import { YardSalesInterface } from "../../types/YardSales";
 import { fromMoney, toMoney } from "../../utilities/money_helpers";
+import { TransactionTable } from "../Tables/TransactionTable";
 
 interface Props {
-  yardSale: YardSalesInterface
+  yardSale: YardSalesInterface;
 }
 
-export const YardSaleTransactionModal = ({ yardSale}) => {
+export const YardSaleTransactionModal = ({ yardSale }: Props) => {
   const {
     sellerLinks,
     transactionItems,
     getAllYardSaleTransactions,
     getAllYardSaleSellerLinks,
-    clearSelectedYardSale
+    clearSelectedYardSale,
+    deleteTransactionItem,
   } = useYardsales();
   const [open, setOpen] = useState(false);
 
@@ -34,7 +36,7 @@ export const YardSaleTransactionModal = ({ yardSale}) => {
   const save = () => {};
 
   const closeModal = () => {
-    clearSelectedYardSale()
+    clearSelectedYardSale();
     setOpen(false);
   };
 
@@ -43,12 +45,13 @@ export const YardSaleTransactionModal = ({ yardSale}) => {
   };
 
   useEffect(() => {
-		console.log("Modal Loaded");
+    console.log("Modal Loaded");
     (async () => {
-			console.log("Async");
-      if (open === true && yardSale !== null)
+      console.log("Async");
+      if (open === true && yardSale !== null) {
         await getAllYardSaleTransactions(yardSale.uuid);
         await getAllYardSaleSellerLinks(yardSale.uuid);
+      }
     })();
   }, [open]);
 
@@ -56,13 +59,15 @@ export const YardSaleTransactionModal = ({ yardSale}) => {
     <>
       <Popup
         inverted
-        content="View Transactions"
+        content="Transaction History"
         position="top center"
         trigger={
           <Button
             onClick={openModal}
             icon="dollar"
+            secondary
             basic
+            circular
             tabIndex="-1"
             className="icon list-action-icon"
           ></Button>
@@ -80,160 +85,103 @@ export const YardSaleTransactionModal = ({ yardSale}) => {
       >
         <Modal.Header>{`Transactions for ${yardSale.name}`}</Modal.Header>
         {transactionItems && (
-					<Modal.Content style={{ maxHeight: "78vh", overflowY: "auto" }}>
-          <Divider horizontal content="Seller Summary" className="mt0" />
-          {sellerLinks && (
-            <Fragment>
-              <Table
-                style={{
-                  maxWidth: 275,
-                  marginLeft: "auto",
-                  marginRight: "auto",
-                }}
-                className="mt0"
-                striped
-                compact
-                basic="very"
-                unstackable
-              >
-                <Table.Header>
-                  <Table.Row>
-                    <Table.HeaderCell textAlign="left">Seller</Table.HeaderCell>
-                    <Table.HeaderCell textAlign="center">
-                      Total Sales
-                    </Table.HeaderCell>
-                  </Table.Row>
-                </Table.Header>
+          <Modal.Content style={{ maxHeight: "78vh", overflowY: "auto" }}>
+            <Divider horizontal content="Seller Summary" className="mt0" />
+            {sellerLinks && (
+              <Fragment>
+                <Table
+                  style={{
+                    maxWidth: 275,
+                    marginLeft: "auto",
+                    marginRight: "auto",
+                  }}
+                  className="mt0"
+                  striped
+                  compact
+                  basic="very"
+                  unstackable
+                >
+                  <Table.Header>
+                    <Table.Row>
+                      <Table.HeaderCell textAlign="left">
+                        Seller
+                      </Table.HeaderCell>
+                      <Table.HeaderCell textAlign="center">
+                        Total Sales
+                      </Table.HeaderCell>
+                    </Table.Row>
+                  </Table.Header>
 
-                <Table.Body>
-                  <Fragment>
-                    {sellerLinks?.map((link) => {
-                      return (
-                        <Table.Row key={link.uuid}>
-                          <Table.Cell textAlign="left">
-                            {link.seller.name} ({link.seller.initials}){" "}
-                            {link.seller.is_deleted === true && (
-                              <strong> - *Seller Removed*</strong>
-                            )}
-                          </Table.Cell>
-                          <Table.Cell textAlign="right">
-                            ${" "}
-                            {toMoney(
-                              link.seller.transactions.reduce(
-                                (accum, currentItem) =>
-                                  Number(accum) +
-                                  Number(fromMoney(currentItem.price)),
-                                0,
-                              ),
-                            )}
-                          </Table.Cell>
-                        </Table.Row>
-                      );
-                    })}
+                  <Table.Body>
+                    <Fragment>
+                      {sellerLinks?.map((link) => {
+                        return (
+                          <Table.Row key={link.uuid}>
+                            <Table.Cell textAlign="left">
+                              {link.seller.name} ({link.seller.initials}){" "}
+                              {link.seller.is_deleted === true && (
+                                <strong> - *Seller Removed*</strong>
+                              )}
+                            </Table.Cell>
+                            <Table.Cell textAlign="right">
+                              ${" "}
+                              {toMoney(
+                                link.seller.transactions.reduce(
+                                  (accum, currentItem) =>
+                                    Number(accum) +
+                                    Number(fromMoney(currentItem.price)),
+                                  0,
+                                ),
+                              )}
+                            </Table.Cell>
+                          </Table.Row>
+                        );
+                      })}
 
-                    {sellerLinks?.length === 0 && (
-                      <Table.Row>
-                        <Table.Cell textAlign="left" colSpan={2}>
-                          No transactions
-                        </Table.Cell>
-                      </Table.Row>
-                    )}
-                  </Fragment>
-                </Table.Body>
-              </Table>
-              {transactionItems && transactionItems.length > 0 && (
-                <Container textAlign="center">
-                  <Label
-                    style={{ width: 275 }}
-                    size="large"
-                    content={`Grand Total: $ ${toMoney(
-                      transactionItems.reduce(
-                        (accum, currentItem) =>
-                          Number(accum) + Number(fromMoney(currentItem.price)),
-                        0,
-                      ),
-                    )}`}
-                  />
-
-                  {transactionItems?.length == 0 && (
-                    <Label size="large" content={`Grand Total: $ 0.00`} />
-                  )}
-                </Container>
-              )}
-            </Fragment>
-          )}
-
-          <Divider></Divider>
-          <Divider horizontal content="All Transaction Items" />
-
-          {transactionItems && (
-            <Fragment>
-              <Table
-                className="mt0"
-                striped
-                compact
-                basic="very"
-                unstackable
-                style={{
-                  marginLeft: "auto",
-                  marginRight: "auto",
-                  maxWidth: "600px   ",
-                }}
-              >
-                <Table.Header>
-                  <Table.Row>
-                    <Table.HeaderCell textAlign="left" style={{ width: 200 }}>
-                      Seller
-                    </Table.HeaderCell>
-                    <Table.HeaderCell textAlign="left">
-                      Description
-                    </Table.HeaderCell>
-                    <Table.HeaderCell textAlign="center" style={{ width: 140 }}>
-                      Price
-                    </Table.HeaderCell>
-                  </Table.Row>
-                </Table.Header>
-
-                <Table.Body>
-                  <Fragment>
-                    {/* <Highlight >
-                                                {JSON.stringify(invoice, null, 2)}
-                                            </Highlight> */}
-
-                    {transactionItems?.length === 0 && (
-                      <Table.Row textAlign="center">
-                        <Table.Cell textAlign="center" colSpan="5">
-                          No Transactions for this Yardsale
-                        </Table.Cell>
-                      </Table.Row>
-                    )}
-
-                    {transactionItems?.map((item) => {
-                      return (
-                        <Table.Row key={item.uuid}>
-                          <Table.Cell textAlign="left">
-                            {item.seller.name} ({item.seller.initials}){" "}
-                            {item.seller.is_deleted === true && (
-                              <strong> - *Seller Removed*</strong>
-                            )}
-                          </Table.Cell>
-                          <Table.Cell textAlign="left">
-                            {item.description}
-                          </Table.Cell>
-                          <Table.Cell textAlign="right">
-                            $ {toMoney(item.price)}
+                      {sellerLinks?.length === 0 && (
+                        <Table.Row>
+                          <Table.Cell textAlign="left" colSpan={2}>
+                            No transactions
                           </Table.Cell>
                         </Table.Row>
-                      );
-                    })}
-                  </Fragment>
-                </Table.Body>
-              </Table>
-            </Fragment>
-          )}
-          <Divider></Divider>
-        </Modal.Content>
-				)}
+                      )}
+                    </Fragment>
+                  </Table.Body>
+                </Table>
+                {transactionItems && transactionItems.length > 0 && (
+                  <Container textAlign="center">
+                    <Label
+                      style={{ width: 275 }}
+                      size="large"
+                      content={`Grand Total: $ ${toMoney(
+                        transactionItems.reduce(
+                          (accum, currentItem) =>
+                            Number(accum) +
+                            Number(fromMoney(currentItem.price)),
+                          0,
+                        ),
+                      )}`}
+                    />
+
+                    {transactionItems?.length == 0 && (
+                      <Label size="large" content={`Grand Total: $ 0.00`} />
+                    )}
+                  </Container>
+                )}
+              </Fragment>
+            )}
+
+            <Divider></Divider>
+            <Divider horizontal content="All Transaction Items" />
+
+            {transactionItems && (
+              <Fragment>
+                <TransactionTable yardSale={yardSale}></TransactionTable>
+              </Fragment>
+            )}
+            <Divider></Divider>
+          </Modal.Content>
+        )}
 
         {/* <Modal.Actions>
           <Grid centered>
