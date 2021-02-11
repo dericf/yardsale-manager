@@ -39,6 +39,7 @@ import { YardSalesInterface } from "../../types/YardSales";
 import { toMoney, fromMoney } from "../../utilities/money_helpers";
 
 import { ConfirmModal } from "../ConfirmModal";
+import { YardSaleSellerLinksModal } from "../Modals/YardSaleSellerLinksModal";
 
 interface Props {
   yardSale: YardSalesInterface;
@@ -79,22 +80,18 @@ export const CashierForm = ({ yardSale }: Props) => {
   } = useForm({ initialValues, onSubmit });
 
   useEffect(() => {
-    
-
     // Auto Focus on the first input field for better UX
     if (focusRef) {
       focusRef?.current.focus();
       focusRef?.current.select();
     }
-
-
   }, []);
 
   const cancel = () => {
     setFormValues(initialValues);
     setTransactionItems([]);
-    setSelectedYardSale(null)
-    router.push('/yardsales')
+    setSelectedYardSale(null);
+    router.push("/yardsales");
   };
 
   const resetModal = () => {
@@ -127,7 +124,7 @@ export const CashierForm = ({ yardSale }: Props) => {
     resetModal();
     setTransactionItems([]);
     setFormValues(initialValues);
-    setSelectedYardSale(null)
+    setSelectedYardSale(null);
     router.push("/yardsales");
   };
 
@@ -274,18 +271,10 @@ export const CashierForm = ({ yardSale }: Props) => {
                         )}
                       </Form.Field>
 
-                      <Form.Field width={1} inline>
-                        {/* <YardsaleSellerModal
-                            yardsale={yardSale}
-                            caller="cashierModal"
-                            fluidButton={false}
-                            invertedButton={false}
-                          />
-
-                          <YardsaleTransactionsModal
-                            yardsale={yardSale}
-                            iconLabel={null}
-                          /> */}
+                      <Form.Field>
+                        <div className="flex row align-center" style={{height: "100%"}}>
+                          <YardSaleSellerLinksModal yardSale={yardSale} />
+                        </div>
                       </Form.Field>
                     </Form.Group>
                   </Grid.Column>
