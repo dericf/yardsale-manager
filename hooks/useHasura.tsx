@@ -17,6 +17,7 @@ import { getMainDefinition } from "@apollo/client/utilities";
 import { setContext } from "apollo-link-context";
 import { RequestOptions } from "https";
 import { FormValues } from "./useForm";
+import { useAuth } from "./useAuth";
 
 export const HasuraContext = createContext<HasuraContextInterface>(
   {} as HasuraContextInterface,
@@ -28,6 +29,7 @@ interface GraphQlRequestBody {
 
 export default function HasuraProvider({ children }) {
   const [context, setContext] = useState();
+  const { isTokenExpired, refreshNewAccessToken, refreshToken } = useAuth();
 
   const query = async (q: string, variables?: any) => {
     let token = localStorage?.getItem("accessToken");
@@ -55,10 +57,21 @@ export default function HasuraProvider({ children }) {
       );
       let { data } = await response.json();
       console.log("Data: ", data.data);
+      if (data.errors) {
+        console.log(data.errors);
+        // if (data?.errors[0]?.message.includes("JWTExpired")) {
+        //   console.log("JWT Was Expired...");
+        // }
+
+      }
       return data;
     } catch (error) {
       console.log("Error with query");
       console.log(error);
+      if (await isTokenExpired(token)) {
+        console.log("Token was expired when we tried to query hasura");
+        await refreshNewAccessToken(refreshToken);
+      }
     }
   };
 
@@ -66,7 +79,7 @@ export default function HasuraProvider({ children }) {
     let token = localStorage?.getItem("accessToken");
     let jwt = jwtDecode(token);
     let requestBody = {
-      mutation: m,
+      query: m,
     } as FormValues;
     if (variables) requestBody.variables = variables;
     let fetchOptions = {
@@ -85,11 +98,17 @@ export default function HasuraProvider({ children }) {
         fetchOptions,
       );
       let data = await response.json();
-      console.log("Data: ", data);
+      if (data?.errors[0]?.message.includes("JWTExpired")) {
+        console.log("JWT Was Expired...");
+      }
       return data;
     } catch (error) {
       console.log("Error with query");
       console.log(error);
+      if (await isTokenExpired(token)) {
+        console.log("Token was expired when we tried to query hasura");
+        await refreshNewAccessToken(refreshToken);
+      }
     }
   };
 
