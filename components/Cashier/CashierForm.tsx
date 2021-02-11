@@ -1,3 +1,4 @@
+import { useRouter } from "next/router";
 import React, {
   Fragment,
   useState,
@@ -33,11 +34,17 @@ import {
 import { useAlert } from "../../hooks/useAlert";
 import useForm from "../../hooks/useForm";
 import { useYardsales } from "../../hooks/useYardsales";
+import { Transaction } from "../../types/Transaction";
+import { YardSalesInterface } from "../../types/YardSales";
 import { toMoney, fromMoney } from "../../utilities/money_helpers";
 
 import { ConfirmModal } from "../ConfirmModal";
 
-export const CashierForm = () => {
+interface Props {
+  yardSale: YardSalesInterface;
+}
+
+export const CashierForm = ({ yardSale }: Props) => {
   const initialValues = {
     seller: {
       uuid: "123123123",
@@ -51,28 +58,43 @@ export const CashierForm = () => {
   const [changeDue, setChangeDue] = useState("0");
   const [sellers, setSellers] = useState(null);
   const focusRef = useRef<Input>();
-
+  const router = useRouter();
   const onSubmit = () => {
     console.log("Submitted");
     sendAlert("Submitted");
   };
-  const { selectedYardSale } = useYardsales();
+  const {
+    sellerLinks,
+    transactionItems: historicalTransactionItems,
+    getAllYardSaleSellerLinks,
+    createYardSaleTransaction,
+    getAllYardSaleTransactions,
+    setSelectedYardSale,
+  } = useYardsales();
   const {
     values: formValues,
     setValues: setFormValues,
     handleChange,
     handleSubmit,
   } = useForm({ initialValues, onSubmit });
+
   useEffect(() => {
+    
+
+    // Auto Focus on the first input field for better UX
     if (focusRef) {
       focusRef?.current.focus();
       focusRef?.current.select();
     }
-  }, [open]);
+
+
+  }, []);
 
   const cancel = () => {
     setFormValues(initialValues);
     setTransactionItems([]);
+    setSelectedYardSale(null)
+    router.push('/yardsales')
   };
 
   const resetModal = () => {
@@ -80,66 +102,48 @@ export const CashierForm = () => {
     setFormValues(initialValues);
   };
 
-  const postTransaction = () => {
-    transactionItems.forEach((item) => {
-      // createTransactionItemMutation({
-      //   variables: {
-      //     sellerUUID: item.seller.uuid,
-      //     yardsaleUUID: yardsale.uuid,
-      //     price: String(item.price),
-      //     description: item.description,
-      //   },
-      //   refetchQueries: [
-      //     {
-      //       query: GET_TRANSACTION_ITEMS_FOR_YARDSALE,
-      //       variables: { yardsaleUUID: yardsale.uuid },
-      //     },
-      //     {
-      //       query: GET_SELLER_LINKS_FOR_YARDSALE,
-      //       variables: { yardsaleUUID: yardsale.uuid },
-      //     },
-      //   ],
-      //   awaitRefetchQueries: true,
-      // });
+  const postTransaction = async () => {
+    transactionItems.forEach(async (item: Transaction) => {
+      await createYardSaleTransaction(yardSale.uuid, item);
     });
   };
   const { sendAlert, sendError, sendInfo } = useAlert();
-  const save = () => {
-    // console.log('Full Transaction: ', transactionItems)
-    postTransaction();
-    sendAlert("Transaction has been saved.");
-  };
 
-  const saveAndNew = () => {
+  const save = async () => {
     // console.log('Full Transaction: ', transactionItems)
-    postTransaction();
+    await postTransaction();
     sendAlert("Transaction has been saved.");
     resetModal();
     setTransactionItems([]);
     setFormValues(initialValues);
+    await getAllYardSaleTransactions(yardSale.uuid);
+    focusRef.current.focus();
+  };
+
+  const saveAndClose = async () => {
+    // console.log('Full Transaction: ', transactionItems)
+    await postTransaction();
+    sendAlert("Transaction has been saved.");
+    resetModal();
+    setTransactionItems([]);
+    setFormValues(initialValues);
+    setSelectedYardSale(null)
+    router.push("/yardsales");
   };
 
   const addItem = () => {
-    setTransactionItems(
-      transactionItems.concat([
-        {
-          seller: {
-            uuid: formValues.seller.uuid,
-            name: formValues.seller.name,
-          },
-          price: fromMoney(formValues.price),
-          description: formValues.description,
+    setTransactionItems([
+      ...transactionItems,
+      {
+        seller: {
+          uuid: formValues.seller.uuid,
+          name: formValues.seller.name,
         },
-      ]),
-    );
-    setFormValues({
-      description: "",
-      price: "",
-      seller: {
-        uuid: formValues.seller.uuid,
-        name: formValues.seller.name,
+        price: fromMoney(formValues.price),
+        description: formValues.description,
       },
-    });
+    ]),
+      setFormValues({ ...formValues, description: "", price: "" });
     focusRef.current.focus();
     focusRef.current.select();
   };
@@ -215,12 +219,12 @@ export const CashierForm = () => {
                           }
                         />
                       </Form.Field>
-                      {/* {JSON.stringify(selectedYardSale)} */}
+                      {/* {JSON.stringify(yardSale)} */}
                       <Form.Field width="8">
                         <label>Select a Seller</label>
-                        {sellers && sellers.yardsale_seller_link && (
+                        {sellerLinks && (
                           <Fragment>
-                            {sellers.yardsale_seller_link.length === 0 ? (
+                            {sellerLinks.length === 0 ? (
                               <span>Add Sellers to this yardsale</span>
                             ) : (
                               <Dropdown
@@ -238,7 +242,7 @@ export const CashierForm = () => {
                                 button
                                 selectOnBlur={true}
                                 selectOnNavigation={true}
-                                options={sellers.yardsale_seller_link
+                                options={sellerLinks
                                   .filter(
                                     (link) =>
                                       link.seller.is_active === true &&
@@ -255,8 +259,8 @@ export const CashierForm = () => {
                                 onChange={(e, { value }) => {
                                   // console.log('DROPDOWN Value: ', value.split("|"))
                                   // console.log('DROPDOWN TEXT: ', e.target.textContent)
-                                  value = String(value)
-																	setFormValues({
+                                  value = String(value);
+                                  setFormValues({
                                     ...formValues,
                                     seller: {
                                       uuid: value.split("|")[0],
@@ -272,14 +276,14 @@ export const CashierForm = () => {
 
                       <Form.Field width={1} inline>
                         {/* <YardsaleSellerModal
-                            yardsale={selectedYardSale}
+                            yardsale={yardSale}
                             caller="cashierModal"
                             fluidButton={false}
                             invertedButton={false}
                           />
 
                           <YardsaleTransactionsModal
-                            yardsale={selectedYardSale}
+                            yardsale={yardSale}
                             iconLabel={null}
                           /> */}
                       </Form.Field>
@@ -311,8 +315,7 @@ export const CashierForm = () => {
                       icon="check"
                       content="Add"
                       className="save"
-                      color="blue"
-                      basic
+                      color="grey"
                       onClick={addItem}
                       disabled={
                         formValues.price == null ||
@@ -359,9 +362,9 @@ export const CashierForm = () => {
                           </Table.Row>
                         )}
 
-                        {transactionItems.map((item, index) => {
+                        {transactionItems.map((item: Transaction, index) => {
                           return (
-                            <Table.Row key={item.key}>
+                            <Table.Row key={item.uuid}>
                               <Table.Cell textAlign="center">
                                 {index + 1}
                               </Table.Cell>
@@ -399,15 +402,15 @@ export const CashierForm = () => {
                                     size="small"
                                     position="top center"
                                     inverted
-                                    key={item.id}
+                                    key={item.uuid}
                                     trigger={
                                       <Button
-                                        key={`${item.id}-`}
+                                        key={`${item.uuid}-`}
                                         icon="trash"
                                         basic
                                         compact
                                         onClick={() =>
-                                          removeTransactionItem(item.id)
+                                          removeTransactionItem(item.uuid)
                                         }
                                       />
                                     }
@@ -539,67 +542,54 @@ export const CashierForm = () => {
         </Grid>
 
         <Grid stackable centered>
-          <Grid.Row columns={2} centered>
-            <Grid.Column
-              className="mobile-my8"
-              mobile={10}
-              tablet={8}
-              computer={8}
-            >
-              <ConfirmModal
-                triggerType={"button"}
-                buttonProps={{
-                  content: "Cancel",
-                  fluid: true,
-                  className: "cancel",
-                }}
-                header={"Confirm"}
-                content={"Are you sure you want to cancel this transaction?"}
-                handleConfirm={() => cancel()}
-                handleCancel={() => null}
-              />
+          <Grid.Row columns={3} centered>
+            <Grid.Column mobile={10} tablet={5} computer={5}>
+              {transactionItems.length === 0 ? (
+                <Button fluid basic onClick={cancel}>
+                  Close
+                </Button>
+              ) : (
+                <ConfirmModal
+                  triggerType={"button"}
+                  buttonProps={{
+                    content: "Close",
+                    fluid: true,
+                    className: "cancel",
+                    basic: true,
+                  }}
+                  header={"Discard Pending Items?"}
+                  content={
+                    "Are you sure you want to close this transaction? Any pending items will be discarded."
+                  }
+                  handleConfirm={() => cancel()}
+                  handleCancel={() => null}
+                />
+              )}
             </Grid.Column>
 
-            <Grid.Column
-              className="mobile-my8"
-              mobile={10}
-              tablet={8}
-              computer={8}
-            >
-              <ButtonGroup style={{ paddingRight: 38 }} fluid>
-                <Button
-                  onClick={save}
-                  content="Save Transaction"
-                  disabled={transactionItems.length == 0}
-                  fluid
-                  primary
-                  className="save"
-                />
-                <Popup
-                  size="small"
-                  position="top right"
-                  inverted
-                  content="Save Transaction and Start a new one"
-                  trigger={
-                    <Button
-                      onClick={saveAndNew}
-                      basic
-                      color="blue"
-                      icon="add"
-                      style={{ maxWidth: 38 }}
-                      disabled={transactionItems.length == 0}
-                    />
-                  }
-                ></Popup>
-                {/* <Notifications show={true} message="Testing Messages"  /> */}
-              </ButtonGroup>
+            <Grid.Column mobile={10} tablet={5} computer={5}>
+              <Button
+                onClick={saveAndClose}
+                content="Save and Close"
+                disabled={transactionItems.length == 0}
+                fluid
+                primary
+                basic
+                className="save"
+              />
+            </Grid.Column>
+            <Grid.Column mobile={10} tablet={5} computer={5}>
+              <Button
+                onClick={save}
+                content="Save"
+                disabled={transactionItems.length == 0}
+                fluid
+                primary
+                className="save"
+              />
             </Grid.Column>
           </Grid.Row>
         </Grid>
-      </Segment>
-
-      <Segment>
-        <Header as="h2">Transaction History</Header>
       </Segment>
     </>
   );
