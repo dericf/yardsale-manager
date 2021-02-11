@@ -9,8 +9,11 @@ import {
   Label,
   Modal,
   Popup,
+  Segment,
   Table,
 } from "semantic-ui-react";
+import { useAlert } from "../../hooks/useAlert";
+import { useIsLoading } from "../../hooks/useIsLoading";
 import { useSellers } from "../../hooks/useSeller";
 import { useYardsales } from "../../hooks/useYardsales";
 import { SellersInterface } from "../../types/Sellers";
@@ -19,11 +22,12 @@ import { fromMoney, toMoney } from "../../utilities/money_helpers";
 
 interface Props {
   yardSale: YardSalesInterface;
+  openOnLoad?: boolean;
 }
 
-export const YardSaleSellerLinksModal = ({ yardSale }) => {
-  const [open, setOpen] = useState(false);
-
+export const YardSaleSellerLinksModal = ({ yardSale, openOnLoad = false }: Props) => {
+  const [open, setOpen] = useState(openOnLoad);
+  const { sendError, sendAlert } = useAlert();
   const { sellers, updateSellers } = useSellers();
   const router = useRouter();
 
@@ -33,10 +37,11 @@ export const YardSaleSellerLinksModal = ({ yardSale }) => {
     getAllYardSaleTransactions,
     getAllYardSaleSellerLinks,
     createYardSaleSellerLink,
-    clearSelectedYardSale,
     deleteYardSaleSellerLink,
     getSellersCanBeAdded,
+    getAllTransactionsForSellerOnYardSale,
   } = useYardsales();
+  const {quickLoad, setQuickLoad} = useIsLoading()
 
   const cancel = () => {
     closeModal();
@@ -45,7 +50,6 @@ export const YardSaleSellerLinksModal = ({ yardSale }) => {
   const save = () => {};
 
   const closeModal = () => {
-    clearSelectedYardSale();
     setOpen(false);
   };
 
@@ -54,11 +58,13 @@ export const YardSaleSellerLinksModal = ({ yardSale }) => {
   };
 
   useEffect(() => {
+    setQuickLoad(true)
     console.log("YardSale Seller Links Modal Loaded");
     (async () => {
       console.log("Async");
       if (open === true && yardSale !== null) await updateSellers();
       await getAllYardSaleSellerLinks(yardSale?.uuid);
+      setQuickLoad(false)
     })();
   }, [open]);
 
@@ -66,14 +72,15 @@ export const YardSaleSellerLinksModal = ({ yardSale }) => {
     <>
       <Popup
         inverted
-        content="View Transactions"
+        content="Linked Sellers"
         position="top center"
         trigger={
           <Button
             onClick={openModal}
             icon="user"
             secondary
-						basic
+            basic
+            circular
             tabIndex="-1"
             className="icon"
           ></Button>
@@ -89,7 +96,8 @@ export const YardSaleSellerLinksModal = ({ yardSale }) => {
         style={{ height: "90vh", width: 500 }}
       >
         <Modal.Header>{`Transactions for ${yardSale.name}`}</Modal.Header>
-        <Modal.Content scrolling>
+        <Modal.Content scrolling
+        as={Segment} basic loading={quickLoad}>
           <Divider horizontal content="Sellers Linked to this Yardsale" />
           <Table className="mt0" striped compact basic="very" unstackable>
             <Table.Header>
@@ -133,8 +141,24 @@ export const YardSaleSellerLinksModal = ({ yardSale }) => {
                             basic
                             circular
                             onClick={async (e) => {
-                              await deleteYardSaleSellerLink(link.uuid);
-                              router.push("/yardsales/seller-links");
+                              const {
+                                data: transactionsResponse,
+                              } = await getAllTransactionsForSellerOnYardSale(
+                                link.yardsale_uuid,
+                                link.seller.uuid,
+                              );
+                              if (
+                                transactionsResponse?.transaction?.length > 0
+                              ) {
+                                sendError(
+                                  "Cannot delete a seller that has linked historical transactions.",
+                                );
+                                return { data: {} };
+                              } else {
+                                sendAlert(`Success! ${link.seller.initials} was unlinked from ${yardSale.name}`)
+                                await deleteYardSaleSellerLink(link.uuid);
+                                await getAllYardSaleSellerLinks(yardSale.uuid);
+                              }
                             }}
                           />
                         }
@@ -208,7 +232,9 @@ export const YardSaleSellerLinksModal = ({ yardSale }) => {
                                     seller.uuid,
                                     yardSale?.uuid,
                                   );
-                                  router.push("/yardsales/seller-links");
+                                  await getAllYardSaleSellerLinks(
+                                    yardSale.uuid,
+                                  );
                                 }}
                               />
                             }
