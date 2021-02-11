@@ -68,9 +68,11 @@ export interface YardSalesContextInterFace {
   transactionItems: Array<Transaction>;
   selectedYardSale: YardSalesInterface;
   setSelectedYardSale: (_: YardSalesInterface) => void;
+  clearSelectedYardSale: () => void;
   createNewYardsale: (yardsale: FormValues) => any;
   updateYardsale: (yardsale: FormValues) => any;
   updateYardSales: () => Promise<UseQueryResponse>;
+  getYardSaleById: (yardSaleId: UUID) => Promise<UseQueryResponse>
   updateFilterText: (text: string) => void;
   deleteYardSale: (yardSaleId: string) => Promise<UseQueryResponse>;
   filter: Filter;
