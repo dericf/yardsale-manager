@@ -41,13 +41,6 @@ export default function index() {
 
   const {mutation, query} = useHasura()
   // const { query } = useApolloClient();
-  useEffect(() => {
-    console.log("Getting YardSales");
-    (async () => {
-      await updateYardSales()
-    })()
-  }, []);
-
   return (
     <ProtectedComponent>
       <Head>
@@ -57,15 +50,9 @@ export default function index() {
         <Header textAlign="center" as="h2">
           Yard Sales List
         </Header>
-
-        {/* {cashierActive && data && data.yardsale && (
-          <CashierModal
-              yardsale={cashierActive}
-              autoOpen={true}
-              setCashierActive={setCashierActive}
-            />
-          )} */}
-
+        {/* <div>
+          <pre>{JSON.stringify(yardSales, null, 2)}</pre>
+        </div> */}
         <Grid columns={2} centered className="m0 p0">
 
           {/* Yardsales List */}
