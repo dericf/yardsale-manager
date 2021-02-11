@@ -10,13 +10,20 @@ import {
   Table,
 } from "semantic-ui-react";
 import { useYardsales } from "../../hooks/useYardsales";
+import { YardSalesInterface } from "../../types/YardSales";
 import { fromMoney, toMoney } from "../../utilities/money_helpers";
 
-export const YardSaleTransactionModal = ({ yardsale = null }): JSX.Element => {
+interface Props {
+  yardSale: YardSalesInterface
+}
+
+export const YardSaleTransactionModal = ({ yardSale}) => {
   const {
     sellerLinks,
     transactionItems,
     getAllYardSaleTransactions,
+    getAllYardSaleSellerLinks,
+    clearSelectedYardSale
   } = useYardsales();
   const [open, setOpen] = useState(false);
 
@@ -27,6 +34,7 @@ export const YardSaleTransactionModal = ({ yardsale = null }): JSX.Element => {
   const save = () => {};
 
   const closeModal = () => {
+    clearSelectedYardSale()
     setOpen(false);
   };
 
@@ -38,10 +46,11 @@ export const YardSaleTransactionModal = ({ yardsale = null }): JSX.Element => {
 		console.log("Modal Loaded");
     (async () => {
 			console.log("Async");
-      if (yardsale)
-        await getAllYardSaleTransactions(yardsale.user_uuid);
+      if (open === true && yardSale !== null)
+        await getAllYardSaleTransactions(yardSale.uuid);
+        await getAllYardSaleSellerLinks(yardSale.uuid);
     })();
-  }, []);
+  }, [open]);
 
   return (
     <>
@@ -54,7 +63,6 @@ export const YardSaleTransactionModal = ({ yardsale = null }): JSX.Element => {
             onClick={openModal}
             icon="dollar"
             basic
-            circular
             tabIndex="-1"
             className="icon list-action-icon"
           ></Button>
@@ -67,14 +75,14 @@ export const YardSaleTransactionModal = ({ yardsale = null }): JSX.Element => {
         onClose={closeModal}
         closeOnDimmerClick={true}
         closeOnEscape={true}
-        dimmer="blurring"
+        dimmer="none"
         style={{ height: "90vh", width: 500 }}
       >
-        <Modal.Header>{`Transactions for ${yardsale.name}`}</Modal.Header>
+        <Modal.Header>{`Transactions for ${yardSale.name}`}</Modal.Header>
         {transactionItems && (
 					<Modal.Content style={{ maxHeight: "78vh", overflowY: "auto" }}>
           <Divider horizontal content="Seller Summary" className="mt0" />
-          {!sellerLinks && (
+          {sellerLinks && (
             <Fragment>
               <Table
                 style={{
@@ -99,7 +107,7 @@ export const YardSaleTransactionModal = ({ yardsale = null }): JSX.Element => {
 
                 <Table.Body>
                   <Fragment>
-                    {sellerLinks.map((link) => {
+                    {sellerLinks?.map((link) => {
                       return (
                         <Table.Row key={link.uuid}>
                           <Table.Cell textAlign="left">
@@ -158,7 +166,7 @@ export const YardSaleTransactionModal = ({ yardsale = null }): JSX.Element => {
           <Divider></Divider>
           <Divider horizontal content="All Transaction Items" />
 
-          {!transactionItems && (
+          {transactionItems && (
             <Fragment>
               <Table
                 className="mt0"
