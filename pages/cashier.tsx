@@ -17,6 +17,7 @@ import { CashierForm } from "../components/Cashier/CashierForm";
 import { Layout } from "../components/Layout/Layout";
 // import useSWR from "swr";
 import { ProtectedComponent } from "../components/ProtectedComponent";
+import { TransactionTable } from "../components/Tables/TransactionTable";
 import YardsaleForm from "../components/YardSales/YardSaleForm";
 import { useAuth } from "../hooks/useAuth";
 import YardSalesProvider, { useYardsales } from "../hooks/useYardsales";
@@ -63,74 +64,7 @@ const index = () => {
           <>
             <CashierForm yardSale={selectedYardSale} />
             {transactionItems && (
-              <Segment>
-                <Header as="h2">Transaction History</Header>
-
-                <Table
-                  className="mt0"
-                  striped
-                  compact
-                  basic="very"
-                  unstackable
-                  style={{
-                    marginLeft: "auto",
-                    marginRight: "auto",
-                    maxWidth: "600px   ",
-                  }}
-                >
-                  <Table.Header>
-                    <Table.Row>
-                      <Table.HeaderCell textAlign="left" style={{ width: 200 }}>
-                        Seller
-                      </Table.HeaderCell>
-                      <Table.HeaderCell textAlign="left">
-                        Description
-                      </Table.HeaderCell>
-                      <Table.HeaderCell
-                        textAlign="center"
-                        style={{ width: 140 }}
-                      >
-                        Price
-                      </Table.HeaderCell>
-                    </Table.Row>
-                  </Table.Header>
-
-                  <Table.Body>
-                    <>
-                      {/* <Highlight >
-                                                {JSON.stringify(invoice, null, 2)}
-                                            </Highlight> */}
-
-                      {transactionItems?.length === 0 && (
-                        <Table.Row textAlign="center">
-                          <Table.Cell textAlign="center" colSpan="5">
-                            No Transactions for this Yardsale
-                          </Table.Cell>
-                        </Table.Row>
-                      )}
-
-                      {transactionItems?.map((item) => {
-                        return (
-                          <Table.Row key={item.uuid}>
-                            <Table.Cell textAlign="left">
-                              {item.seller.name} ({item.seller.initials}){" "}
-                              {item.seller.is_deleted === true && (
-                                <strong> - *Seller Removed*</strong>
-                              )}
-                            </Table.Cell>
-                            <Table.Cell textAlign="left">
-                              {item.description}
-                            </Table.Cell>
-                            <Table.Cell textAlign="right">
-                              $ {toMoney(item.price)}
-                            </Table.Cell>
-                          </Table.Row>
-                        );
-                      })}
-                    </>
-                  </Table.Body>
-                </Table>
-              </Segment>
+              <TransactionTable yardSale={selectedYardSale}></TransactionTable>
             )}
           </>
         ) : (
