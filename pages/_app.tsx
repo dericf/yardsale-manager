@@ -24,59 +24,8 @@ import HasuraProvider from "../hooks/useHasura";
 import SellersProvider from "../hooks/useSeller";
 
 function MyApp({ Component, pageProps }) {
-  // const httpLink = createHttpLink({
-  //   uri: process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT,
-  // });
-
-  // const wsLink = new WebSocketLink({
-  // 	uri: process.env.NEXT_PUBLIC_GRAPHQL_WS_ENDPOINT,
-  // 	options: {
-  // 		reconnect: true,
-  // 		connectionParams: {
-  // 			headers: {
-  // 				Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-  // 			},
-  // 		},
-  // 	},
-  // });
-
-  // const link = split(
-  //   // split based on operation type
-  //   ({ query }) => {
-  //     const definition = getMainDefinition(query);
-  //     return (
-  //       definition.kind === "OperationDefinition" &&
-  //       definition.operation === "subscription"
-  //     );
-  //   },
-  //   // wsLink,
-  //   httpLink,
-  // );
-
-  // const authLink = setContext((_, { headers }) => {
-  //   // get the authentication token from local storage if it exists
-  //   const token = localStorage?.getItem("accessToken");
-  //   // return the headers to the context so httpLink can read them
-  //   let jwt = jwtDecode(token);
-  //   return {
-  //     headers: {
-  //       ...headers,
-  //       Authorization: token ? `Bearer ${token}` : "",
-  //       "X-Hasura-Role": jwt["https://hasura.io/jwt/claims"]["x-hasura-role"],
-  //       "X-Hasura-User-Id":
-  //         jwt["https://hasura.io/jwt/claims"]["x-hasura-user-id"],
-  //     },
-  //   };
-  // });
-
-  // const client = new ApolloClient({
-  //   link: authLink.concat(httpLink),
-  //   cache: new InMemoryCache(),
-  //   ssrMode: !process.browser,
-  // });
-
   return (
-    <ToastProvider>
+    <ToastProvider placement="top-center">
       <AlertProvider>
         <LoadingProvider>
           <AuthProvider>
