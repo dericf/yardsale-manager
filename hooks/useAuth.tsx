@@ -10,6 +10,7 @@ import { useAlert } from "./useAlert";
 import { useIsLoading } from "./useIsLoading";
 import { AuthContextInterface } from "../types/Context";
 import { LoginForm, RegisterForm, ResetPasswordForm } from "../types/Forms";
+import moment from "moment";
 
 const initialLoginFormValues = {
   email: "",
@@ -42,7 +43,9 @@ const initialResetPasswordFormValues = {
 //   logout: () => {},
 // } as AuthContextInterface;
 
-export const AuthContext = createContext<AuthContextInterface>({} as AuthContextInterface);
+export const AuthContext = createContext<AuthContextInterface>(
+  {} as AuthContextInterface,
+);
 
 export default function AuthProvider({ children }) {
   const { loadingState, setLoadingState, clearLoadingState } = useIsLoading();
@@ -135,8 +138,22 @@ export default function AuthProvider({ children }) {
           localStorage.setItem("accessToken", json.token);
           localStorage.setItem("refreshToken", json.refreshToken);
           localStorage.setItem("user", JSON.stringify(json.user));
+          localStorage.setItem(
+            "sessionLastUpdatedAt",
+            new Date().toDateString() +
+              " at " +
+              new Date().toLocaleTimeString(),
+          );
           setIsAuthenticated(true);
-          sendAlert("You have been logged in");
+          if (json.user.hasCompletedOnboarding === false) {
+            sendAlert(
+              `Welcome ${
+                String(json.user.name).split(" ")[0]
+              }`,
+            );
+          } else {
+            sendAlert(`Welcome back ${String(json.user.name).split(" ")[0]}`);
+          }
           clearLoadingState();
           setLoginForm(initialLoginFormValues);
           return true;
@@ -231,10 +248,21 @@ export default function AuthProvider({ children }) {
   };
 
   const loadAuthStateFromLocalStorage = async (): Promise<boolean> => {
+    if (typeof localStorage === undefined) {
+      return false;
+    }
     try {
-      const cachedToken = localStorage?.getItem("accessToken");
-      const cachedRefreshToken = localStorage?.getItem("refreshToken");
-      const cachedUser = JSON.parse(localStorage?.getItem("user"));
+      const cachedToken = localStorage.getItem("accessToken");
+      const cachedRefreshToken = localStorage.getItem("refreshToken");
+      const cachedUserString = localStorage.getItem("user");
+      let cachedUser;
+      if (cachedUserString) {
+        cachedUser = JSON.parse(cachedUserString);
+      }
+
+      if (cachedToken === null) {
+        return false;
+      }
       const isExpired = await isTokenExpired(cachedToken);
       if (isExpired === true) {
         const sessionStillOk = await refreshNewAccessToken(cachedRefreshToken);
@@ -260,6 +288,9 @@ export default function AuthProvider({ children }) {
   };
 
   const isTokenExpired = async (token: string): Promise<boolean> => {
+    if (token === null) {
+      return false;
+    }
     let jwt = jwtDecode(token);
     //
     // Check if token is expired
@@ -298,6 +329,13 @@ export default function AuthProvider({ children }) {
 
           setIsAuthenticated(true);
           localStorage.setItem("accessToken", json.newToken);
+          localStorage.setItem("user", JSON.stringify(json.user));
+          localStorage.setItem(
+            "sessionLastUpdatedAt",
+            new Date().toDateString() +
+              " at " +
+              new Date().toLocaleTimeString(),
+          );
           setToken(json.newToken);
           // Keep the same refresh token, don't reset the refresh token every time
           // localStorage.setItem("refreshToken", json.newRefreshToken);
@@ -377,6 +415,20 @@ export default function AuthProvider({ children }) {
     }
   };
 
+  const sessionExpiresAt = () => {
+    if (!refreshToken) {
+      return "";
+    }
+    let jwt = jwtDecode(refreshToken);
+    return moment(jwt?.expires_at).toLocaleString();
+    // let current_time = Date.now().valueOf() / 1000;
+    // if (jwt.exp < current_time) {
+    //   return "Session is Expired!"
+    // } else {
+    //   return
+    // }
+  };
+
   return (
     <AuthContext.Provider
       value={
@@ -396,6 +448,7 @@ export default function AuthProvider({ children }) {
           logout,
           isTokenExpired,
           refreshNewAccessToken,
+          sessionExpiresAt,
         } as AuthContextInterface
       }
     >
