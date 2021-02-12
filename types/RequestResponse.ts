@@ -3,6 +3,7 @@ import { generateKeyPair } from "crypto"
 
 export interface GenericResponse {
   STATUS: "OK" | "ERROR" | "UNAUTHORIZED";
+  MESSAGE?: string
 }
 
 export interface LoginResponse extends GenericResponse {

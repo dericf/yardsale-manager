@@ -1,5 +1,8 @@
+import { UUID } from "./General";
+
 export interface User {
-	id: string,
+	uuid: UUID,
+	id?: string,
 	name: string,
 	email: string,
 	initials: string,
