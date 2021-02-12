@@ -1,6 +1,6 @@
 import Head from "next/head";
 import { useEffect } from "react";
-import { Header, Segment } from "semantic-ui-react";
+import { Divider, Header, Segment } from "semantic-ui-react";
 import { Layout } from "../../components/Layout/Layout";
 // import useSWR from "swr";
 import { ProtectedComponent } from "../../components/ProtectedComponent";
@@ -27,7 +27,11 @@ export default function index() {
         <Header textAlign="center" as="h2">
           Sellers List
         </Header>
-        <SellersList />
+        <div >
+          <SellersList />
+
+          <Divider style={{ marginTop: "2rem", marginBottom: "10rem" }} />
+        </div>
       </Layout>
     </ProtectedComponent>
   );

@@ -22,7 +22,7 @@ import { useAuth } from "../../hooks/useAuth";
 import { useHasura } from "../../hooks/useHasura";
 import { useYardsales } from "../../hooks/useYardsales";
 import { YardSalesContextInterFace } from "../../types/Context";
-import {YardSaleList} from '../../components/YardSales/YardsaleList'
+import { YardSaleList } from "../../components/YardSales/YardsaleList";
 import { YardSalesInterface } from "../../types/YardSales";
 
 export default function index() {
@@ -39,7 +39,7 @@ export default function index() {
   // const {client} = useHasura()
   // const { loading, error, data } = useQuery({query: GET_YARDSALES});
 
-  const {mutation, query} = useHasura()
+  const { mutation, query } = useHasura();
   // const { query } = useApolloClient();
   return (
     <ProtectedComponent>
@@ -50,16 +50,12 @@ export default function index() {
         <Header textAlign="center" as="h2">
           Yard Sales List
         </Header>
-        {/* <div>
-          <pre>{JSON.stringify(yardSales, null, 2)}</pre>
-        </div> */}
-        <Grid columns={2} centered className="m0 p0">
 
-          {/* Yardsales List */}
-          {/* {loading && <Loading />} */}
-          {/* <pre>{JSON.stringify(yardSales, null, 4)}</pre> */}
+        <div style={{ overflowY: "auto", minHeight: "80vh" }}>
           <YardSaleList></YardSaleList>
-        </Grid>
+
+          <Divider style={{ marginTop: "2rem", marginBottom: "2rem" }} />
+        </div>
       </Layout>
     </ProtectedComponent>
   );
