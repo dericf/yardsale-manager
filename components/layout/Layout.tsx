@@ -19,12 +19,11 @@ interface Props {
 }
 
 export const Layout: FC<PropsWithChildren<Props>> = (props) => {
-  const { loadingState } = useIsLoading();
+  const { loadingState, quickLoad } = useIsLoading();
   const { isAuthenticated, user, loadAuthStateFromLocalStorage } = useAuth();
 
   useEffect(() => {
     const checkAuth = async () => {
-      console.log("Checking auth status.");
       await loadAuthStateFromLocalStorage();
     };
 
@@ -32,15 +31,14 @@ export const Layout: FC<PropsWithChildren<Props>> = (props) => {
       // Check if there is a saved token in localstorage
       checkAuth();
     }
-  }, []);
+  }, [isAuthenticated]);
   return (
-    <Container >
+    <Container>
       <Segment
         raised
-        loading={loadingState && loadingState.isLoading}
-        style={{ height: "100vh", overflowY: "auto" }}
+        loading={(loadingState && loadingState.isLoading)}
+        style={{ minHeight: "100vh" }}
         padded
-        
       >
         <div className="flex row justify-between align-center wrap">
           <div className="flex col">
@@ -55,8 +53,12 @@ export const Layout: FC<PropsWithChildren<Props>> = (props) => {
           </div>
         </div>
         <Divider />
-
-        {props.children}
+        <div
+          style={{ height: "100%"}}
+        >
+          {props.children}
+        </div>
+        {/* <Header textAlign="center">&copy; 2021</Header> */}
       </Segment>
     </Container>
   );
