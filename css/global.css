@@ -1,3 +1,12 @@
+h1, h2, h3,h4,h5,h6 {
+	padding-bottom: 0;
+	margin-bottom: 0;
+}
+
+.react-toast-notifications__container {
+  z-index: 9999999 !important;
+}
+
 .hover-shadow-lg:hover {
 	box-shadow: 0 2px 8px #bbb;
 }
@@ -8,4 +17,13 @@
 
 .hover-opacity-75:hover {
 	opacity: 0.75;
+}
+
+.mx-auto {
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.scroll-vertical {
+	overflow-y: auto;
 }
