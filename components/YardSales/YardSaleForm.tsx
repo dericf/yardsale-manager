@@ -14,7 +14,7 @@ import { GetServerSideProps } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { Fragment, useEffect, useRef } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import {
   Button,
   Divider,
@@ -25,6 +25,7 @@ import {
   Label,
   Message,
   Segment,
+  TextArea,
 } from "semantic-ui-react";
 import { Layout } from "../Layout/Layout";
 // import useSWR from "swr";
@@ -37,6 +38,7 @@ import { useHasura } from "../../hooks/useHasura";
 import { useYardsales } from "../../hooks/useYardsales";
 import { YardSalesContextInterFace } from "../../types/Context";
 import { YardSalesInterface } from "../../types/YardSales";
+import { useIsLoading } from "../../hooks/useIsLoading";
 
 const YardsaleForm = () => {
   const { user, token } = useAuth();
@@ -47,7 +49,9 @@ const YardsaleForm = () => {
     setSelectedYardSale,
     updateYardsale,
   } = useYardsales();
+  const [forceDisableSave, setForceDisableSave] = useState<boolean>(false)
   const router = useRouter();
+  const {quickLoad, setQuickLoad} = useIsLoading()
   const yardsaleNameRef = useRef<HTMLInputElement>();
   const initialValues: FormValues = {
     name: yardSale ? yardSale.name : "",
@@ -64,7 +68,7 @@ const YardsaleForm = () => {
     // postal: yardSale ? yardSale.address_postal : "",
   };
   const onSubmit = async (values: FormValues, errors: FormErrors) => {
-    console.log("Submitting... Form..", values);
+    setForceDisableSave(true)
     let yardSaleVars = {
       name: values.name,
       phone: values.phone,
@@ -117,12 +121,13 @@ const YardsaleForm = () => {
 
   useEffect(() => {
     // Auto focus the first form input on first page load
+    setQuickLoad(false)
     if (yardsaleNameRef) yardsaleNameRef.current.focus();
   }, []);
 
   return (
-    <>
-      <Grid columns={1} centered className="m0 p0">
+    <div style={{overflowY: "auto", height: "90vh"}}>
+      <Grid columns={1} centered className="m0 p0" >
         <Grid.Row className="py0">
           {/* First Grid.Row (Filters/Buttons) */}
           <Grid.Column>
@@ -200,109 +205,33 @@ const YardsaleForm = () => {
                   </Grid.Column>
                 </Grid.Row>
 
-                {/* Address Form */}
-                <Grid.Row className="pb0">
-                  <Grid.Column>
-                    <Form.Group>
-                      <Form.Field width="8" className="mt16">
-                        <label>Street Address</label>
-                        <Input
-                          icon="address card"
-                          iconPosition="left"
-                          placeholder="Street 1"
-                          name="street1"
-                          type="text"
-                          fluid
-                          value={values.street1 || ""}
-                          onChange={handleChange}
-                        />
-                      </Form.Field>
+                <Grid.Row className="pt0">
+                <Grid.Column>
+                  <Form.Group widths="equal">
+                    <Form.Field>
+                      <label>Address</label>
+                      <TextArea
+                        placeholder="Address"
+                        name="address"
+                        value={values.address}
+                        onChange={handleChange}
+                        rows={5}
+                      />
+                    </Form.Field>
 
-                      <Form.Field width="8" className="mt16">
-                        <label>Street Address Line 2</label>
-                        <Input
-                          icon="address card"
-                          iconPosition="left"
-                          fluid
-                          type="text"
-                          placeholder="Street 2"
-                          name="street2"
-                          value={values.street2 || ""}
-                          onChange={handleChange}
-                        />
-                      </Form.Field>
-                    </Form.Group>
-                  </Grid.Column>
-                </Grid.Row>
-
-                <Grid.Row className="pb0">
-                  <Grid.Column>
-                    <Form.Group>
-                      <Form.Field width="8" className="mt16">
-                        <label>Country</label>
-                        <Input
-                          icon="address card"
-                          iconPosition="left"
-                          placeholder="Country"
-                          name="country"
-                          type="text"
-                          fluid
-                          value={values.country || ""}
-                          onChange={handleChange}
-                        />
-                      </Form.Field>
-
-                      <Form.Field width="8" className="mt16">
-                        <label>Province/State</label>
-                        <Input
-                          icon="address card"
-                          iconPosition="left"
-                          fluid
-                          type="text"
-                          placeholder="Province/State"
-                          name="province"
-                          value={values.province || ""}
-                          onChange={handleChange}
-                        />
-                      </Form.Field>
-                    </Form.Group>
-                  </Grid.Column>
-                </Grid.Row>
-
-                <Grid.Row className="pb0">
-                  <Grid.Column>
-                    <Form.Group>
-                      <Form.Field width="8" className="mt16">
-                        <label>City</label>
-                        <Input
-                          icon="address card"
-                          iconPosition="left"
-                          placeholder="City"
-                          name="city"
-                          type="text"
-                          fluid
-                          value={values.city || ""}
-                          onChange={handleChange}
-                        />
-                      </Form.Field>
-
-                      <Form.Field width="8" className="mt16">
-                        <label>Postal/Zip Code</label>
-                        <Input
-                          icon="address card"
-                          iconPosition="left"
-                          fluid
-                          type="text"
-                          placeholder="Postal/Zip"
-                          name="postal"
-                          value={values.postal || ""}
-                          onChange={handleChange}
-                        />
-                      </Form.Field>
-                    </Form.Group>
-                  </Grid.Column>
-                </Grid.Row>
-                {/* End Address Form */}
+                    <Form.Field>
+                      <label>Notes</label>
+                      <TextArea
+                        placeholder="Notes"
+                        name="notes"
+                        value={values.notes}
+                        onChange={handleChange}
+                        rows={5}
+                      />
+                    </Form.Field>
+                  </Form.Group>
+                </Grid.Column>
+              </Grid.Row>
 
                 <Grid.Row></Grid.Row>
               </Grid>
@@ -332,12 +261,13 @@ const YardsaleForm = () => {
               primary
               className="save"
               onClick={handleSubmit}
+              disabled={values?.name?.length === 0 || forceDisableSave === true}
               content={yardSale ? "Save Changes" : "Create Yard Sale"}
             />
           </Grid.Column>
         </Grid.Row>
       </Grid>
-    </>
+    </div>
   );
 };
 export default YardsaleForm;
