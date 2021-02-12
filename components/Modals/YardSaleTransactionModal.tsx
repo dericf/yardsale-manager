@@ -7,8 +7,10 @@ import {
   Label,
   Modal,
   Popup,
+  Segment,
   Table,
 } from "semantic-ui-react";
+import { useIsLoading } from "../../hooks/useIsLoading";
 import { useYardsales } from "../../hooks/useYardsales";
 import { YardSalesInterface } from "../../types/YardSales";
 import { fromMoney, toMoney } from "../../utilities/money_helpers";
@@ -19,6 +21,8 @@ interface Props {
 }
 
 export const YardSaleTransactionModal = ({ yardSale }: Props) => {
+  const {quickLoad, setQuickLoad} = useIsLoading()
+
   const {
     sellerLinks,
     transactionItems,
@@ -49,8 +53,10 @@ export const YardSaleTransactionModal = ({ yardSale }: Props) => {
     (async () => {
       console.log("Async");
       if (open === true && yardSale !== null) {
+        setQuickLoad(true)
         await getAllYardSaleTransactions(yardSale.uuid);
         await getAllYardSaleSellerLinks(yardSale.uuid);
+        setQuickLoad(false)
       }
     })();
   }, [open]);
@@ -85,7 +91,7 @@ export const YardSaleTransactionModal = ({ yardSale }: Props) => {
       >
         <Modal.Header>{`Transactions for ${yardSale.name}`}</Modal.Header>
         {transactionItems && (
-          <Modal.Content style={{ maxHeight: "78vh", overflowY: "auto" }}>
+          <Modal.Content as={Segment} basic loading={quickLoad} style={{ maxHeight: "78vh", overflowY: "auto" }}>
             <Divider horizontal content="Seller Summary" className="mt0" />
             {sellerLinks && (
               <Fragment>
@@ -140,7 +146,7 @@ export const YardSaleTransactionModal = ({ yardSale }: Props) => {
 
                       {sellerLinks?.length === 0 && (
                         <Table.Row>
-                          <Table.Cell textAlign="left" colSpan={2}>
+                          <Table.Cell textAlign="center" colSpan={2}>
                             No transactions
                           </Table.Cell>
                         </Table.Row>

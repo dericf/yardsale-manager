@@ -25,7 +25,10 @@ interface Props {
   openOnLoad?: boolean;
 }
 
-export const YardSaleSellerLinksModal = ({ yardSale, openOnLoad = false }: Props) => {
+export const YardSaleSellerLinksModal = ({
+  yardSale,
+  openOnLoad = false,
+}: Props) => {
   const [open, setOpen] = useState(openOnLoad);
   const { sendError, sendAlert } = useAlert();
   const { sellers, updateSellers } = useSellers();
@@ -41,7 +44,7 @@ export const YardSaleSellerLinksModal = ({ yardSale, openOnLoad = false }: Props
     getSellersCanBeAdded,
     getAllTransactionsForSellerOnYardSale,
   } = useYardsales();
-  const {quickLoad, setQuickLoad} = useIsLoading()
+  const { quickLoad, setQuickLoad } = useIsLoading();
 
   const cancel = () => {
     closeModal();
@@ -58,13 +61,15 @@ export const YardSaleSellerLinksModal = ({ yardSale, openOnLoad = false }: Props
   };
 
   useEffect(() => {
-    setQuickLoad(true)
+    setQuickLoad(true);
     console.log("YardSale Seller Links Modal Loaded");
     (async () => {
       console.log("Async");
-      if (open === true && yardSale !== null) await updateSellers();
-      await getAllYardSaleSellerLinks(yardSale?.uuid);
-      setQuickLoad(false)
+      if (open === true && yardSale !== null) {
+        await updateSellers();
+        await getAllYardSaleSellerLinks(yardSale?.uuid);
+        setQuickLoad(false);
+      }
     })();
   }, [open]);
 
@@ -96,8 +101,7 @@ export const YardSaleSellerLinksModal = ({ yardSale, openOnLoad = false }: Props
         style={{ height: "90vh", width: 500 }}
       >
         <Modal.Header>{`Transactions for ${yardSale.name}`}</Modal.Header>
-        <Modal.Content scrolling
-        as={Segment} basic loading={quickLoad}>
+        <Modal.Content scrolling as={Segment} basic loading={quickLoad}>
           <Divider horizontal content="Sellers Linked to this Yardsale" />
           <Table className="mt0" striped compact basic="very" unstackable>
             <Table.Header>
@@ -155,7 +159,9 @@ export const YardSaleSellerLinksModal = ({ yardSale, openOnLoad = false }: Props
                                 );
                                 return { data: {} };
                               } else {
-                                sendAlert(`Success! ${link.seller.initials} was unlinked from ${yardSale.name}`)
+                                sendAlert(
+                                  `Success! ${link.seller.initials} was unlinked from ${yardSale.name}`,
+                                );
                                 await deleteYardSaleSellerLink(link.uuid);
                                 await getAllYardSaleSellerLinks(yardSale.uuid);
                               }
