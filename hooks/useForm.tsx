@@ -45,7 +45,7 @@ const useForm = ({ initialValues, onSubmit, validate }: UseFormParams) => {
     formRendered.current = false;
   }, [initialValues]);
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { target } = event;
     const { name, value } = target;
     // event.persist();
@@ -54,7 +54,7 @@ const useForm = ({ initialValues, onSubmit, validate }: UseFormParams) => {
     // console.log(name, value);
   };
 
-  const handleBlur = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleBlur = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { target } = event;
     const { name } = target;
     setTouched({ ...touched, [name]: true });
@@ -63,11 +63,14 @@ const useForm = ({ initialValues, onSubmit, validate }: UseFormParams) => {
 
   const handleSubmit = (event: any) => {
     if (event) event.preventDefault();
-
-    let validateErrors;
+    
+    
+    // Check if a validate function was passed
+    let validateErrors: FormValues;
     if (validate) {
       validateErrors = validate();
     }
+    // Check if any errors were triggered
     if (validateErrors && Object.keys(validateErrors).length !== 0) {
       setErrors({ ...validateErrors });
 			for (const err of Object.values(validateErrors)) {
