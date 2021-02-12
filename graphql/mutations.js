@@ -148,6 +148,32 @@ export const CREATE_YARDSALE = `
     }
   }
 `;
+
+/**
+ * Here's an example of inserting an address object within a yardsale insert.
+ * mutation MyMutation {
+  insert_yardsale_one(object: {address: {data: {city: "Edmonton", country: "Canada"}}, name: "Fall 2021"}) {
+    address_id
+    address_text
+    company
+    days_of_week
+    email
+    end_date
+    end_time
+    hours_close
+    hours_open
+    is_public
+    notes
+    phone
+    pos_lat
+    pos_lng
+    start_date
+    start_time
+  }
+}
+
+ */
+
 //
 // Update Yardsale
 //
@@ -251,3 +277,15 @@ export const DELETE_YARDSALE_SELLER_LINK = `
     }
   }
 `;
+
+/**
+ * TRANSACTIONS
+ */
+
+ export const DELETE_TRANSACTION_BY_UUID = `
+ mutation MyMutation($id: uuid!) {
+    delete_transaction_by_pk(uuid: $id) {
+      description
+    }
+  }
+`
