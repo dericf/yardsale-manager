@@ -1,14 +1,27 @@
 import Link from "next/link";
 import { ChangeEvent, useEffect, useRef } from "react";
-import { Button, Form, Input } from "semantic-ui-react";
+import { Button, Dropdown, Form, Input, Select } from "semantic-ui-react";
 import useForm, { FormValues } from "../../hooks/useForm";
 import { useYardsales } from "../../hooks/useYardsales";
+import { YardSaleSortBy } from "../../types/Context";
+import { YardSaleSortByOptions } from "../../types/DropdownOptions";
 
 export const YardSaleFilterForm = () => {
-  const { filter, updateFilterText } = useYardsales();
-  const ref = useRef();
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    updateFilterText(e.target.value);
+  const { filter, updateFilterText, setFilter } = useYardsales();
+  const ref = useRef<HTMLInputElement>();
+  const handleChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+  ) => {
+    setFilter({
+      searchText: e.target.value,
+      sortBy: {
+        key: e.target.innerText,
+        text: e.target.innerText,
+        value: e.target.value as YardSaleSortBy,
+      },
+    });
+
+    // updateFilterText(e.target.value);
   };
 
   useEffect(() => {
@@ -19,18 +32,45 @@ export const YardSaleFilterForm = () => {
     <Form>
       <Form.Group inline className="mb0">
         <Link href="/yardsales/new" as="/yardsales/new">
-          <Button>New</Button>
+          <Button color="blue" style={{marginTop: 16}}>New</Button>
         </Link>
-        <Form.Field width={8}>
+        <Form.Field style={{marginTop: 16}}>
           <Input
             placeholder="Search"
             icon="search"
-            size="small"
             focus
             iconPosition="left"
             value={filter.searchText}
-            onChange={handleChange}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+              setFilter({ ...filter, searchText: e.target.value });
+            }}
             ref={ref}
+          />
+        </Form.Field>
+
+        <Form.Field style={{marginTop: 16}}>
+          <Dropdown
+            closeOnChange
+            icon="filter"
+            floating
+            labeled
+            basic
+            button
+            name="sortBy"
+            text="Sort"
+            className="icon"
+            onChange={async (e: React.SyntheticEvent, data: object) => {
+              setFilter({
+                ...filter,
+                sortBy: {
+                  key: e.target.innerText,
+                  text: e.target.innerText,
+                  value: data.value as YardSaleSortBy,
+                },
+              });
+            }}
+            options={YardSaleSortByOptions}
+            value={filter.sortBy.value}
           />
         </Form.Field>
       </Form.Group>
