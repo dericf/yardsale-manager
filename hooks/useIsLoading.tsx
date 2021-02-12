@@ -11,6 +11,7 @@ export const LoadingContext = createContext<LoadingContextInterface>(null);
 
 export default function LoadingProvider({ children }) {
   const [loadingState, setLoadingState] = useState(initialLoadingState);
+  const [quickLoad, setQuickLoad] = useState<boolean>(false);
 
   const clearLoadingState = () => {
     setLoadingState(initialLoadingState);
@@ -23,6 +24,8 @@ export default function LoadingProvider({ children }) {
           loadingState,
           setLoadingState,
           clearLoadingState,
+          quickLoad, 
+          setQuickLoad
         } as LoadingContextInterface
       }
     >
