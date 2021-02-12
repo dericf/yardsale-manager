@@ -23,9 +23,9 @@ export const GET_USER = `
 //
 // GET ALL SELLERS
 // (permission: for the current user)
-export const GET_SELLERS = `
+export const GET_SELLERS = (sortCol: string, sortDir: string) => `
   query GetSellers {
-    seller(where: { is_deleted: { _eq: false } }, order_by: { name: asc }) {
+    seller(where: { is_deleted: { _eq: false } }, order_by: { ${sortCol}: ${sortDir} }) {
       address_text
       email
       initials
@@ -117,9 +117,9 @@ export const GET_SELLER_BY_UUID = `
 //
 // GET ALL YARDSALES
 // (permission: for the current user)
-export const GET_YARDSALES = `
-  query GetYardsales {
-    yardsale(order_by: { created_at: desc }) {
+export const GET_YARDSALES = (sortCol, sortDir) => `
+  query GetYardsales{
+    yardsale(order_by: { ${sortCol}: ${sortDir} }) {
       uuid
       created_at
       updated_at
@@ -269,6 +269,19 @@ export const GET_TRANSACTION_ITEMS_FOR_YARDSALE = `
     }
   }
 `;
+
+export const GET_TRANSACTION_ITEMS_FOR_SELLER_ON_YARDSALE = `
+query GetTransactionItem($yardsaleUUID: uuid!, $sellerUUID: uuid!) {
+  transaction(where: {yardsale_uuid: {_eq: $yardsaleUUID}, seller_uuid: {_eq: $sellerUUID}}) {
+    seller_uuid
+    created_at
+    description
+    price
+    uuid
+    yardsale_uuid
+  }
+}
+`
 //
 // GET ALL SALE ITEMS FOR SELLER
 // by yardsale.id
@@ -301,3 +314,71 @@ export const GET_TRANSACTION_ITEMS_FOR_SELLER = `
 //
 // GET SALE ITEM
 // by id
+
+/**
+ * 
+ * Query Examples from: https://hasura.io/docs/1.0/graphql/core/queries/sorting.html
+ * query {
+  article (
+    order_by: {author: {id: desc}}
+  ) {
+    id
+    rating
+    published_on
+    author {
+      id
+      name
+    }
+  }
+}
+
+
+query {
+  author (
+    order_by: {
+      articles_aggregate: {count: desc}
+    }
+  ) {
+    id
+    name
+    articles_aggregate {
+      aggregate{
+        count
+      }
+    }
+  }
+}
+
+
+query {
+  author(
+    order_by: {
+      articles_aggregate: {
+        max: {rating: asc_nulls_last}
+      }
+    }
+  ) {
+    id
+    name
+    articles_aggregate {
+      aggregate{
+        max {rating}
+      }
+    }
+  }
+}
+
+query {
+  article (
+    order_by: [
+      {rating: desc},
+      {published_on: asc_nulls_first}
+    ]
+  ) {
+    id
+    rating
+    published_on
+  }
+}
+
+ */
