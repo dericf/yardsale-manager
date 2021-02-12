@@ -31,8 +31,11 @@ export default function HasuraProvider({ children }) {
   const [context, setContext] = useState();
   const { isTokenExpired, refreshNewAccessToken, refreshToken } = useAuth();
 
-  const query = async (q: string, variables?: any) => {
+  const query = async (q: string, variables?: any): Promise<any> => {
     let token = localStorage?.getItem("accessToken");
+    if (token === null) {
+      return null
+    }
     let jwt = jwtDecode(token);
     let requestBody: GraphQlRequestBody = {
       query: q,
@@ -56,14 +59,14 @@ export default function HasuraProvider({ children }) {
         fetchOptions,
       );
       let { data } = await response.json();
-      console.log("Data: ", data.data);
-      if (data.errors) {
-        console.log(data.errors);
-        // if (data?.errors[0]?.message.includes("JWTExpired")) {
-        //   console.log("JWT Was Expired...");
-        // }
-
-      }
+      
+      // if (data.errors) {
+      //   console.log("Something went wrong with the query...");
+      //   console.log(data.errors);
+      //   if (data?.errors[0]?.message.includes("JWTExpired")) {
+      //     console.log("JWT Was Expired...");
+      //   }
+      // }
       return data;
     } catch (error) {
       console.log("Error with query");
@@ -71,12 +74,16 @@ export default function HasuraProvider({ children }) {
       if (await isTokenExpired(token)) {
         console.log("Token was expired when we tried to query hasura");
         await refreshNewAccessToken(refreshToken);
+        return await query(q, variables)
       }
     }
   };
 
-  const mutation = async (m: string, variables?: any) => {
+  const mutation = async (m: string, variables?: any): Promise<any> => {
     let token = localStorage?.getItem("accessToken");
+    if (token === null) {
+      return null
+    }
     let jwt = jwtDecode(token);
     let requestBody = {
       query: m,
