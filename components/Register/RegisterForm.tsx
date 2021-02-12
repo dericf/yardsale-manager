@@ -45,7 +45,6 @@ export const RegisterForm: React.FC = (props) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const success = await tryRegisterUser();
-    console.log("success??", success);
     if (success === true) {
       setAccountCreated(true);
     } else {

@@ -17,8 +17,6 @@ import { useAuth } from "../hooks/useAuth";
 interface Props {}
 
 const index: NextPage<Props> = (props) => {
-  const {isAuthenticated, logout} = useAuth()
-
   return (
     <Layout activePage="home">
       <Head>

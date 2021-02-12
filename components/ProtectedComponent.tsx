@@ -11,8 +11,8 @@ export const ProtectedComponent = (props) => {
     const checkAuth = async () => {
       console.log("Checking auth status.");
       const userIsStillAuth = await loadAuthStateFromLocalStorage();
-      console.log("Auth still?? ");
-      console.log(userIsStillAuth);
+      console.log("Session still valid? ", userIsStillAuth);
+
       if (userIsStillAuth === false) {
         router.push("/login");
       }

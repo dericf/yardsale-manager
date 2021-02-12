@@ -34,8 +34,6 @@ export const YardSaleSellerLinks = () => {
   const router = useRouter();
   useEffect(() => {
     (async () => {
-      console.log("SEL YADDSA");
-      console.log(selectedYardSale);
       if (!selectedYardSale || selectedYardSale === null) {
         router.push("/yardsales");
       } else {

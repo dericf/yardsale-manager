@@ -86,7 +86,6 @@ export default function index({ hasBeenConfirmed }) {
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  console.log("req. :>> ", context.query);
   const { key, uid } = context.query;
   let hasBeenConfirmed = false;
   const resp = await fetch(
@@ -94,7 +93,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   );
   if (resp.status >= 200 && resp.status < 300) {
     const data: GenericResponse = await resp.json();
-    console.log("data :>> ", data);
     if (data.STATUS === "OK") {
       hasBeenConfirmed = true;
     }
