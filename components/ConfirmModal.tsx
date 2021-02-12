@@ -14,16 +14,15 @@ export const ConfirmModal = ({
   triggerType = "button",
   disabled = false,
   buttonProps = {},
-  handleConfirm,
-  handleCancel,
-  header,
-  content,
+  handleConfirm = ()=> {},
+  handleCancel = ()=> {},
+  header = null,
+  content = null,
   warningMessage = null,
   disabledMessage = null,
   popupEnabled = false,
   popupMessage = null,
   popupPosition = "top center",
-  circular = false,
 }) => {
   const [open, setOpen] = React.useState(false);
   const showModal = () => {
@@ -53,7 +52,7 @@ export const ConfirmModal = ({
               position="top center"
               content={disabledMessage}
               trigger={
-                <Button icon {...buttonProps} basic circular={circular} />
+                <Button icon {...buttonProps} basic />
               }
             />
           )}
@@ -72,7 +71,6 @@ export const ConfirmModal = ({
                       {...buttonProps}
                       onClick={showModal}
                       basic
-                      circular={circular}
                       className="icon"
                     />
                   }
@@ -84,7 +82,6 @@ export const ConfirmModal = ({
                   disabled={disabled}
                   {...buttonProps}
                   onClick={showModal}
-                  circular={circular}
                   className="icon"
                 />
               )}
