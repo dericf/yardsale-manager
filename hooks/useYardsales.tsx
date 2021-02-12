@@ -5,11 +5,13 @@ import {
   GET_TRANSACTION_ITEMS_FOR_YARDSALE,
   GET_YARDSALE,
   GET_YARDSALES,
+  GET_TRANSACTION_ITEMS_FOR_SELLER_ON_YARDSALE,
 } from "../graphql/queries";
 import {
   CREATE_TRANSACTION_ITEM,
   CREATE_YARDSALE,
   CREATE_YARDSALE_SELLER_LINK,
+  DELETE_TRANSACTION_BY_UUID,
   DELETE_YARDSALE,
   DELETE_YARDSALE_SELLER_LINK,
   UPDATE_YARDSALE,
@@ -17,7 +19,7 @@ import {
 import React from "react";
 import HasuraProvider, { useHasura } from "./useHasura";
 import { UseQueryResponse } from "../types/GraphQL";
-import { YardSalesContextInterFace } from "../types/Context";
+import { Filter, YardSalesContextInterFace } from "../types/Context";
 import { YardSalesInterface } from "../types/YardSales";
 import { useAuth } from "./useAuth";
 import { FormValues } from "./useForm";
@@ -25,6 +27,7 @@ import { SellersInterface } from "../types/Sellers";
 import { UUID } from "../types/General";
 import { YardSaleLinks } from "../types/YardSaleLinks";
 import { Transaction } from "../types/Transaction";
+import { YardSaleSortByOptions } from "../types/DropdownOptions";
 
 interface ApolloQueryReturn {
   loading: boolean;
@@ -42,7 +45,7 @@ export const YardSalesContext = createContext<YardSalesContextInterFace>(
 );
 
 export default function YardSalesProvider({ children }) {
-  const { user } = useAuth();
+  const { user, isAuthenticated } = useAuth();
   const { query, mutation } = useHasura();
 
   const [yardSales, setYardSales] = useState(new Array<YardSalesInterface>());
@@ -55,9 +58,13 @@ export default function YardSalesProvider({ children }) {
     new Array<Transaction>(),
   );
 
-  const [filter, setFilter] = useState({
+  const initialFilterState: Filter = {
     searchText: "",
-  });
+    sortBy: YardSaleSortByOptions[0]
+    
+  } 
+
+  const [filter, setFilter] = useState<Filter>(initialFilterState);
 
   // useEffect(() => {
   //   updateYardSales();
@@ -85,7 +92,11 @@ export default function YardSalesProvider({ children }) {
 
   const updateYardSales = async (): Promise<UseQueryResponse> => {
     // Make query to update all yardsales for this user
-    const data = await query(GET_YARDSALES);
+    const sortBy = {
+      name: filter ? filter?.sortBy?.value?.split("-")[0] : YardSaleSortByOptions[0].value.split("-")[0],
+      direction: filter ? filter?.sortBy?.value?.split("-")[1] : YardSaleSortByOptions[0].value.split("-")[1]
+    }
+    const data = await query(GET_YARDSALES(sortBy.name, sortBy.direction));
     console.log("Getting all yardsales...");
     console.log(data);
     if (data.yardsale) {
@@ -99,20 +110,17 @@ export default function YardSalesProvider({ children }) {
   };
 
   const createNewYardsale = async (yardsale) => {
-    // post to graphql -> mutation insertYardsale
     console.log(user?.initials);
     const responseData = await query(CREATE_YARDSALE, yardsale);
     return responseData;
   };
 
   const updateYardsale = async (yardsale) => {
-    // post to graphql -> mutation insertYardsale
     const responseData = await query(UPDATE_YARDSALE, yardsale);
     return responseData;
   };
 
   const deleteYardSale = async (yardSaleId: string) => {
-    // post to graphql -> mutation insertYardsale
     const responseData = await query(DELETE_YARDSALE, {
       yardsaleUUID: yardSaleId,
     });
@@ -122,12 +130,14 @@ export default function YardSalesProvider({ children }) {
     return responseData;
   };
 
-  const deleteYardSaleSellerLink = async (linkId: UUID): Promise<any> => {
+  const deleteYardSaleSellerLink = async (linkId: UUID): Promise<UseQueryResponse> => {
+    //
+    // Assume we've already checked for existing transactions on the particular Yard Sale
+    //
     const { data } = await query(DELETE_YARDSALE_SELLER_LINK, {
       UUID: linkId,
     });
-
-    return data;
+    return { data };
   };
 
   const getAllYardSaleSellerLinks = async (yardSaleId: UUID): Promise<any> => {
@@ -152,6 +162,9 @@ export default function YardSalesProvider({ children }) {
     allSellers: Array<SellersInterface>,
     existingSellerLinks: Array<YardSaleLinks>,
   ) => {
+    // 
+    // Todo: This needs to be re-thought. it is old
+    // 
     return allSellers.filter((seller) => {
       let linkExists = false;
       existingSellerLinks?.forEach((link) => {
@@ -167,6 +180,29 @@ export default function YardSalesProvider({ children }) {
    * Transactions
    */
 
+  const deleteTransactionItem = async (
+    transactionId: UUID,
+  ): Promise<UseQueryResponse> => {
+    const data = await query(DELETE_TRANSACTION_BY_UUID, {
+      id: transactionId,
+    });
+    return { data };
+  };
+
+  const getAllTransactionsForSellerOnYardSale = async (
+    yardSaleId: UUID,
+    sellerId: UUID,
+  ): Promise<UseQueryResponse> => {
+    //
+    // Returns the transactions for a particular seller on a particular yard sale
+    //
+    const data = await query(GET_TRANSACTION_ITEMS_FOR_SELLER_ON_YARDSALE, {
+      yardsaleUUID: yardSaleId,
+      sellerUUID: sellerId,
+    });
+    return { data };
+  };
+
   const getAllYardSaleTransactions = async (yardSaleId: UUID): Promise<any> => {
     const data = await query(GET_TRANSACTION_ITEMS_FOR_YARDSALE, {
       yardsaleUUID: yardSaleId,
@@ -174,7 +210,7 @@ export default function YardSalesProvider({ children }) {
     console.log("\nTransactions after running query: ");
     console.log(data);
     setTransactionItems(data?.transaction);
-    return data?.transaction;
+    return {data: data?.transaction};
   };
 
   const createYardSaleTransaction = async (
@@ -202,6 +238,15 @@ export default function YardSalesProvider({ children }) {
     setSellerLinks([]);
   };
 
+  useEffect(() => {
+    console.log("Filter Changed...");
+    if (filter && isAuthenticated === true) {
+      (async() => (
+        await updateYardSales()
+      ))()
+    }
+  }, [filter, isAuthenticated])
+
   return (
     <YardSalesContext.Provider
       value={{
@@ -209,13 +254,14 @@ export default function YardSalesProvider({ children }) {
         selectedYardSale,
         sellerLinks,
         transactionItems,
+        filter,
+        setFilter,
         setSelectedYardSale,
         clearSelectedYardSale,
         updateYardSales,
         getYardSaleById,
         setYardSales,
         updateFilterText,
-        filter,
         createNewYardsale,
         updateYardsale,
         deleteYardSale,
@@ -225,6 +271,8 @@ export default function YardSalesProvider({ children }) {
         getSellersCanBeAdded,
         getAllYardSaleTransactions,
         createYardSaleTransaction,
+        getAllTransactionsForSellerOnYardSale,
+        deleteTransactionItem,
       }}
     >
       {children}
