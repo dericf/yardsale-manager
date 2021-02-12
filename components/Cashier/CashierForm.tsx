@@ -25,6 +25,7 @@ import {
   ButtonGroup,
   Popup,
   Label,
+  Message,
 } from "semantic-ui-react";
 import { CREATE_TRANSACTION_ITEM } from "../../graphql/mutations";
 import {
@@ -82,8 +83,8 @@ export const CashierForm = ({ yardSale }: Props) => {
   useEffect(() => {
     // Auto Focus on the first input field for better UX
     if (focusRef) {
-      focusRef?.current.focus();
-      focusRef?.current.select();
+      focusRef?.current?.focus();
+      focusRef?.current?.select();
     }
   }, []);
 
@@ -187,13 +188,22 @@ export const CashierForm = ({ yardSale }: Props) => {
     calculateChangeDue();
   }, [tender]);
 
+  // if (sellerLinks.length === 0) {
+  //   return (
+  //     <Segment textAlign="center">
+  //       <Header as="h2">Link Sellers to this Yard Sale</Header>
+  //       <YardSaleSellerLinksModal yardSale={yardSale} />
+  //     </Segment>
+  //   );
+  // }
+
   return (
     <>
       <Segment>
         <Grid centered>
           <Grid.Row columns={2}>
             <Grid.Column mobile={15} computer={8}>
-              <Form>
+              <Form warning={sellerLinks.length === 0}>
                 <Grid.Row>
                   <Grid.Column width={15}>
                     <Form.Group>
@@ -202,6 +212,7 @@ export const CashierForm = ({ yardSale }: Props) => {
                         <Input
                           className=""
                           name="price"
+                          disabled={sellerLinks.length === 0}
                           value={formValues.price}
                           onChange={handleChange}
                           ref={focusRef}
@@ -222,7 +233,10 @@ export const CashierForm = ({ yardSale }: Props) => {
                         {sellerLinks && (
                           <Fragment>
                             {sellerLinks.length === 0 ? (
-                              <span>Add Sellers to this yardsale</span>
+                              <Message warning>
+                                You firstly need to link sellers to this Yard
+                                Sale
+                              </Message>
                             ) : (
                               <Dropdown
                                 style={{ height: 52 }}
@@ -272,7 +286,10 @@ export const CashierForm = ({ yardSale }: Props) => {
                       </Form.Field>
 
                       <Form.Field>
-                        <div className="flex row align-center" style={{height: "100%"}}>
+                        <div
+                          className="flex row align-center"
+                          style={{ height: "100%" }}
+                        >
                           <YardSaleSellerLinksModal yardSale={yardSale} />
                         </div>
                       </Form.Field>
@@ -288,6 +305,7 @@ export const CashierForm = ({ yardSale }: Props) => {
                           size="huge"
                           placeholder="Item Description"
                           name="description"
+                          disabled={sellerLinks.length === 0}
                           value={formValues.description}
                           onChange={handleChange}
                           icon="file alternate outline"
@@ -308,7 +326,8 @@ export const CashierForm = ({ yardSale }: Props) => {
                       onClick={addItem}
                       disabled={
                         formValues.price == null ||
-                        formValues.seller.uuid === null
+                        formValues.seller.uuid === null ||
+                        sellerLinks.length === 0
                       }
                     />
                   </Grid.Column>
@@ -316,7 +335,11 @@ export const CashierForm = ({ yardSale }: Props) => {
               </Form>
             </Grid.Column>
             {transactionItems && transactionItems.length > 0 && (
-              <Grid.Column mobile={16} computer={8}>
+              <Grid.Column
+                mobile={16}
+                computer={8}
+                style={{ height: "30vh", overflowY: "auto" }}
+              >
                 <Divider content="pending Items" horizontal />
                 <Table className="mt0" striped compact basic="very" unstackable>
                   <Table.Header>
@@ -413,6 +436,13 @@ export const CashierForm = ({ yardSale }: Props) => {
                         })}
                       </Fragment>
                     )}
+                    <Table.Row>
+                      <Table.Cell colSpan={5} textAlign="center">
+                        <Header size="large">
+                          Total: {calculateRunningTotal()}
+                        </Header>
+                      </Table.Cell>
+                    </Table.Row>
                   </Table.Body>
                 </Table>
               </Grid.Column>
@@ -420,113 +450,44 @@ export const CashierForm = ({ yardSale }: Props) => {
           </Grid.Row>
           {/* <Divider className="px0" content="Transaction Totals" horizontal /> */}
           {transactionItems && transactionItems.length > 0 && (
-            <Grid.Row className="py16 mb16 mx16 mt0" columns={1} centered>
-              <Grid.Column
-                mobile={16}
-                tablet={16}
-                computer={14}
-                textAlign="center"
-              >
-                <Grid.Row>
-                  <Grid centered stackable columns="3">
-                    <Grid.Column
-                      mobile={12}
-                      tablet={12}
-                      computer={5}
-                      textAlign="center"
-                    >
-                      <Form>
-                        <Form.Group widths="equal">
-                          <Form.Field>
-                            {/* <Input
-                            label={<Label size="huge" content="Total" basic className="left-input-borderless-label" ></Label>}
-                            type="text"
-                            size="huge"
-                            labelPosition="left"
-                            tabIndex={-1}
-                            
-                            value={calculateRunningTotal()}
-                            input={<input type="text" style={{textAlign: "right"}} className="huge" /> }
-                          /> */}
-                            <Label size="huge" tag>
-                              Total: &nbsp;$ &nbsp;
-                              {calculateRunningTotal()}
-                            </Label>
-                          </Form.Field>
-                        </Form.Group>
-                      </Form>
-                    </Grid.Column>
-                    <Grid.Column
-                      mobile={12}
-                      tablet={12}
-                      computer={5}
-                      textAlign="center"
-                    >
-                      <Form>
-                        <Form.Group widths="equal">
-                          <Form.Field style={{ textAlign: "center" }}>
-                            <Label size="huge" basic>
-                              Collected: &nbsp;
-                              <Input
-                                name="tender"
-                                labelPosition="left"
-                                value={tender}
-                                onBlur={(e) => {
-                                  setTender(toMoney(e.target.value));
-                                }}
-                                icon={<Icon name="dollar" />}
-                                iconPosition="left"
-                                onChange={handleTenderChange}
-                                input={
-                                  <input
-                                    type="text"
-                                    style={{
-                                      textAlign: "right",
-                                      maxWidth: 165,
-                                      marginLeft: "auto",
-                                      marginRight: "auto",
-                                    }}
-                                    autoComplete="false"
-                                  />
-                                }
-                              />
-                            </Label>
-                          </Form.Field>
-                        </Form.Group>
-                      </Form>
-                    </Grid.Column>
+            <div className="flex-row justify-around  align-center">
+              {/* <Header size="large">Total: {calculateRunningTotal()}</Header> */}
 
-                    <Grid.Column
-                      mobile={12}
-                      tablet={12}
-                      computer={5}
-                      textAlign="center"
-                    >
-                      <Form>
-                        <Form.Group widths="equal">
-                          <Form.Field>
-                            {/* <Input
-                            type="text"
-                            label={<Label size="huge" basic content="Change Due" className="left-input-borderless-label" />}
-                            size="huge"
-                            labelPosition="left"
-                            tabIndex={-1}
-                            input={<input type="text" style={{textAlign: "right"}} className="huge" /> }
-                            value={changeDue}
-                          /> */}
-
-                            <Label size="huge" tag>
-                              Change Due: &nbsp;$&nbsp;
-                              {changeDue}
-                            </Label>
-                          </Form.Field>
-                        </Form.Group>
-                      </Form>
-                    </Grid.Column>
-                  </Grid>
-                </Grid.Row>
-              </Grid.Column>
-            </Grid.Row>
+              <div className="flex col">
+                <Segment size="huge" basic>
+                  Collected: &nbsp;
+                  <Input
+                    name="tender"
+                    labelPosition="left"
+                    value={tender}
+                    onBlur={(e) => {
+                      setTender(toMoney(e.target.value));
+                    }}
+                    icon="dollar"
+                    iconPosition="left"
+                    onChange={handleTenderChange}
+                    input={
+                      <input
+                        type="text"
+                        style={{
+                          textAlign: "right",
+                          maxWidth: 165,
+                          marginLeft: "auto",
+                          marginRight: "auto",
+                        }}
+                        autoComplete="false"
+                      />
+                    }
+                  />
+                </Segment>
+              </div>
+              <div className="flex col">
+                <Label size="huge" tag>
+                  Change Due: &nbsp;$&nbsp;
+                  {changeDue}
+                </Label>
+              </div>
+            </div>
           )}
         </Grid>
 
