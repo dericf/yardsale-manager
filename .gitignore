@@ -246,3 +246,6 @@ database-backup/track-migrations/metadata/query_collections.yaml
 database-backup/track-migrations/metadata/remote_schemas.yaml
 database-backup/track-migrations/metadata/tables.yaml
 database-backup/track-migrations/metadata/version.yaml
+yardsale-manager-db/*
+oldsrc/*
+.next/*
