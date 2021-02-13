@@ -27,7 +27,7 @@ import {
   Segment,
   TextArea,
 } from "semantic-ui-react";
-import { Layout } from "../Layout/Layout";
+import { Layout } from "../layout/Layout";
 // import useSWR from "swr";
 import { ProtectedComponent } from "../ProtectedComponent";
 import { GET_YARDSALES } from "../../graphql/queries";

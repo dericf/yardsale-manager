@@ -12,7 +12,7 @@ import {
   Segment,
 } from "semantic-ui-react";
 import { Home } from "../components/Home/Home";
-import { Layout } from "../components/Layout/Layout";
+import { Layout } from "../components/layout/Layout";
 import { useAuth } from "../hooks/useAuth";
 interface Props {}
 

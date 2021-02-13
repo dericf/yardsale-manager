@@ -3,7 +3,7 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import { Button, Header, Segment } from "semantic-ui-react";
 import { ConfirmResetPasswordForm } from "../components/ForgotPassword/ConfirmResetPasswordForm";
-import { Layout } from "../components/Layout/Layout";
+import { Layout } from "../components/layout/Layout";
 import { useAuth } from "../hooks/useAuth";
 
 export default function index({ resetCode, uuid }) {

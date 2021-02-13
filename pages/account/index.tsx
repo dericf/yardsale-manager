@@ -10,7 +10,7 @@ import {
   Popup,
   Segment,
 } from "semantic-ui-react";
-import { Layout } from "../../components/Layout/Layout";
+import { Layout } from "../../components/layout/Layout";
 import { ProtectedComponent } from "../../components/ProtectedComponent";
 import { useAlert } from "../../hooks/useAlert";
 import { useAuth } from "../../hooks/useAuth";

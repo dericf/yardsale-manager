@@ -1,7 +1,7 @@
 import Head from "next/head";
 import { useEffect } from "react";
 import { Divider, Header, Segment } from "semantic-ui-react";
-import { Layout } from "../../components/Layout/Layout";
+import { Layout } from "../../components/layout/Layout";
 // import useSWR from "swr";
 import { ProtectedComponent } from "../../components/ProtectedComponent";
 import { SellersList } from "../../components/Sellers/SellersList";

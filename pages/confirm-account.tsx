@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { Button, Grid, Header, Message, Segment } from "semantic-ui-react";
-import { Layout } from "../components/Layout/Layout";
+import { Layout } from "../components/layout/Layout";
 import { LoginForm } from "../components/LoginForm/LoginForm";
 import { useAlert } from "../hooks/useAlert";
 import { useAuth } from "../hooks/useAuth";
