@@ -37,8 +37,11 @@ export const RegisterForm: React.FC = (props) => {
   } = useAuth();
 
   useEffect(() => {
-    if (autoFocusRef && autoFocusRef.current) {
-      autoFocusRef?.current?.focus();
+    if (autoFocusRef && (typeof autoFocusRef !== 'undefined')) {
+      const input = autoFocusRef.current as any
+      if (input && (typeof input !== 'undefined')) {
+        input.focus()
+      }
     }
   }, [autoFocusRef]);
 

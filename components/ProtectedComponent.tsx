@@ -28,7 +28,7 @@ export const ProtectedComponent = (props) => {
     return props.children;
   }
   return (
-    <Layout>
+    <Layout activePage="none">
       <></>
     </Layout>
   );

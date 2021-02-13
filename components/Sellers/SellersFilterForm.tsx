@@ -5,11 +5,12 @@ import useForm, { FormValues } from "../../hooks/useForm";
 import { useSellers } from "../../hooks/useSeller";
 import { useYardsales } from "../../hooks/useYardsales";
 import { SellerSortBy } from "../../types/Context";
-import { SellersSortByOptions } from "../../types/DropdownOptions";
+import { DropdownData, SellersSortByOptions } from "../../types/DropdownOptions";
+
 
 export const SellersFilterForm = () => {
   const { filter, setFilter, updateFilterText } = useSellers();
-  const ref = useRef<HTMLInputElement>();
+  const ref = useRef<Input>();
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
@@ -59,12 +60,13 @@ export const SellersFilterForm = () => {
             name="sortBy"
             text="Sort"
             className="icon"
-            onChange={async (e: React.SyntheticEvent, data: object) => {
+            onChange={async (e: React.SyntheticEvent, data: DropdownData) => {
+              const target = e.target as HTMLSpanElement
               setFilter({
                 ...filter,
                 sortBy: {
-                  key: e.target.innerText,
-                  text: e.target.innerText,
+                  key: target.innerText,
+                  text: target.innerText,
                   value: data.value as SellerSortBy,
                 },
               });

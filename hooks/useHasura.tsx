@@ -18,6 +18,7 @@ import { setContext } from "apollo-link-context";
 import { RequestOptions } from "https";
 import { FormValues } from "./useForm";
 import { useAuth } from "./useAuth";
+import { JWTToken } from "../types/JWT";
 
 export const HasuraContext = createContext<HasuraContextInterface>(
   {} as HasuraContextInterface,
@@ -36,7 +37,7 @@ export default function HasuraProvider({ children }) {
     if (token === null) {
       return null
     }
-    let jwt = jwtDecode(token);
+    let jwt = jwtDecode(token) as JWTToken;
     let requestBody: GraphQlRequestBody = {
       query: q,
     };

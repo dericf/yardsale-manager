@@ -11,6 +11,7 @@ import { useIsLoading } from "./useIsLoading";
 import { AuthContextInterface } from "../types/Context";
 import { LoginForm, RegisterForm, ResetPasswordForm } from "../types/Forms";
 import moment from "moment";
+import { JWTToken } from "../types/JWT";
 
 const initialLoginFormValues = {
   email: "",
@@ -291,7 +292,7 @@ export default function AuthProvider({ children }) {
     if (token === null) {
       return false;
     }
-    let jwt = jwtDecode(token);
+    let jwt = jwtDecode(token) as JWTToken;
     //
     // Check if token is expired
     //
@@ -419,7 +420,7 @@ export default function AuthProvider({ children }) {
     if (!refreshToken) {
       return "";
     }
-    let jwt = jwtDecode(refreshToken);
+    let jwt = jwtDecode(refreshToken) as JWTToken;
     return moment(jwt?.expires_at).toLocaleString();
     // let current_time = Date.now().valueOf() / 1000;
     // if (jwt.exp < current_time) {
