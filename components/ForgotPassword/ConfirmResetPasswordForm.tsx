@@ -40,7 +40,7 @@ interface Props {
 export const ConfirmResetPasswordForm = ({ resetCode, uuid }: Props) => {
   const router = useRouter();
   const { sendAlert, sendError } = useAlert();
-  const autoFocusRef = useRef<HTMLInputElement>();
+  const autoFocusRef = useRef<Input>();
   const { loadingState } = useIsLoading();
   const {
     loginForm,

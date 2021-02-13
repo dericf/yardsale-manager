@@ -14,7 +14,7 @@ import { useRouter } from "next/router";
 import React, { useEffect } from "react";
 import { Button, Header, Item, Menu, Segment, Table } from "semantic-ui-react";
 import { CashierForm } from "../components/Cashier/CashierForm";
-import { Layout } from "../components/Layout/Layout";
+import { Layout } from "../components/layout/Layout";
 // import useSWR from "swr";
 import { ProtectedComponent } from "../components/ProtectedComponent";
 import { TransactionTable } from "../components/Tables/TransactionTable";

@@ -6,9 +6,10 @@ export const initialAlertValue = {
   activeAlert: null,
   consumeAlert: () => {},
   setAlert: (_) => {},
-  sendAlert: (_) => {},
-  sendError: (_) => {},
+  sendAlert: (_: string) => {},
+  sendError: (_: string) => {},
   resetAlert: () => {},
+  sendInfo: (_: string) => {},
 };
 
 export const AlertContext = createContext(initialAlertValue);
@@ -24,31 +25,15 @@ export default function AlertProvider({ children }) {
     setAlert([]);
   };
 
-  const sendAlert = (text) => {
+  const sendAlert = (text: string) => {
     addToast(text, { appearance: "success", autoDismiss: true });
-    // setAlert([
-    //   ...alerts,
-    //   {
-    //     text,
-    //     type: "success",
-    //     active: true,
-    //   },
-    // ]);
   };
 
-  const sendError = (text) => {
+  const sendError = (text: string) => {
     addToast(text, { appearance: "error", autoDismiss: true });
-    // setAlert([
-    //   ...alerts,
-    //   {
-    //     text,
-    //     type: "error",
-    //     active: true,
-    //   },
-    // ]);
   };
 
-  const sendInfo = (text) => {
+  const sendInfo = (text: string) => {
     addToast(text, { appearance: "info", autoDismiss: true });
   };
 

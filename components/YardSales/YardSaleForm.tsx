@@ -27,7 +27,7 @@ import {
   Segment,
   TextArea,
 } from "semantic-ui-react";
-import { Layout } from "../Layout/Layout";
+import { Layout } from "../layout/Layout";
 // import useSWR from "swr";
 import { ProtectedComponent } from "../ProtectedComponent";
 import { GET_YARDSALES } from "../../graphql/queries";
@@ -39,6 +39,7 @@ import { useYardsales } from "../../hooks/useYardsales";
 import { YardSalesContextInterFace } from "../../types/Context";
 import { YardSalesInterface } from "../../types/YardSales";
 import { useIsLoading } from "../../hooks/useIsLoading";
+import { FormErrorObject } from "../../types/Errors";
 
 const YardsaleForm = () => {
   const { user, token } = useAuth();
@@ -52,7 +53,7 @@ const YardsaleForm = () => {
   const [forceDisableSave, setForceDisableSave] = useState<boolean>(false)
   const router = useRouter();
   const {quickLoad, setQuickLoad} = useIsLoading()
-  const yardsaleNameRef = useRef<HTMLInputElement>();
+  const yardsaleNameRef = useRef<Input>();
   const initialValues: FormValues = {
     name: yardSale ? yardSale.name : "",
     company: yardSale ? yardSale.company : "",
@@ -105,7 +106,7 @@ const YardsaleForm = () => {
   // };
 
   const validate = () => {
-    let errors = {} as FormErrors;
+    let errors = {} as FormErrorObject;
     if (values.name.length === 0) {
       errors.name = "Please enter a name for this Yard Sale";
     }

@@ -13,7 +13,7 @@ export interface UseFormReturn {
   values: FormValues;
   setValues: (values: FormValues) => void,
   errors: FormErrors;
-  handleChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  handleChange: (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
   handleSubmit: (event: any) => void;
 }
 
@@ -44,7 +44,8 @@ const useForm = ({ initialValues, onSubmit, validate }: UseFormParams) => {
     }
     formRendered.current = false;
   }, [initialValues]);
-
+  
+  
   const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { target } = event;
     const { name, value } = target;
@@ -53,6 +54,7 @@ const useForm = ({ initialValues, onSubmit, validate }: UseFormParams) => {
     // console.log("Changing...");
     // console.log(name, value);
   };
+
 
   const handleBlur = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { target } = event;

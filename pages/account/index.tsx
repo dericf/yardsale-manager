@@ -10,11 +10,12 @@ import {
   Popup,
   Segment,
 } from "semantic-ui-react";
-import { Layout } from "../../components/Layout/Layout";
+import { Layout } from "../../components/layout/Layout";
 import { ProtectedComponent } from "../../components/ProtectedComponent";
 import { useAlert } from "../../hooks/useAlert";
 import { useAuth } from "../../hooks/useAuth";
 import useForm from "../../hooks/useForm";
+import { FormErrorObject } from "../../types/Errors";
 import { GenericResponse } from "../../types/RequestResponse";
 
 export default function index() {
@@ -77,7 +78,7 @@ export default function index() {
     }
   };
   const validate = () => {
-    let errors = {};
+    let errors = {} as FormErrorObject;
     if (values.currentPassword.length === 0) {
       errors.currentPassword =
         "Please check that you've entered your current password.";

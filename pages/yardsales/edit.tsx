@@ -14,7 +14,7 @@ import { useRouter } from "next/router";
 import {
   Header,
 } from "semantic-ui-react";
-import { Layout } from "../../components/Layout/Layout";
+import { Layout } from "../../components/layout/Layout";
 // import useSWR from "swr";
 import { ProtectedComponent } from "../../components/ProtectedComponent";
 import YardsaleForm from "../../components/YardSales/YardSaleForm";

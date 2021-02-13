@@ -17,6 +17,7 @@ import { useAlert } from "../../hooks/useAlert";
 import { useAuth } from "../../hooks/useAuth";
 import useForm, { FormErrors, FormValues } from "../../hooks/useForm";
 import { useSellers } from "../../hooks/useSeller";
+import { FormErrorObject } from "../../types/Errors";
 import { SellersInterface } from "../../types/Sellers";
 
 interface Props {
@@ -26,7 +27,7 @@ interface Props {
 export const SellersForm = ({seller}: Props) => {
   const { user, token } = useAuth();
   const { sendError, sendAlert } = useAlert();
-  const sellerNameRef = useRef<HTMLInputElement>();
+  const sellerNameRef = useRef<Input>();
   const {
     createNewSeller,
     updateSeller,
@@ -87,7 +88,7 @@ export const SellersForm = ({seller}: Props) => {
   // };
 
   const validate = () => {
-    let errors = {} as FormErrors;
+    let errors = {} as FormErrorObject;
     if (values.name.length === 0) {
       errors.name = "Please enter a name for this Seller";
     }
@@ -103,8 +104,9 @@ export const SellersForm = ({seller}: Props) => {
 
   const handleNameChange = (e: React.FormEvent<HTMLInputElement>) => {
     let computedInitials = null;   
-    computedInitials = String(e.target.value.split(" ").map((name) => name[0]),).replace(",", "");
-    setValues({...values, name: e.target.value, initials: computedInitials})
+    const target = e.target as HTMLInputElement
+    computedInitials = String(target.value.split(" ").map((name) => name[0]),).replace(",", "");
+    setValues({...values, name: target.value, initials: computedInitials})
   }
 
 
@@ -207,7 +209,7 @@ export const SellersForm = ({seller}: Props) => {
                         placeholder="Address"
                         name="address"
                         value={values.address}
-                        onChange={handleChange}
+                        onChange={async (e) => handleChange(e)}
                         rows={5}
                       />
                     </Form.Field>

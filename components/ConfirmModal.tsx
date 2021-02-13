@@ -9,6 +9,22 @@ import {
   Message,
   Divider,
 } from "semantic-ui-react";
+import { Position } from "../types/General";
+
+interface Props {
+  triggerType?: string,
+  disabled?: boolean,
+  buttonProps?: object,
+  handleConfirm?: ()=> void,
+  handleCancel?: ()=> void,
+  header?: string,
+  content?: string,
+  warningMessage?:string,
+  disabledMessage?: string,
+  popupEnabled?: boolean,
+  popupMessage?: string,
+  popupPosition?: Position,
+}
 
 export const ConfirmModal = ({
   triggerType = "button",
@@ -23,7 +39,7 @@ export const ConfirmModal = ({
   popupEnabled = false,
   popupMessage = null,
   popupPosition = "top center",
-}) => {
+}: Props) => {
   const [open, setOpen] = React.useState(false);
   const showModal = () => {
     setOpen(true);

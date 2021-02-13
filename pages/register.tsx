@@ -2,7 +2,7 @@ import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { Button, Header, Segment } from "semantic-ui-react";
-import { Layout } from "../components/Layout/Layout";
+import { Layout } from "../components/layout/Layout";
 import { LoginForm } from "../components/LoginForm/LoginForm";
 import { RegisterForm } from "../components/Register/RegisterForm";
 import { useAuth } from "../hooks/useAuth";

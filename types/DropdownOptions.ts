@@ -1,5 +1,9 @@
 import { SellerSortBy, YardSaleSortBy } from "./Context";
 
+export interface DropdownData {
+  value: string
+}
+
 export interface YardSaleSortByOptionsInterface {
   key: string;
   text: string;

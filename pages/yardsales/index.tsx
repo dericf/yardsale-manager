@@ -14,7 +14,7 @@ import Head from "next/head";
 import Link from "next/link";
 import { Fragment, useEffect } from "react";
 import { Button, Divider, Grid, Header, Segment } from "semantic-ui-react";
-import { Layout } from "../../components/Layout/Layout";
+import { Layout } from "../../components/layout/Layout";
 // import useSWR from "swr";
 import { ProtectedComponent } from "../../components/ProtectedComponent";
 import { GET_YARDSALES } from "../../graphql/queries";
