@@ -18,9 +18,13 @@ export const Home: NextPage = () => {
     <Segment padded basic>
       {!isAuthenticated && (
         <Grid centered>
-          <Grid.Column mobile={16} tablet={8} computer={12} floated="left">
-            <Header as="h2">Welcome</Header>
-            <p className="ui text">Let's get you started</p>
+          <Grid.Column mobile={16} tablet={8} computer={12}>
+            <div className="flex col align-center">
+              <Header as="h2">Welcome</Header>
+              <p className="ui text">
+                We can help you keep your yard sales organized.
+              </p>
+            </div>
           </Grid.Column>
           <Grid.Column
             textAlign="right"
@@ -28,31 +32,39 @@ export const Home: NextPage = () => {
             mobile={16}
             tablet={8}
             computer={4}
-            floated="left"
           >
-            <ItemGroup divided>
-              <Item>
-                <Link href="/login" as="/login">
-                  <Button fluid primary>
-                    Log In
-                  </Button>
-                </Link>
-              </Item>
-              <Item>
-                <Link href="/register" as="/register">
-                  <Button fluid>Register</Button>
-                </Link>
-              </Item>
-            </ItemGroup>
+            <Segment raised>
+              <ItemGroup divided>
+                <Item>
+                  <Link href="/login" as="/login">
+                    <Button fluid primary>
+                      Log In
+                    </Button>
+                  </Link>
+                </Item>
+                <Item>
+                  <Link href="/register" as="/register">
+                    <Button fluid>Register</Button>
+                  </Link>
+                </Item>
+              </ItemGroup>
+            </Segment>
           </Grid.Column>
+          <Grid.Row>
+            <div className="flex col align-center">
+              {/* <Header as="h2"></Header>
+              <p className="ui text">We can help you keep your yard sales organized.</p> */}
+            </div>
+          </Grid.Row>
+          <Divider></Divider>
         </Grid>
       )}
 
       {isAuthenticated && (
         <Grid centered>
-          <Grid.Column mobile={16} tablet={8} computer={12} floated="left">
-            <Header as="h2">Summary</Header>
-            <p className="ui text"></p>
+          <Grid.Column mobile={16} tablet={8} computer={12}>
+            <Header as="h2" textAlign="center">Welcome</Header>
+            <p className="ui text">It looks like you are logged in. This page will eventually show a full summary of your account.</p>
           </Grid.Column>
           <Grid.Column
             textAlign="right"
