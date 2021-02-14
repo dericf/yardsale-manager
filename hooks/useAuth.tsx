@@ -4,6 +4,7 @@ import {
   ConfirmResetPassword,
   GenericResponse,
   LoginResponse,
+  RefreshTokenResponse,
   RegisterResponse,
 } from "../types/RequestResponse";
 import { useAlert } from "./useAlert";
@@ -147,11 +148,7 @@ export default function AuthProvider({ children }) {
           );
           setIsAuthenticated(true);
           if (json.user.hasCompletedOnboarding === false) {
-            sendAlert(
-              `Welcome ${
-                String(json.user.name).split(" ")[0]
-              }`,
-            );
+            sendAlert(`Welcome ${String(json.user.name).split(" ")[0]}`);
           } else {
             sendAlert(`Welcome back ${String(json.user.name).split(" ")[0]}`);
           }
@@ -267,7 +264,7 @@ export default function AuthProvider({ children }) {
       const isExpired = await isTokenExpired(cachedToken);
       if (isExpired === true) {
         const sessionStillOk = await refreshNewAccessToken(cachedRefreshToken);
-        if (sessionStillOk === true) {
+        if (sessionStillOk) {
           return true;
         }
         return false;
@@ -308,8 +305,7 @@ export default function AuthProvider({ children }) {
 
   const refreshNewAccessToken = async (
     refreshToken: string,
-  ): Promise<boolean> => {
-    let returnValue = null;
+  ): Promise<string | null> => {
     const uri = `${process.env.NEXT_PUBLIC_API_SERVER_URL}/auth/refresh`;
     const options = {
       method: "POST",
@@ -317,53 +313,52 @@ export default function AuthProvider({ children }) {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ refreshToken: refreshToken }),
+      body: JSON.stringify({ refreshToken: refreshToken ?? localStorage.getItem('refreshToken') }),
     } as RequestInit;
-    console.log("Getting a new access token");
-    fetch(uri, options)
-      .then((res) => res.json())
-      .then((json) => {
-        if (json.STATUS === "OK" && json.newToken && json.newToken !== "") {
-          //
-          // Success
-          //
-
-          setIsAuthenticated(true);
-          localStorage.setItem("accessToken", json.newToken);
-          localStorage.setItem("user", JSON.stringify(json.user));
-          localStorage.setItem(
-            "sessionLastUpdatedAt",
-            new Date().toDateString() +
-              " at " +
-              new Date().toLocaleTimeString(),
-          );
-          setToken(json.newToken);
-          // Keep the same refresh token, don't reset the refresh token every time
-          // localStorage.setItem("refreshToken", json.newRefreshToken);
-          // setRefreshToken(json.newRefreshToken);
-          returnValue = true;
-        } else if (
-          json.STATUS == "ERROR" &&
-          json.MESSAGE == "refresh token expired"
-        ) {
-          //
-          // Error
-          //
-          setIsAuthenticated(false);
-          localStorage.removeItem("accessToken");
-          localStorage.removeItem("refreshToken");
-          localStorage.removeItem("user");
-          returnValue = false;
-        }
-      })
-      .catch((e) => {
+    try {
+      const resp: Response = await fetch(uri, options);
+      const json: RefreshTokenResponse = await resp.json();
+      if (json.STATUS === "OK" && json.newToken && json.newToken !== "") {
         //
-        // Something else went wrong
+        // Success
         //
-        returnValue = false;
-      });
-
-    return returnValue;
+        setIsAuthenticated(true);
+        localStorage.setItem("accessToken", json.newToken);
+        localStorage.setItem("user", JSON.stringify(json.user));
+        localStorage.setItem(
+          "sessionLastUpdatedAt",
+          new Date().toDateString() + " at " + new Date().toLocaleTimeString(),
+        );
+        setToken(json.newToken);
+        setRefreshToken(localStorage.getItem('refreshToken'))
+        setUser(json.user)
+        // Keep the same refresh token, don't reset the refresh token every time
+        // localStorage.setItem("refreshToken", json.newRefreshToken);
+        // setRefreshToken(json.newRefreshToken);
+        return json.newToken;
+      } else if (
+        json.STATUS == "ERROR" &&
+        json.MESSAGE == "refresh token expired"
+      ) {
+        //
+        // Error
+        //
+        // TODO : This is where a flag should be set to prompt the user to renew their session by logging in again.
+        setIsAuthenticated(false);
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("refreshToken");
+        localStorage.removeItem("user");
+      }
+    } catch (e) {
+      //
+      // Something else went wrong
+      //
+      setIsAuthenticated(false);
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
+      localStorage.removeItem("user");
+    }
+    return null;
   };
 
   const requestNewPassword = async () => {};
