@@ -21,6 +21,7 @@ import { GenericResponse } from "../../types/RequestResponse";
 export default function index() {
   const {
     user,
+    token,
     refreshToken,
     refreshNewAccessToken,
     sessionExpiresAt,
@@ -101,6 +102,14 @@ export default function index() {
     validate,
   });
 
+  useEffect(() => {
+    if (user === null) {
+      (async () => {
+        await refreshNewAccessToken(refreshToken);
+      })();
+    }
+  }, [user]);
+
   return (
     <ProtectedComponent>
       <Head>
@@ -110,10 +119,12 @@ export default function index() {
         <Header textAlign="center" as="h2">
           User Account
         </Header>
-        <Divider></Divider>
         {user && (
-          <div className="flex row justify-around align-center wrap" >
-            <div className="flex col align-stretch" style={{margin: "0.75rem"}}>
+          <div className="flex row justify-around align-center wrap">
+            <div
+              className="flex col align-stretch"
+              style={{ margin: "0.75rem" }}
+            >
               <Segment padded basic>
                 <Card centered raised>
                   <Card.Header
@@ -143,7 +154,10 @@ export default function index() {
                 </Card>
               </Segment>
             </div>
-            <div className="flex col align-center" style={{margin: "0.75rem"}}>
+            <div
+              className="flex col align-center"
+              style={{ margin: "0.75rem" }}
+            >
               <Message size="large">
                 <Message.Header>Session Last Updated</Message.Header>
                 <Message.Content>{sessionLastUpdatedAt}</Message.Content>
@@ -155,7 +169,10 @@ export default function index() {
                 Refresh Session
               </Button>
             </div>
-            <div className="flex col align-stretch" style={{margin: "0.75rem"}}>
+            <div
+              className="flex col align-stretch"
+              style={{ margin: "0.75rem" }}
+            >
               <form action="/" method="post" onSubmit={handleSubmit}>
                 <Segment className="flex col" padded raised>
                   <Header>Change Your Password</Header>
