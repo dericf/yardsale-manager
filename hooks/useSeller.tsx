@@ -132,7 +132,6 @@ export default function SellersProvider({ children }) {
   };
 
   useEffect(() => {
-    console.log("Filter Changed...");
     if (filter && isAuthenticated === true) {
       (async() => (
         await updateSellers()

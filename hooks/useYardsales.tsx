@@ -97,8 +97,7 @@ export default function YardSalesProvider({ children }) {
       direction: filter ? filter?.sortBy?.value?.split("-")[1] : YardSaleSortByOptions[0].value.split("-")[1]
     }
     const data = await query(GET_YARDSALES(sortBy.name, sortBy.direction));
-    console.log("Getting all yardsales...");
-    console.log(data);
+
     if (data.yardsale) {
       setYardSales(data?.yardsale);
     }
@@ -144,8 +143,6 @@ export default function YardSalesProvider({ children }) {
     const data = await query(GET_SELLER_LINKS_FOR_YARDSALE, {
       yardsaleUUID: yardSaleId,
     });
-    console.log("Seller Links");
-    console.log(data);
     setSellerLinks(data.yardsale_seller_link);
     return data.yardsale_seller_link;
   };
@@ -207,10 +204,8 @@ export default function YardSalesProvider({ children }) {
     const data = await query(GET_TRANSACTION_ITEMS_FOR_YARDSALE, {
       yardsaleUUID: yardSaleId,
     });
-    console.log("\nTransactions after running query: ");
-    console.log(data);
-    setTransactionItems(data?.transaction);
-    return {data: data?.transaction};
+    setTransactionItems(data.transaction);
+    return {data: data.transaction};
   };
 
   const createYardSaleTransaction = async (
@@ -226,9 +221,6 @@ export default function YardSalesProvider({ children }) {
         description: transactionItem.description,
       },
     );
-    console.log("\nTransactions: ");
-    console.log(data);
-    setTransactionItems(data);
     return data;
   };
 
@@ -239,7 +231,6 @@ export default function YardSalesProvider({ children }) {
   };
 
   useEffect(() => {
-    console.log("Filter Changed...");
     if (filter && isAuthenticated === true) {
       (async() => (
         await updateYardSales()
