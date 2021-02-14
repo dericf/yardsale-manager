@@ -48,11 +48,8 @@ const useForm = ({ initialValues, onSubmit, validate }: UseFormParams) => {
   
   const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { target } = event;
-    const { name, value } = target;
-    // event.persist();
+    const { name, value } = event.target;
     setValues({ ...values, [name]: value });
-    // console.log("Changing...");
-    // console.log(name, value);
   };
 
 
@@ -65,7 +62,6 @@ const useForm = ({ initialValues, onSubmit, validate }: UseFormParams) => {
 
   const handleSubmit = (event: any) => {
     if (event) event.preventDefault();
-    
     
     // Check if a validate function was passed
     let validateErrors: FormValues;

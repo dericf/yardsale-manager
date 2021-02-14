@@ -26,7 +26,7 @@ import { FormValues } from "./useForm";
 import { SellersInterface } from "../types/Sellers";
 import { UUID } from "../types/General";
 import { YardSaleLinks } from "../types/YardSaleLinks";
-import { Transaction } from "../types/Transaction";
+import { PendingTransactionItem, Transaction } from "../types/Transaction";
 import { YardSaleSortByOptions } from "../types/DropdownOptions";
 
 interface ApolloQueryReturn {
@@ -49,7 +49,7 @@ export default function YardSalesProvider({ children }) {
   const { query, mutation } = useHasura();
 
   const [yardSales, setYardSales] = useState(new Array<YardSalesInterface>());
-  const [selectedYardSale, setSelectedYardSale] = useState<YardSalesInterface>(
+  const [selectedYardSale, setSelectedYardSale] = useState<YardSalesInterface | null>(
     null,
   );
   // const { client } = useHasura();
@@ -210,7 +210,7 @@ export default function YardSalesProvider({ children }) {
 
   const createYardSaleTransaction = async (
     yardSaleId: UUID,
-    transactionItem: Transaction,
+    transactionItem: PendingTransactionItem,
   ): Promise<any> => {
     const { yardsale_transaction: data } = await query(
       CREATE_TRANSACTION_ITEM,

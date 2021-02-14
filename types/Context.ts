@@ -70,12 +70,12 @@ export interface HasuraContextInterface {
 
 export interface YardSalesContextInterFace {
   // TODO hook this array type up to graphql types
-  yardSales: Array<YardSalesInterface>;
+  yardSales: Array<YardSalesInterface> | null;
   setYardSales;
   sellerLinks: Array<YardSaleLinks>;
   transactionItems: Array<Transaction>;
-  selectedYardSale: YardSalesInterface;
-  setSelectedYardSale: (_: YardSalesInterface) => void;
+  selectedYardSale: YardSalesInterface | null;
+  setSelectedYardSale: (_: YardSalesInterface | null) => void;
   setFilter: (_: Filter) => void;
   clearSelectedYardSale: () => void;
   createNewYardsale: (yardsale: FormValues) => any;
