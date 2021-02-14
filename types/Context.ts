@@ -5,7 +5,7 @@ import { LoginForm, RegisterForm } from "./Forms";
 import { UUID } from "./General";
 import { UseQueryResponse } from "./GraphQL";
 import { SellersInterface } from "./Sellers";
-import { Transaction } from "./Transaction";
+import { PendingTransactionItem, Transaction } from "./Transaction";
 import { User } from "./User";
 import { YardSaleLinks } from "./YardSaleLinks";
 import { YardSalesInterface } from "./YardSales";
@@ -38,7 +38,7 @@ export interface AuthContextInterface {
   ) => Promise<boolean>;
   isTokenExpired: (token: string) => Promise<boolean>;
   sessionExpiresAt: () => string;
-  refreshNewAccessToken: (refreshToken: string) => Promise<boolean>;
+  refreshNewAccessToken: (refreshToken: string) => Promise<string | null>;
 }
 
 export interface LoadingContextInterface {
@@ -96,7 +96,7 @@ export interface YardSalesContextInterFace {
   getAllYardSaleTransactions: (yardSaleId: UUID) => Promise<UseQueryResponse>;
   createYardSaleTransaction: (
     yardSaleId: UUID,
-    transactionItem: Transaction,
+    transactionItem: PendingTransactionItem,
   ) => Promise<any>;
   getAllTransactionsForSellerOnYardSale: (
     yardSaleId: UUID,
