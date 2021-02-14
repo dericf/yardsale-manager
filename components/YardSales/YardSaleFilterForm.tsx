@@ -24,9 +24,9 @@ export const YardSaleFilterForm = () => {
     // updateFilterText(e.target.value);
   };
 
-  useEffect(() => {
-    if (ref) ref.current.focus();
-  }, []);
+  // useEffect(() => {
+  //   if (ref) ref.current.focus();
+  // }, []);
 
   return (
     <Form>
