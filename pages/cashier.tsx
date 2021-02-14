@@ -1,13 +1,3 @@
-import {
-  ApolloClient,
-  HttpLink,
-  InMemoryCache,
-  split,
-  useQuery,
-  useApolloClient,
-  fromError,
-} from "@apollo/client";
-import { GetServerSideProps, NextPageContext } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -18,7 +8,7 @@ import { Layout } from "../components/layout/Layout";
 // import useSWR from "swr";
 import { ProtectedComponent } from "../components/ProtectedComponent";
 import { TransactionTable } from "../components/Tables/TransactionTable";
-import YardsaleForm from "../components/YardSales/YardSaleForm";
+
 import { useAuth } from "../hooks/useAuth";
 import YardSalesProvider, { useYardsales } from "../hooks/useYardsales";
 import { UUID } from "../types/General";
