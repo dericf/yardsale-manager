@@ -35,7 +35,9 @@ import {
 import { useAlert } from "../../hooks/useAlert";
 import useForm from "../../hooks/useForm";
 import { useYardsales } from "../../hooks/useYardsales";
-import { Transaction } from "../../types/Transaction";
+import { UUID } from "../../types/General";
+import { PendingTransactionItem, Transaction } from "../../types/Transaction";
+import { YardSaleLinks } from "../../types/YardSaleLinks";
 import { YardSalesInterface } from "../../types/YardSales";
 import { toMoney, fromMoney } from "../../utilities/money_helpers";
 
@@ -49,13 +51,15 @@ interface Props {
 export const CashierForm = ({ yardSale }: Props) => {
   const initialValues = {
     seller: {
-      uuid: "123123123",
+      uuid: "",
       name: null,
     },
     price: "",
     description: "",
   };
-  const [transactionItems, setTransactionItems] = useState([]);
+  const [pendingTransactionItems, setTransactionItems] = useState<
+    Array<PendingTransactionItem>
+  >(new Array<PendingTransactionItem>());
   const [tender, setTender] = useState("");
   const [changeDue, setChangeDue] = useState("0");
   const [sellers, setSellers] = useState(null);
@@ -101,7 +105,7 @@ export const CashierForm = ({ yardSale }: Props) => {
   };
 
   const postTransaction = async () => {
-    transactionItems.forEach(async (item: Transaction) => {
+    pendingTransactionItems.forEach(async (item: PendingTransactionItem) => {
       await createYardSaleTransaction(yardSale.uuid, item);
     });
   };
@@ -111,19 +115,20 @@ export const CashierForm = ({ yardSale }: Props) => {
     // console.log('Full Transaction: ', transactionItems)
     await postTransaction();
     sendAlert("Transaction has been saved.");
-    resetModal();
-    setTransactionItems([]);
-    setFormValues(initialValues);
-    await getAllYardSaleTransactions(yardSale.uuid);
+    setTransactionItems(new Array<PendingTransactionItem>());
+    // setFormValues(initialValues);
+    setTimeout(async () => {
+      await getAllYardSaleTransactions(yardSale.uuid);
+    }, 500);
     focusRef.current.focus();
+    focusRef.current.select();
   };
 
   const saveAndClose = async () => {
     // console.log('Full Transaction: ', transactionItems)
     await postTransaction();
     sendAlert("Transaction has been saved.");
-    resetModal();
-    setTransactionItems([]);
+    setTransactionItems(new Array<PendingTransactionItem>());
     setFormValues(initialValues);
     setSelectedYardSale(null);
     router.push("/yardsales");
@@ -131,8 +136,9 @@ export const CashierForm = ({ yardSale }: Props) => {
 
   const addItem = () => {
     setTransactionItems([
-      ...transactionItems,
+      ...pendingTransactionItems,
       {
+        id: pendingTransactionItems.length,
         seller: {
           uuid: formValues.seller.uuid,
           name: formValues.seller.name,
@@ -148,7 +154,7 @@ export const CashierForm = ({ yardSale }: Props) => {
 
   const calculateRunningTotal = () => {
     return toMoney(
-      transactionItems.reduce(
+      pendingTransactionItems.reduce(
         (accum, currentItem) => Number(accum) + Number(currentItem.price),
         0,
       ),
@@ -172,15 +178,17 @@ export const CashierForm = ({ yardSale }: Props) => {
     setTender(fromMoney(e.target.value));
   };
 
-  const removeTransactionItem = (id) => {
-    setTransactionItems(transactionItems.filter((item) => item.id != id));
+  const removeTransactionItem = (itemToBeDeleted: PendingTransactionItem) => {
+    setTransactionItems(
+      pendingTransactionItems.filter((item: PendingTransactionItem) => item.id != itemToBeDeleted.id),
+    );
     setTender("0");
   };
 
   const duplicateTransactionItem = (item) => {
     let newItem = { ...item };
-    newItem.id = transactionItems.length + 1;
-    setTransactionItems(transactionItems.concat([newItem]));
+    newItem.id = pendingTransactionItems.length;
+    setTransactionItems([...pendingTransactionItems, newItem]);
     setTender("0");
   };
 
@@ -259,12 +267,20 @@ export const CashierForm = ({ yardSale }: Props) => {
                                       link.seller.is_active === true &&
                                       link.seller.is_deleted === false,
                                   )
-                                  .map((link, index) => {
-                                    return {
-                                      key: index,
+                                  .map((link: YardSaleLinks, index: number) => {
+                                    console.log("Link Dropdown Options");
+                                    console.log({
+                                      key: link.uuid,
                                       text: `${link.seller.initials} (${link.seller.name})`,
                                       content: `${link.seller.initials} (${link.seller.name})`,
-                                      value: `${link.seller.uuid}|${link.seller.initials} (${link.seller.name})`,
+                                      value: `${link.seller.uuid}||${link.seller.initials} (${link.seller.name})`,
+                                    });
+                                    console.log(`${link.seller.uuid}||${link.seller.initials} (${link.seller.name})`.split("||"))
+                                    return {
+                                      key: link.uuid,
+                                      text: `${link.seller.initials} (${link.seller.name})`,
+                                      content: `${link.seller.initials} (${link.seller.name})`,
+                                      value: `${link.seller.uuid}||${link.seller.initials} (${link.seller.name})`,
                                     };
                                   })}
                                 onChange={(e, { value }) => {
@@ -274,8 +290,8 @@ export const CashierForm = ({ yardSale }: Props) => {
                                   setFormValues({
                                     ...formValues,
                                     seller: {
-                                      uuid: value.split("|")[0],
-                                      name: value.split("|")[1],
+                                      uuid: value.split("||")[0],
+                                      name: value.split("||")[1],
                                     },
                                   });
                                 }}
@@ -327,14 +343,14 @@ export const CashierForm = ({ yardSale }: Props) => {
                       disabled={
                         formValues.price == null ||
                         formValues.seller.uuid === null ||
-                        sellerLinks.length === 0
+                        sellerLinks.length === 0 || formValues.price === "NaN"
                       }
                     />
                   </Grid.Column>
                 </Grid.Row>
               </Form>
             </Grid.Column>
-            {transactionItems && transactionItems.length > 0 && (
+            {pendingTransactionItems && pendingTransactionItems.length > 0 && (
               <Grid.Column
                 mobile={16}
                 computer={8}
@@ -343,6 +359,13 @@ export const CashierForm = ({ yardSale }: Props) => {
                 <Divider content="pending Items" horizontal />
                 <Table className="mt0" striped compact basic="very" unstackable>
                   <Table.Header>
+                    <Table.Row>
+                      <Table.HeaderCell colSpan="5" textAlign="center">
+                        <Header size="medium">
+                          Total: {calculateRunningTotal()}
+                        </Header>
+                      </Table.HeaderCell>
+                    </Table.Row>
                     <Table.Row>
                       <Table.HeaderCell textAlign="center"></Table.HeaderCell>
                       <Table.HeaderCell textAlign="center">
@@ -364,9 +387,9 @@ export const CashierForm = ({ yardSale }: Props) => {
                   </Table.Header>
 
                   <Table.Body>
-                    {transactionItems && (
+                    {pendingTransactionItems && (
                       <Fragment>
-                        {transactionItems.length === 0 && (
+                        {pendingTransactionItems.length === 0 && (
                           <Table.Row textAlign="center">
                             <Table.Cell textAlign="center" colSpan="5">
                               No Items in this Transaction
@@ -374,9 +397,11 @@ export const CashierForm = ({ yardSale }: Props) => {
                           </Table.Row>
                         )}
 
-                        {transactionItems.map((item: Transaction, index) => {
+                        {pendingTransactionItems.map((item: any, index) => {
                           return (
-                            <Table.Row key={item.uuid}>
+                            <Table.Row
+                              key={`pending-transaction-item-${index}`}
+                            >
                               <Table.Cell textAlign="center">
                                 {index + 1}
                               </Table.Cell>
@@ -422,7 +447,7 @@ export const CashierForm = ({ yardSale }: Props) => {
                                         basic
                                         compact
                                         onClick={() =>
-                                          removeTransactionItem(item.uuid)
+                                          removeTransactionItem(item)
                                         }
                                       />
                                     }
@@ -436,20 +461,13 @@ export const CashierForm = ({ yardSale }: Props) => {
                         })}
                       </Fragment>
                     )}
-                    <Table.Row>
-                      <Table.Cell colSpan={5} textAlign="center">
-                        <Header size="large">
-                          Total: {calculateRunningTotal()}
-                        </Header>
-                      </Table.Cell>
-                    </Table.Row>
                   </Table.Body>
                 </Table>
               </Grid.Column>
             )}
           </Grid.Row>
           {/* <Divider className="px0" content="Transaction Totals" horizontal /> */}
-          {transactionItems && transactionItems.length > 0 && (
+          {pendingTransactionItems && pendingTransactionItems.length > 0 && (
             <div className="flex-row justify-around  align-center">
               {/* <Header size="large">Total: {calculateRunningTotal()}</Header> */}
 
@@ -494,7 +512,7 @@ export const CashierForm = ({ yardSale }: Props) => {
         <Grid stackable centered>
           <Grid.Row columns={3} centered>
             <Grid.Column mobile={10} tablet={5} computer={5}>
-              {transactionItems.length === 0 ? (
+              {pendingTransactionItems.length === 0 ? (
                 <Button fluid basic onClick={cancel}>
                   Close
                 </Button>
@@ -521,7 +539,7 @@ export const CashierForm = ({ yardSale }: Props) => {
               <Button
                 onClick={saveAndClose}
                 content="Save and Close"
-                disabled={transactionItems.length == 0}
+                disabled={pendingTransactionItems.length == 0}
                 fluid
                 primary
                 basic
@@ -532,7 +550,7 @@ export const CashierForm = ({ yardSale }: Props) => {
               <Button
                 onClick={save}
                 content="Save"
-                disabled={transactionItems.length == 0}
+                disabled={pendingTransactionItems.length == 0}
                 fluid
                 primary
                 className="save"
