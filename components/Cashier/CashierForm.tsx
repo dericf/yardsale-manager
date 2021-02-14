@@ -268,14 +268,6 @@ export const CashierForm = ({ yardSale }: Props) => {
                                       link.seller.is_deleted === false,
                                   )
                                   .map((link: YardSaleLinks, index: number) => {
-                                    console.log("Link Dropdown Options");
-                                    console.log({
-                                      key: link.uuid,
-                                      text: `${link.seller.initials} (${link.seller.name})`,
-                                      content: `${link.seller.initials} (${link.seller.name})`,
-                                      value: `${link.seller.uuid}||${link.seller.initials} (${link.seller.name})`,
-                                    });
-                                    console.log(`${link.seller.uuid}||${link.seller.initials} (${link.seller.name})`.split("||"))
                                     return {
                                       key: link.uuid,
                                       text: `${link.seller.initials} (${link.seller.name})`,
