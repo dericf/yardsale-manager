@@ -24,9 +24,9 @@ export const SellersFilterForm = () => {
     });
   };
 
-  useEffect(() => {
-    if (ref) ref.current.focus();
-  }, []);
+  // useEffect(() => {
+  //   if (ref) ref.current.focus();
+  // }, []);
 
   return (
     <Form>

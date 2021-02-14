@@ -101,7 +101,7 @@ export const SellersForm = ({ seller }: Props) => {
     let computedInitials = null;
     const target = e.target as HTMLInputElement;
     computedInitials = String(
-      target.value.split(" ").map((name) => name[0]),
+      target.value?.split(" ").map((name) => name[0]),
     ).replace(",", "");
     setValues({ ...values, name: target.value, initials: computedInitials });
   };
