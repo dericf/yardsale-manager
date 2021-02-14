@@ -71,121 +71,122 @@ export const SellersList = () => {
         </Grid.Column>
       </Grid.Row>
       <div style={{ overflowY: "auto", height: "65vh" }}>
-        {sellers && sellers?.length == 0 && <div>No Sellers</div>}
-        {sellers && sellers?.length > 0 && (
-          <>
-            {sellers
-              ?.filter(
-                (seller: SellersInterface) =>
-                  filter.searchText.length === 0 ||
-                  seller?.name?.toLowerCase().includes(filter.searchText) ||
-                  seller?.initials?.toLowerCase().includes(filter.searchText) ||
-                  seller?.company?.toLowerCase().includes(filter.searchText),
-              )
-              .map((seller: SellersInterface) => (
-                <Segment
-                  key={seller?.uuid}
-                  textAlign="left"
-                  fluid
-                  compact
-                  style={{ border: "0px !important", width: "100%" }}
-                  // onClick={(e)=> {
-                  //   setSelectedSeller(seller)
-                  //   router.push('/yardsales/edit')
-                  // }}
-                >
-                  <Grid>
-                    <Grid.Row>
-                      <Grid.Column mobile={8} tablet={12} computer={12}>
-                        <Grid.Row verticalAlign="top" className="pb0">
-                          <Grid.Column
-                            computer={12}
-                            tablet={12}
-                            mobile={16}
-                            verticalAlign="top"
-                          >
+        {sellers && sellers?.length == 0 && (
+          <div className="flex row justify-center">No Sellers</div>
+        )}
+        {sellers &&
+          sellers?.length > 0 &&
+          sellers
+            ?.filter(
+              (seller: SellersInterface) =>
+                filter.searchText.length === 0 ||
+                seller?.name?.toLowerCase().includes(filter.searchText) ||
+                seller?.initials?.toLowerCase().includes(filter.searchText) ||
+                seller?.company?.toLowerCase().includes(filter.searchText),
+            )
+            .map((seller: SellersInterface) => (
+              <Segment
+                key={seller?.uuid}
+                textAlign="left"
+                compact
+                style={{ border: "0px !important", width: "100%" }}
+                // onClick={(e)=> {
+                //   setSelectedSeller(seller)
+                //   router.push('/yardsales/edit')
+                // }}
+              >
+                <Grid>
+                  <Grid.Row>
+                    <Grid.Column mobile={8} tablet={12} computer={12}>
+                      <Grid.Row verticalAlign="top" className="pb0">
+                        <Grid.Column
+                          computer={12}
+                          tablet={12}
+                          mobile={16}
+                          verticalAlign="top"
+                        >
+                          <Card.Content>
+                            <Card.Header as="h3" style={{ marginBottom: 0 }}>
+                              {seller?.name} &nbsp; ({seller?.initials}){" "}
+                            </Card.Header>
+                            <Card.Meta>
+                              {seller?.company && (
+                                <span>{seller?.company}</span>
+                              )}
+                            </Card.Meta>
+                          </Card.Content>
+                        </Grid.Column>
+                      </Grid.Row>
+                      <Grid.Row className="py0">
+                        <Grid.Column computer={12} tablet={12} mobile={16}>
+                          <Card.Content>
                             <Card.Content>
-                              <Card.Header as="h3" style={{ marginBottom: 0 }}>
-                                {seller?.name} &nbsp; ({seller?.initials}){" "}
-                              </Card.Header>
-                              <Card.Meta>
-                                {seller?.company && (
-                                  <span>{seller?.company}</span>
-                                )}
-                              </Card.Meta>
-                            </Card.Content>
-                          </Grid.Column>
-                        </Grid.Row>
-                        <Grid.Row className="py0">
-                          <Grid.Column computer={12} tablet={12} mobile={16}>
-                            <Card.Content>
-                              <Card.Content>
-                                {seller.phone && (
+                              {seller.phone && (
+                                <Card.Description>
+                                  <strong>Phone: </strong>
+                                  {seller.phone}
+                                </Card.Description>
+                              )}
+                              {seller.email && (
+                                <Card.Description>
+                                  <strong>Email: </strong>
+                                  {seller.email}
+                                </Card.Description>
+                              )}
+                              {seller.notes && seller.notes.length > 1 && (
+                                <Segment>
                                   <Card.Description>
-                                    <strong>Phone: </strong>
-                                    {seller.phone}
+                                    <strong>Notes: </strong> <br />
+                                    {String(seller.notes)
+                                      .split("\n")
+                                      .map((line) => (
+                                        <Fragment key={line}>
+                                          {line} <br />
+                                        </Fragment>
+                                      ))}
                                   </Card.Description>
-                                )}
-                                {seller.email && (
-                                  <Card.Description>
-                                    <strong>Email: </strong>
-                                    {seller.email}
-                                  </Card.Description>
-                                )}
-                                {seller.notes && seller.notes.length > 1 && (
-                                  <Segment>
-                                    <Card.Description>
-                                      <strong>Notes: </strong> <br />
-                                      {String(seller.notes)
-                                        .split("\n")
-                                        .map((line) => (
-                                          <Fragment key={line}>
-                                            {line} <br />
-                                          </Fragment>
-                                        ))}
-                                    </Card.Description>
-                                  </Segment>
-                                )}
-                              </Card.Content>
+                                </Segment>
+                              )}
                             </Card.Content>
-                          </Grid.Column>
-                        </Grid.Row>
-                      </Grid.Column>
-                      <Grid.Column
-                        mobile={8}
-                        tablet={4}
-                        computer={4}
-                        textAlign="right"
-                        verticalAlign="middle"
-                      >
-                        <div className="flex col align-stretch wrap">
-                          <div
-                            className="flex row justify-between"
-                            style={{ margin: ".75rem" }}
+                          </Card.Content>
+                        </Grid.Column>
+                      </Grid.Row>
+                    </Grid.Column>
+                    <Grid.Column
+                      mobile={8}
+                      tablet={4}
+                      computer={4}
+                      textAlign="right"
+                      verticalAlign="middle"
+                    >
+                      <div className="flex col align-stretch wrap">
+                        <div
+                          className="flex row justify-between"
+                          style={{ margin: ".75rem" }}
+                        >
+                          <Link
+                            href="/sellers/edit"
+                            as="/sellers/edit"
+                            scroll={true}
                           >
-                            <Link
-                              href="/sellers/edit"
-                              as="/sellers/edit"
-                              scroll={true}
+                            <Button
+                              className="my-2"
+                              secondary
+                              fluid
+                              onClick={() => {
+                                setSelectedSeller(seller);
+                              }}
                             >
-                              <Button
-                                className="my-2"
-                                secondary
-                                fluid
-                                onClick={() => {
-                                  setSelectedSeller(seller);
-                                }}
-                              >
-                                Edit
-                              </Button>
-                            </Link>
-                          </div>
-                          <div
-                            className="flex row justify-around"
-                            style={{ margin: ".75rem" }}
-                          >
-                            <SellerTransactionModal seller={seller} />
-                            {/* <Button
+                              Edit
+                            </Button>
+                          </Link>
+                        </div>
+                        <div
+                          className="flex row justify-around"
+                          style={{ margin: ".75rem" }}
+                        >
+                          <SellerTransactionModal seller={seller} />
+                          {/* <Button
                               className="my-2"
                               color="red"
                               basic
@@ -197,54 +198,55 @@ export const SellersList = () => {
                               }}
                             ></Button> */}
 
-                            <ConfirmModal
-                              buttonProps={{
-                                negative: true,
-                                circular: true,
-                                basic: true,
-                                icon: "trash",
-                              }}
-                              header="Confirm Delete"
-                              content={
-                                "Are you sure you want to delete this Seller?"
+                          <ConfirmModal
+                            buttonProps={{
+                              negative: true,
+                              circular: true,
+                              basic: true,
+                              icon: "trash",
+                            }}
+                            header="Confirm Delete"
+                            content={
+                              "Are you sure you want to delete this Seller?"
+                            }
+                            handleConfirm={async () => {
+                              const activeTransactions = await getAllTransactionsForSeller(
+                                seller.uuid,
+                              );
+                              const activeLinks = await getAllLinksForSeller(
+                                seller.uuid,
+                              );
+                              if (activeLinks?.data?.length > 0) {
+                                sendError(
+                                  `Cannot delete ${seller.name} because they are linked to ${activeLinks.data.length} Yard Sale(s).`,
+                                );
                               }
-                              handleConfirm={async () => {
-                                const activeTransactions = await getAllTransactionsForSeller(
-                                  seller.uuid,
+                              if (activeTransactions?.data?.length > 0) {
+                                sendError(
+                                  `Cannot delete ${seller.name} because there are ${activeTransactions.data.length} Active Transaction(s).`,
                                 );
-                                const activeLinks = await getAllLinksForSeller(
-                                  seller.uuid,
-                                );
-                                if (activeLinks?.data?.length > 0) {
-                                  sendError(
-                                    `Cannot delete ${seller.name} because they are linked to ${activeLinks.data.length} Yard Sale(s).`,
-                                  );
-                                } 
-                                if (activeTransactions?.data?.length > 0) {
-                                  sendError(
-                                    `Cannot delete ${seller.name} because there are ${activeTransactions.data.length} Active Transaction(s).`,
-                                  );
-                                } 
-                                if (activeTransactions?.data?.length === 0 && activeLinks?.data?.length === 0) {
-                                  // await deleteSeller(seller.uuid);
-                                  // await updateSellers();
+                              }
+                              if (
+                                activeTransactions?.data?.length === 0 &&
+                                activeLinks?.data?.length === 0
+                              ) {
+                                // await deleteSeller(seller.uuid);
+                                // await updateSellers();
 
-                                  // router.push("/yardsales");
-                                  sendAlert(
-                                    "Success! Yard Sale has been deleted",
-                                  );
-                                }
-                              }}
-                            />
-                          </div>
+                                // router.push("/yardsales");
+                                sendAlert(
+                                  "Success! Yard Sale has been deleted",
+                                );
+                              }
+                            }}
+                          />
                         </div>
-                      </Grid.Column>
-                    </Grid.Row>
-                  </Grid>
-                </Segment>
-              ))}
-          </>
-        )}
+                      </div>
+                    </Grid.Column>
+                  </Grid.Row>
+                </Grid>
+              </Segment>
+            ))}
       </div>
     </>
   );

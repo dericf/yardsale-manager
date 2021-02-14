@@ -21,23 +21,18 @@ import { FormErrorObject } from "../../types/Errors";
 import { SellersInterface } from "../../types/Sellers";
 
 interface Props {
-  seller: SellersInterface
+  seller: SellersInterface;
 }
 
-export const SellersForm = ({seller}: Props) => {
+export const SellersForm = ({ seller }: Props) => {
   const { user, token } = useAuth();
   const { sendError, sendAlert } = useAlert();
   const sellerNameRef = useRef<Input>();
-  const {
-    createNewSeller,
-    updateSeller,
-    setSelectedSeller
-  } = useSellers();
+  const { createNewSeller, updateSeller, setSelectedSeller } = useSellers();
   const router = useRouter();
   const initialValues: FormValues = {
     name: seller ? seller.name : "",
-    initials: seller
-      ? seller.initials : "",
+    initials: seller ? seller.initials : "",
     company: seller ? seller.company : "",
     phone: seller ? seller.phone : "",
     email: seller ? seller.email : "",
@@ -94,21 +89,22 @@ export const SellersForm = ({seller}: Props) => {
     }
 
     return errors;
-  }
+  };
 
   const { values, handleChange, handleSubmit, setValues } = useForm({
     initialValues,
     onSubmit,
-    validate
+    validate,
   });
 
   const handleNameChange = (e: React.FormEvent<HTMLInputElement>) => {
-    let computedInitials = null;   
-    const target = e.target as HTMLInputElement
-    computedInitials = String(target.value.split(" ").map((name) => name[0]),).replace(",", "");
-    setValues({...values, name: target.value, initials: computedInitials})
-  }
-
+    let computedInitials = null;
+    const target = e.target as HTMLInputElement;
+    computedInitials = String(
+      target.value.split(" ").map((name) => name[0]),
+    ).replace(",", "");
+    setValues({ ...values, name: target.value, initials: computedInitials });
+  };
 
   useEffect(() => {
     // Auto focus the first form input on first page load
@@ -121,114 +117,114 @@ export const SellersForm = ({seller}: Props) => {
         <Grid.Row className="py0">
           {/* First Grid.Row (Filters/Buttons) */}
           <Grid.Column>
-          <Form
-            onSubmit={handleSubmit}
-            id="SellerDetailsModal"
-            className="p0 m0"
-          >
-            <Grid>
-              <Grid.Row className="pb0">
-                <Grid.Column>
-                  <Form.Group>
-                    <Form.Field width="7">
-                      <label>Seller Name</label>
-                      <Input
-                        icon="user"
-                        iconPosition="left"
-                        ref={sellerNameRef}
-                        placeholder="Seller Name"
-                        name="name"
-                        value={values.name}
-                        onChange={handleNameChange}
-                      />
-                    </Form.Field>
-                    <Form.Field width="2">
-                      <label>Initials</label>
-                      <Input
-                        name="initials"
-                        icon="address card"
-                        iconPosition="left"
-                        value={values.initials}
-                        onChange={handleChange}
-                      />
-                    </Form.Field>
+            <Form
+              onSubmit={handleSubmit}
+              id="SellerDetailsModal"
+              className="p0 m0"
+            >
+              <Grid>
+                <Grid.Row className="pb0">
+                  <Grid.Column>
+                    <Form.Group>
+                      <Form.Field width="7">
+                        <label>Seller Name</label>
+                        <Input
+                          icon="user"
+                          iconPosition="left"
+                          ref={sellerNameRef}
+                          placeholder="Seller Name"
+                          name="name"
+                          value={values.name}
+                          onChange={handleNameChange}
+                        />
+                      </Form.Field>
+                      <Form.Field width="2">
+                        <label>Initials</label>
+                        <Input
+                          name="initials"
+                          icon="address card"
+                          iconPosition="left"
+                          value={values.initials}
+                          onChange={handleChange}
+                        />
+                      </Form.Field>
 
-                    <Form.Field width="7">
-                      <label>Company</label>
-                      <Input
-                        icon="building"
-                        iconPosition="left"
-                        placeholder="Company"
-                        name="company"
-                        value={values.company}
-                        onChange={handleChange}
-                      />
-                    </Form.Field>
-                  </Form.Group>
-                </Grid.Column>
-              </Grid.Row>
+                      <Form.Field width="7">
+                        <label>Company</label>
+                        <Input
+                          icon="building"
+                          iconPosition="left"
+                          placeholder="Company"
+                          name="company"
+                          value={values.company}
+                          onChange={handleChange}
+                        />
+                      </Form.Field>
+                    </Form.Group>
+                  </Grid.Column>
+                </Grid.Row>
 
-              <Grid.Row className="pt0 pb0">
-                <Grid.Column>
-                  <Form.Group widths="equal">
-                    <Form.Field>
-                      <label>Phone</label>
-                      <Input
-                        icon="phone"
-                        iconPosition="left"
-                        placeholder="Phone"
-                        type="tel"
-                        name="phone"
-                        value={values.phone}
-                        onChange={handleChange}
-                      ></Input>
-                    </Form.Field>
+                <Grid.Row className="pt0 pb0">
+                  <Grid.Column>
+                    <Form.Group widths="equal">
+                      <Form.Field>
+                        <label>Phone</label>
+                        <Input
+                          icon="phone"
+                          iconPosition="left"
+                          placeholder="Phone"
+                          type="tel"
+                          name="phone"
+                          value={values.phone}
+                          onChange={handleChange}
+                        ></Input>
+                      </Form.Field>
 
-                    <Form.Field>
-                      <label>Email</label>
-                      <Input
-                        icon="envelope"
-                        iconPosition="left"
-                        placeholder="Email"
-                        type="email"
-                        name="email"
-                        value={values.email}
-                        onChange={handleChange}
-                      />
-                    </Form.Field>
-                  </Form.Group>
-                </Grid.Column>
-              </Grid.Row>
+                      <Form.Field>
+                        <label>Email</label>
+                        <Input
+                          icon="envelope"
+                          iconPosition="left"
+                          placeholder="Email"
+                          type="email"
+                          name="email"
+                          value={values.email}
+                          onChange={handleChange}
+                        />
+                      </Form.Field>
+                    </Form.Group>
+                  </Grid.Column>
+                </Grid.Row>
 
-              <Grid.Row className="pt0">
-                <Grid.Column>
-                  <Form.Group widths="equal">
-                    <Form.Field>
-                      <label>Address</label>
-                      <TextArea
-                        placeholder="Address"
-                        name="address"
-                        value={values.address}
-                        onChange={async (e) => handleChange(e)}
-                        rows={5}
-                      />
-                    </Form.Field>
+                <Grid.Row className="pt0">
+                  <Grid.Column>
+                    <Form.Group widths="equal">
+                      <Form.Field>
+                        <label>Address</label>
+                        <TextArea
+                          placeholder="Address"
+                          name="address"
+                          value={values.address}
+                          onChange={async (e) => handleChange(e)}
+                          rows={5}
+                        />
+                      </Form.Field>
 
-                    <Form.Field>
-                      <label>Notes</label>
-                      <TextArea
-                        placeholder="Notes"
-                        name="notes"
-                        value={values.notes}
-                        onChange={handleChange}
-                        rows={5}
-                      />
-                    </Form.Field>
-                  </Form.Group>
-                </Grid.Column>
-              </Grid.Row>
-            </Grid>
-          </Form>
+                      <Form.Field>
+                        <label>Notes</label>
+                        <TextArea
+                          placeholder="Notes"
+                          name="notes"
+                          value={values.notes}
+                          onChange={handleChange}
+                          rows={5}
+                        />
+                      </Form.Field>
+                    </Form.Group>
+                  </Grid.Column>
+                </Grid.Row>
+              </Grid>
+            </Form>
           </Grid.Column>
         </Grid.Row>
 
@@ -238,8 +234,9 @@ export const SellersForm = ({seller}: Props) => {
 
       <Grid centered>
         <Grid.Row centered>
-          <Grid.Column mobile={10} tablet={8} computer={8}>
+          <Grid.Column mobile={14} tablet={8} computer={5}>
             <Button
+              style={{ marginTop: "0.75rem" }}
               className="cancel"
               basic
               fluid
@@ -248,9 +245,10 @@ export const SellersForm = ({seller}: Props) => {
               Cancel
             </Button>
           </Grid.Column>
-          <Grid.Column mobile={10} tablet={8} computer={8}>
+          <Grid.Column mobile={14} tablet={8} computer={5}>
             <Button
               fluid
+              style={{ marginTop: "0.75rem" }}
               primary
               className="save"
               disabled={values.name.length === 0}
