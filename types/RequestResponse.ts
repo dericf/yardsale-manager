@@ -1,9 +1,9 @@
-import { executionAsyncResource } from "async_hooks"
-import { generateKeyPair } from "crypto"
+import { executionAsyncResource } from "async_hooks";
+import { generateKeyPair } from "crypto";
 
 export interface GenericResponse {
   STATUS: "OK" | "ERROR" | "UNAUTHORIZED";
-  MESSAGE?: string
+  MESSAGE?: string;
 }
 
 export interface LoginResponse extends GenericResponse {
@@ -22,7 +22,13 @@ export interface RegisterResponse extends GenericResponse {
 
 export interface ConfirmResetPassword extends GenericResponse {
   MESSAGE:
-  | "User not found"
-  | "Reset code does not match"
-  | "Passwords do not match"
+    | "User not found"
+    | "Reset code does not match"
+    | "Passwords do not match";
+}
+
+export interface RefreshTokenResponse extends GenericResponse {
+  newRefreshToken: string;
+  newToken: string;
+  user: any;
 }
