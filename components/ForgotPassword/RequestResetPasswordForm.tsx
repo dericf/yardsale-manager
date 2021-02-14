@@ -139,7 +139,7 @@ export const RequestResetPasswordForm = () => {
                 <Form.Field width={16}>
                   <label>Email</label>
                   <Input
-                    fluid={true}
+                    fluid
                     type="email"
                     name="email"
                     icon="at"

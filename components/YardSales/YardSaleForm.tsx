@@ -50,9 +50,9 @@ const YardsaleForm = () => {
     setSelectedYardSale,
     updateYardsale,
   } = useYardsales();
-  const [forceDisableSave, setForceDisableSave] = useState<boolean>(false)
+  const [forceDisableSave, setForceDisableSave] = useState<boolean>(false);
   const router = useRouter();
-  const {quickLoad, setQuickLoad} = useIsLoading()
+  const { quickLoad, setQuickLoad } = useIsLoading();
   const yardsaleNameRef = useRef<Input>();
   const initialValues: FormValues = {
     name: yardSale ? yardSale.name : "",
@@ -69,7 +69,7 @@ const YardsaleForm = () => {
     // postal: yardSale ? yardSale.address_postal : "",
   };
   const onSubmit = async (values: FormValues, errors: FormErrors) => {
-    setForceDisableSave(true)
+    setForceDisableSave(true);
     let yardSaleVars = {
       name: values.name,
       phone: values.phone,
@@ -112,30 +112,32 @@ const YardsaleForm = () => {
     }
 
     return errors;
-  }
+  };
 
   const { values, handleChange, handleSubmit } = useForm({
     initialValues,
     onSubmit,
-    validate
+    validate,
   });
 
   useEffect(() => {
     // Auto focus the first form input on first page load
-    setQuickLoad(false)
+    setQuickLoad(false);
     if (yardsaleNameRef) yardsaleNameRef.current.focus();
   }, []);
 
   return (
-    <div style={{overflowY: "auto", height: "90vh"}}>
-      <Grid columns={1} centered className="m0 p0" >
+    <div style={{ overflowY: "auto", height: "90vh" }}>
+      <Grid columns={1} centered className="m0 p0">
         <Grid.Row className="py0">
           {/* First Grid.Row (Filters/Buttons) */}
           <Grid.Column>
             <Form
               name="YardSaleForm"
               className="p0 m0"
-              onSubmit={(e)=> {console.log("Submitting...")}}
+              onSubmit={(e) => {
+                console.log("Submitting...");
+              }}
               action="POST"
             >
               <Grid>
@@ -207,32 +209,32 @@ const YardsaleForm = () => {
                 </Grid.Row>
 
                 <Grid.Row className="pt0">
-                <Grid.Column>
-                  <Form.Group widths="equal">
-                    <Form.Field>
-                      <label>Address</label>
-                      <TextArea
-                        placeholder="Address"
-                        name="address"
-                        value={values.address}
-                        onChange={handleChange}
-                        rows={5}
-                      />
-                    </Form.Field>
+                  <Grid.Column>
+                    <Form.Group widths="equal">
+                      <Form.Field>
+                        <label>Address</label>
+                        <TextArea
+                          placeholder="Address"
+                          name="address"
+                          value={values.address}
+                          onChange={handleChange}
+                          rows={5}
+                        />
+                      </Form.Field>
 
-                    <Form.Field>
-                      <label>Notes</label>
-                      <TextArea
-                        placeholder="Notes"
-                        name="notes"
-                        value={values.notes}
-                        onChange={handleChange}
-                        rows={5}
-                      />
-                    </Form.Field>
-                  </Form.Group>
-                </Grid.Column>
-              </Grid.Row>
+                      <Form.Field>
+                        <label>Notes</label>
+                        <TextArea
+                          placeholder="Notes"
+                          name="notes"
+                          value={values.notes}
+                          onChange={handleChange}
+                          rows={5}
+                        />
+                      </Form.Field>
+                    </Form.Group>
+                  </Grid.Column>
+                </Grid.Row>
 
                 <Grid.Row></Grid.Row>
               </Grid>
@@ -246,8 +248,9 @@ const YardsaleForm = () => {
 
       <Grid centered>
         <Grid.Row centered>
-          <Grid.Column mobile={10} tablet={8} computer={8}>
+          <Grid.Column mobile={14} tablet={8} computer={5}>
             <Button
+              style={{ marginTop: "0.75rem" }}
               className="cancel"
               basic
               fluid
@@ -256,9 +259,10 @@ const YardsaleForm = () => {
               Cancel
             </Button>
           </Grid.Column>
-          <Grid.Column mobile={10} tablet={8} computer={8}>
+          <Grid.Column mobile={14} tablet={8} computer={5}>
             <Button
               fluid
+              style={{ marginTop: "0.75rem" }}
               primary
               className="save"
               onClick={handleSubmit}

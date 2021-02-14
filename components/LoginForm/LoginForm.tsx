@@ -77,7 +77,7 @@ export const LoginForm: React.FC = (props) => {
                   <Form.Field width={16}>
                     <label>Email</label>
                     <Input
-                      fluid={true}
+                      fluid
                       type="email"
                       name="email"
                       icon="at"
@@ -96,7 +96,7 @@ export const LoginForm: React.FC = (props) => {
                   <Form.Field width={16}>
                     <label>Password</label>
                     <Input
-                      fluid={true}
+                      fluid
                       type="password"
                       name="password"
                       icon="key"
@@ -142,7 +142,7 @@ export const LoginForm: React.FC = (props) => {
                 type="submit"
                 className="save"
                 content="Log In"
-                fluid={true}
+                fluid
                 primary
                 loading={loadingState.isLoading}
                 disabled={

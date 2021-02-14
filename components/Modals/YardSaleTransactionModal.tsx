@@ -3,6 +3,7 @@ import {
   Button,
   Container,
   Divider,
+  Header,
   Icon,
   Label,
   Modal,
@@ -21,7 +22,7 @@ interface Props {
 }
 
 export const YardSaleTransactionModal = ({ yardSale }: Props) => {
-  const {quickLoad, setQuickLoad} = useIsLoading()
+  const { quickLoad, setQuickLoad } = useIsLoading();
 
   const {
     sellerLinks,
@@ -49,16 +50,14 @@ export const YardSaleTransactionModal = ({ yardSale }: Props) => {
   };
 
   useEffect(() => {
-    console.log("Modal Loaded");
-    (async () => {
-      console.log("Async");
-      if (open === true && yardSale !== null) {
-        setQuickLoad(true)
+    if (open === true && yardSale !== null) {
+      (async () => {
+        setQuickLoad(true);
         await getAllYardSaleTransactions(yardSale.uuid);
         await getAllYardSaleSellerLinks(yardSale.uuid);
-        setQuickLoad(false)
-      }
-    })();
+        setQuickLoad(false);
+      })();
+    }
   }, [open]);
 
   return (
@@ -86,12 +85,17 @@ export const YardSaleTransactionModal = ({ yardSale }: Props) => {
         onClose={closeModal}
         closeOnDimmerClick={true}
         closeOnEscape={true}
-        dimmer="none"
+        dimmer
         style={{ height: "90vh", width: 500 }}
       >
         <Modal.Header>{`Transactions for ${yardSale.name}`}</Modal.Header>
         {transactionItems && (
-          <Modal.Content as={Segment} basic loading={quickLoad} style={{ maxHeight: "78vh", overflowY: "auto" }}>
+          <Modal.Content
+            as={Segment}
+            basic
+            loading={quickLoad}
+            style={{ maxHeight: "78vh", overflowY: "auto" }}
+          >
             <Divider horizontal content="Seller Summary" className="mt0" />
             {sellerLinks && (
               <Fragment>
@@ -154,30 +158,31 @@ export const YardSaleTransactionModal = ({ yardSale }: Props) => {
                     </Fragment>
                   </Table.Body>
                 </Table>
-                {transactionItems && transactionItems.length > 0 && (
-                  <Container textAlign="center">
-                    <Label
-                      style={{ width: 275 }}
-                      size="large"
-                      content={`Grand Total: $ ${toMoney(
-                        transactionItems.reduce(
-                          (accum, currentItem) =>
-                            Number(accum) +
-                            Number(fromMoney(currentItem.price)),
-                          0,
-                        ),
-                      )}`}
-                    />
+                <div className="flex row justify-center">
+                  <Segment textAlign="center" raised compact>
+                    {transactionItems && transactionItems.length > 0 && (
+                      <Header textAlign="center" size="medium">
+                        {`Grand Total: $ ${toMoney(
+                          transactionItems.reduce(
+                            (accum, currentItem) =>
+                              Number(accum) +
+                              Number(fromMoney(currentItem.price)),
+                            0,
+                          ),
+                        )}`}
+                      </Header>
+                    )}
 
                     {transactionItems?.length == 0 && (
-                      <Label size="large" content={`Grand Total: $ 0.00`} />
+                      <Header textAlign="center" size="medium">
+                        Grand Total: $ 0.00
+                      </Header>
                     )}
-                  </Container>
-                )}
+                  </Segment>
+                </div>
               </Fragment>
             )}
 
-            <Divider></Divider>
             <Divider horizontal content="All Transaction Items" />
 
             {transactionItems && (

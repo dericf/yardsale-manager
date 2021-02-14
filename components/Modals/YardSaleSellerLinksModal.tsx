@@ -62,15 +62,13 @@ export const YardSaleSellerLinksModal = ({
 
   useEffect(() => {
     setQuickLoad(true);
-    console.log("YardSale Seller Links Modal Loaded");
-    (async () => {
-      console.log("Async");
-      if (open === true && yardSale !== null) {
+    if (open === true && yardSale !== null) {
+      (async () => {
         await updateSellers();
         await getAllYardSaleSellerLinks(yardSale?.uuid);
         setQuickLoad(false);
-      }
-    })();
+      })();
+    }
   }, [open]);
 
   return (
@@ -97,7 +95,7 @@ export const YardSaleSellerLinksModal = ({
         onClose={closeModal}
         closeOnDimmerClick={true}
         closeOnEscape={true}
-        dimmer="none"
+        dimmer
         style={{ height: "90vh", width: 500 }}
       >
         <Modal.Header>{`Transactions for ${yardSale.name}`}</Modal.Header>

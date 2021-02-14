@@ -4,6 +4,7 @@ import {
   Container,
   Divider,
   Grid,
+  Header,
   Icon,
   Label,
   Modal,
@@ -49,9 +50,7 @@ export const SellerTransactionModal = ({ seller }: Props) => {
   };
 
   useEffect(() => {
-    console.log("Modal Loaded");
     (async () => {
-      console.log("Async");
       if (open === true && seller !== null) {
         setQuickLoad(true);
         await getAllTransactionsForSeller(seller.uuid);
@@ -86,7 +85,7 @@ export const SellerTransactionModal = ({ seller }: Props) => {
         onClose={closeModal}
         closeOnDimmerClick={true}
         closeOnEscape={true}
-        dimmer="none"
+        dimmer
         style={{ height: "90vh", width: 500 }}
       >
         <Modal.Header>{`Transactions for ${seller.name}`}</Modal.Header>
@@ -156,30 +155,30 @@ export const SellerTransactionModal = ({ seller }: Props) => {
                     </Fragment>
                   </Table.Body>
                 </Table>
-                {sellerTransactions && sellerTransactions.length > 0 && (
-                  <Container textAlign="center">
-                    <Label
-                      style={{ width: 275 }}
-                      size="large"
-                      content={`Grand Total: $ ${toMoney(
-                        sellerTransactions.reduce(
-                          (accum, currentItem) =>
-                            Number(accum) +
-                            Number(fromMoney(currentItem.price)),
-                          0,
-                        ),
-                      )}`}
-                    />
-
-                    {sellerTransactions?.length == 0 && (
-                      <Label size="large" content={`Grand Total: $ 0.00`} />
+                <div className="flex row justify-center">
+                  <Segment raised compact>
+                    {sellerTransactions && sellerTransactions.length > 0 && (
+                      <Header textAlign="center" size="medium">
+                        {`Grand Total: $ ${toMoney(
+                          sellerTransactions.reduce(
+                            (accum, currentItem) =>
+                              Number(accum) +
+                              Number(fromMoney(currentItem.price)),
+                            0,
+                          ),
+                        )}`}
+                      </Header>
                     )}
-                  </Container>
-                )}
+                    {sellerTransactions?.length == 0 && (
+                      <Header textAlign="center" size="medium">
+                        Grand Total: $ 0.00
+                      </Header>
+                    )}
+                  </Segment>
+                </div>
               </Fragment>
             )}
 
-            <Divider></Divider>
             <Divider horizontal content="All Transaction Items" />
 
             {sellerTransactions && (
@@ -215,7 +214,6 @@ export const SellerTransactionModal = ({ seller }: Props) => {
 
                       <Table.Body>
                         <Fragment>
-
                           {sellerTransactions &&
                             sellerTransactions.length === 0 && (
                               <Table.Row textAlign="center">
