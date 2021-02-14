@@ -13,3 +13,14 @@ export interface Transaction {
   seller: SellersInterface;
   yardsale: YardSalesInterface;
 }
+
+
+export interface PendingTransactionItem {
+  id: number;
+  seller: {
+    uuid: UUID;
+    name: string;
+  };
+  price: string | number;
+  description: string;
+}
