@@ -230,12 +230,10 @@ export const SellersList = () => {
                                 activeTransactions?.data?.length === 0 &&
                                 activeLinks?.data?.length === 0
                               ) {
-                                // await deleteSeller(seller.uuid);
-                                // await updateSellers();
-
-                                // router.push("/yardsales");
+                                await deleteSeller(seller.uuid);
+                                await updateSellers();
                                 sendAlert(
-                                  "Success! Yard Sale has been deleted",
+                                  "Success! Seller has been deleted",
                                 );
                               }
                             }}
