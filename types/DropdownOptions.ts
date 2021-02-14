@@ -12,14 +12,14 @@ export interface YardSaleSortByOptionsInterface {
 
 export const YardSaleSortByOptions: Array<YardSaleSortByOptionsInterface> = [
   {
-    key: "Date (Oldest First)",
-    text: "Date (Oldest First)",
-    value: "created_at-asc",
-  },
-  {
     key: "Date (Newest First)",
     text: "Date (Newest First)",
     value: "created_at-desc",
+  },
+  {
+    key: "Date (Oldest First)",
+    text: "Date (Oldest First)",
+    value: "created_at-asc",
   },
   {
     key: "Name (A-Z)",
