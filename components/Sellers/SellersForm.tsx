@@ -31,7 +31,7 @@ export const SellersForm = ({ seller }: Props) => {
   const { createNewSeller, updateSeller, setSelectedSeller } = useSellers();
   const router = useRouter();
   const initialValues: FormValues = {
-    name: seller ? seller.name : "",
+    name: seller ? seller.name ?? "" : "",
     initials: seller ? seller.initials : "",
     company: seller ? seller.company : "",
     phone: seller ? seller.phone : "",
@@ -251,7 +251,7 @@ export const SellersForm = ({ seller }: Props) => {
               style={{ marginTop: "0.75rem" }}
               primary
               className="save"
-              disabled={values.name.length === 0}
+              disabled={values.name?.length === 0}
               onClick={handleSubmit}
               content={seller ? "Save Changes" : "Create Seller"}
             />
