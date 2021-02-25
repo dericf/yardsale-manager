@@ -1,8 +1,0 @@
-#!/bin/sh
-echo "Switching to branch master"
-git checkout master
-echo "Building app"
-npm run build
-echo "Deploying files to server"
-rsync -avP build/ appsuser@172.105.15.184:/var/www/yardsalemanager.meqsoftware.com/
-echo "Deployment complete"
