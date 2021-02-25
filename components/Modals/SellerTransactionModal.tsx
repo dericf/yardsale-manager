@@ -187,9 +187,6 @@ export const SellerTransactionModal = ({ seller }: Props) => {
                   <Segment
                     className="rounded p0"
                     basic
-                    style={{
-                      maxWidth: "600px   ",
-                    }}
                   >
                     <Table
                       className="mt0"
@@ -197,6 +194,11 @@ export const SellerTransactionModal = ({ seller }: Props) => {
                       compact
                       basic="very"
                       unstackable
+                      style={{
+                        minWidth: 275,
+                        marginLeft: "auto",
+                        marginRight: "auto",
+                      }}
                     >
                       <Table.Header>
                         <Table.Row className="primary">
