@@ -1,8 +1,10 @@
 # Yard Sale Manager UI
 
-## Project Demo
+## Project Demo Video
 
 [![Demo Video](https://img.youtube.com/vi/w392ms25VhI/0.jpg)](https://www.youtube.com/watch?v=w392ms25VhI)
+
+---
 
 ## Quick Overview
 
